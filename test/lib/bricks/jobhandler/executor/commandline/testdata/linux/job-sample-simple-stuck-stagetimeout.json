@@ -1,0 +1,24 @@
+{
+  "id": "006",
+  "nature": {
+    "type": "execution",
+    "quality": "commandline"
+  },
+  "payload": {
+    "stages": [
+      {
+        "id": "RUN01",
+        "run": "sleep 10",
+        "stop": "echo stop",
+        "timeout": 2000
+      },
+      {
+        "id": "RUN02",
+        "run": "echo should not run",
+        "stop": "echo should not run",
+        "timeout": 2000
+      }
+    ],
+    "timeout": 20000
+  }
+}
