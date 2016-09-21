@@ -1,0 +1,6 @@
+{
+  "apiServer": "localhost",
+  "apiPort": 3001,
+  "screenshotDirectory": "./temp",
+  "restApiPort": 3000
+}

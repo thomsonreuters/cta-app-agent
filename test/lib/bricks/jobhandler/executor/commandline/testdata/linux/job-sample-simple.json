@@ -1,0 +1,16 @@
+{
+  "id": "002",
+  "nature": {
+    "type": "execution",
+    "quality": "commandline"
+  },
+  "payload": {
+    "stages": [
+      {
+        "id": "RUN01",
+        "run": "echo Test - Current working directory is: $PWD\necho Test - Env variables: FOO is $FOO.\nsleep 1\nexit 0",
+        "stop": "echo Test - Do stop operations..."
+      }
+    ]
+  }
+}

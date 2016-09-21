@@ -1,0 +1,35 @@
+{
+  "id": "005",
+  "nature": {
+    "type": "execution",
+    "quality": "commandline"
+  },
+  "payload": {
+    "stages": [
+      {
+        "id": "RUN01",
+        "run": "echo Stage RUN01\necho Test - Current working directory is: $PWD\necho Test - Env variables: FOO is %FOO%.\nsleep 1\nexit 0",
+        "stop": "echo Test - Do stop operations...",
+        "cwd": "/tmp",
+        "env": [
+          {
+            "key": "FOO",
+            "value": "bar"
+          },
+          {
+            "key": "BAZ",
+            "value": "quz"
+          }
+        ],
+        "timeout": 10000
+      },
+      {
+        "id": "RUN02",
+        "run": "sleep 10",
+        "stop": "echo Stopping gedit...",
+        "timeout": 10000
+      }
+    ],
+    "timeout": 1500
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "004",
+  "nature": {
+    "type": "execution",
+    "quality": "commandline"
+  },
+  "payload": {
+    "stages": [
+      {
+        "id": "RUN01",
+        "run": "notepad.exe",
+        "stop": "taskkill /F /IM notepad.exe /T"
+      }
+    ],
+    "timeout": 1500
+  }
+}
