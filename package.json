@@ -1,7 +1,7 @@
 {
-  "name": "cta-app-boilerplate",
+  "name": "cta-app-agent",
   "version": "1.0.0",
-  "description": "cta app boilerplate",
+  "description": "Agent application for Compass Test Automation",
   "author": "CTA Team <cta@thomsonreuters.com>",
   "main": "lib/index.js",
   "scripts": {
