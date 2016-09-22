@@ -92,7 +92,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
         jobBrokerHelper.send.restore();
       });
 
-      it('should send RUNNING changestate for the group job', function() {
+      it('should send running changestate for the group job', function() {
         expect(jobBrokerHelper.send.calledWithExactly({
           nature: {
             type: 'execution',
@@ -100,7 +100,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
           },
           payload: {
             jobid: queuegetjob.payload.groupjobid,
-            state: 'RUNNING',
+            state: 'running',
             message: `GET message request for group Job ${queuegetjob.payload.groupjobid} accepted by ${outputBrickName}.`,
           },
         })).to.be.equal(true);
@@ -122,7 +122,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
         jobBrokerHelper.terminateGroupJob.restore();
       });
 
-      it('should terminate group job with ACKED state', function() {
+      it('should terminate group job with acked state', function() {
         const changestate = {
           nature: {
             type: 'execution',
@@ -130,7 +130,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
           },
           payload: {
             jobid: queuegetjob.payload.groupjobid,
-            state: 'ACKED',
+            state: 'acked',
             message: `message-get job was rejected by ${outputBrickName} with: ${mockRejectError.message}.`,
             error: mockRejectError,
           },
@@ -145,7 +145,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
     context('when there is no more message and the queuegetjob is for a group job', function() {
       context('when the queuegetjob was the first', function() {
         const mockDoneResponse = {
-          state: 'FINISHED',
+          state: 'finished',
           message: 'Mock done',
           noMoreMessage: true,
         };
@@ -159,7 +159,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
           jobBrokerHelper.terminateGroupJob.restore();
         });
 
-        it('should terminate group job with ACKED state', function() {
+        it('should terminate group job with acked state', function() {
           const changestate = {
             nature: {
               type: 'execution',
@@ -167,7 +167,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
             },
             payload: {
               jobid: queuegetjob.payload.groupjobid,
-              state: 'ACKED',
+              state: 'acked',
               message: `No more Jobs to run for group Job ${queuegetjob.payload.groupjobid}.`,
             },
           };
@@ -178,7 +178,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
 
       context('when the queuegetjob was not the first', function() {
         const mockDoneResponse = {
-          state: 'FINISHED',
+          state: 'finished',
           message: 'Mock done',
           noMoreMessage: true,
         };
@@ -192,7 +192,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
           jobBrokerHelper.terminateGroupJob.restore();
         });
 
-        it('should terminate group job with FINISHED state', function() {
+        it('should terminate group job with finished state', function() {
           const changestate = {
             nature: {
               type: 'execution',
@@ -200,7 +200,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
             },
             payload: {
               jobid: queuegetjob.payload.groupjobid,
-              state: 'FINISHED',
+              state: 'finished',
               message: `No more Jobs to run for group Job ${queuegetjob.payload.groupjobid}.`,
             },
           };

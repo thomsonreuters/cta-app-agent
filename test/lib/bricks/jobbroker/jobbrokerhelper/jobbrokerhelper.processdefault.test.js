@@ -192,7 +192,7 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
           jobBrokerHelper.ack.restore();
           jobBrokerHelper.runningJobs.clear();
         });
-        it('should send FINISHED changestate', function() {
+        it('should send finished changestate', function() {
           expect(jobBrokerHelper.send.calledWithExactly({
             nature: {
               type: 'execution',
@@ -200,7 +200,7 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
             },
             payload: {
               jobid: job.id,
-              state: 'FINISHED',
+              state: 'finished',
               error: queueError,
               message: queueError.message,
             },

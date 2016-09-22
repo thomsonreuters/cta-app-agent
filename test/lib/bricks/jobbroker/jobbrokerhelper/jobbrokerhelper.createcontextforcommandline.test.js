@@ -82,7 +82,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
       jobBrokerHelper.send.restore();
     });
 
-    it('should send RUNNING changestate', function() {
+    it('should send running changestate', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
           type: 'execution',
@@ -90,7 +90,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
         },
         payload: {
           jobid: job.id,
-          state: 'RUNNING',
+          state: 'running',
           message: `Job ${job.id} accepted by ${outputBrickName}.`,
         },
       })).to.be.equal(true);
@@ -117,7 +117,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
       jobBrokerHelper.remove.restore();
     });
 
-    it('should send FINISHED changestate', function() {
+    it('should send finished changestate', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
           type: 'execution',
@@ -125,7 +125,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
         },
         payload: {
           jobid: job.id,
-          state: 'FINISHED',
+          state: 'finished',
           error: mockRejectError,
           message: mockRejectError.message,
         },
@@ -144,7 +144,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
   describe('when mockContext emit done event', function() {
     context('when it is any job', function() {
       const mockDoneResponse = {
-        state: 'FINISHED',
+        state: 'finished',
         message: 'Mock done',
       };
       before(function() {
@@ -161,7 +161,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
         jobBrokerHelper.remove.restore();
       });
 
-      it('should send FINISHED changestate', function() {
+      it('should send finished changestate', function() {
         expect(jobBrokerHelper.send.calledWithExactly({
           nature: {
             type: 'execution',
@@ -183,7 +183,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
     context('when job belongs to a running group job', function() {
       context('when job was finished normally', function() {
         const mockDoneResponse = {
-          state: 'FINISHED',
+          state: 'finished',
           message: 'Mock done',
         };
         const groupjob = {
@@ -230,7 +230,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
 
       context('when job was finished by a manual cancelation', function() {
         const mockDoneResponse = {
-          state: 'FINISHED',
+          state: 'finished',
           message: 'Mock done',
           cancelMode: 'MANUAL',
         };
@@ -271,8 +271,8 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
             },
             payload: {
               jobid: job.payload.groupjobid,
-              state: 'CANCELED',
-              message: `group Job ${job.payload.groupjobid} CANCELED (MANUAL) during sub-Job ${job.id}`,
+              state: 'canceled',
+              message: `group Job ${job.payload.groupjobid} canceled (MANUAL) during sub-Job ${job.id}`,
             },
           }));
         });
@@ -297,7 +297,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
         jobBrokerHelper.remove.restore();
       });
 
-      it('should send FINISHED changestate', function() {
+      it('should send finished changestate', function() {
         expect(jobBrokerHelper.send.calledWithExactly({
           nature: {
             type: 'execution',
@@ -305,7 +305,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
           },
           payload: {
             jobid: job.id,
-            state: 'FINISHED',
+            state: 'finished',
             error: mockError,
             message: mockError.message,
           },

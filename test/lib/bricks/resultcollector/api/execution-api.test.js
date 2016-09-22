@@ -17,19 +17,19 @@ const changeStateToRunningInput = {
   },
   payload: {
     jobid: runningJobId,
-    state: 'RUNNING',
+    state: 'running',
     customParam: 'foo bar',
   },
 };
 const changeStateToRunningOutput = {
   nature: {
     type: 'execution',
-    quality: 'Result',
+    quality: 'result',
   },
   payload: {
     jobid: runningJobId,
     ids: [ runningJobId ],
-    state: 'RUNNING',
+    state: 'running',
     customParam: 'foo bar',
   },
 };
@@ -40,19 +40,19 @@ const changeStateToCanceledInput = {
   },
   payload: {
     jobid: runningJobId,
-    state: 'CANCELLED',
+    state: 'canceled',
     customParam: 'foo bar',
   },
 };
 const changeStateToCanceledOutput = {
   nature: {
     type: 'execution',
-    quality: 'Result',
+    quality: 'result',
   },
   payload: {
     jobid: runningJobId,
     ids: [ runningJobId ],
-    state: 'CANCELLED',
+    state: 'canceled',
     customParam: 'foo bar',
   },
 };
@@ -62,7 +62,7 @@ const missingJobIdInput = {
     quality: 'changestate',
   },
   payload: {
-    state: 'CANCELLED',
+    state: 'canceled',
     customParam: 'foo bar',
   },
 };

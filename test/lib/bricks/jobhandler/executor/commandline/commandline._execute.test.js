@@ -224,10 +224,10 @@ describe('JobHandler - Executor - CommandLine - _execute', function() {
       it('should reject with an error', function(done) {
         const executePromise = executor.process(JOB, (error, response) => {
           expect(error).to.be.an.instanceOf(Error, 'exec error');
-          expect(response).to.have.property('state', 'FINISHED');
+          expect(response).to.have.property('state', 'finished');
           expect(response).to.have.property('ok', 0);
           expect(response).to.have.property('message')
-            .and.to.include(`Execute RUN CmdLine Job ${JOB.id}: FINISHED with error`);
+            .and.to.include(`Execute RUN CmdLine Job ${JOB.id}: finished with error`);
           expect(executor.runningJobs).to.not.have.property(JOB.id);
           done();
         });
@@ -247,10 +247,10 @@ describe('JobHandler - Executor - CommandLine - _execute', function() {
             // without process exit callback
             const executePromise = executor.process(JOBSIMPLERERROR, (error, response) => {
               expect(error).to.be.a('null');
-              expect(response).to.have.property('state', 'FINISHED');
+              expect(response).to.have.property('state', 'finished');
               expect(response).to.have.property('ok', 1);
               expect(response).to.have.property('message')
-                .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERERROR.id}: FINISHED with error`);
+                .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERERROR.id}: finished with error`);
               expect(response).to.have.property('process')
                 .and.to.be.an.instanceOf(cp.ChildProcess);
               expect(response).to.have.property('code', 1);
@@ -271,9 +271,9 @@ describe('JobHandler - Executor - CommandLine - _execute', function() {
             // with process exit callback
             const executePromise = executor.process(JOBSIMPLER, (error, response) => {
               expect(error).to.be.a('null');
-              expect(response).to.have.property('state', 'FINISHED');
+              expect(response).to.have.property('state', 'finished');
               expect(response).to.have.property('ok', 1);
-              expect(response).to.have.property('message', `Execute RUN CmdLine Job ${JOBSIMPLER.id}: FINISHED`);
+              expect(response).to.have.property('message', `Execute RUN CmdLine Job ${JOBSIMPLER.id}: finished`);
               expect(response).to.have.property('process')
                 .and.to.be.an.instanceOf(cp.ChildProcess);
               expect(response).to.have.property('code', 0);
@@ -294,9 +294,9 @@ describe('JobHandler - Executor - CommandLine - _execute', function() {
         it('should execute job and fulfill response', function(done) {
           const executePromise = executor.process(JOB, (error, response) => {
             expect(error).to.be.a('null');
-            expect(response).to.have.property('state', 'FINISHED');
+            expect(response).to.have.property('state', 'finished');
             expect(response).to.have.property('ok', 1);
-            expect(response).to.have.property('message', `Execute RUN CmdLine Job ${JOB.id}: FINISHED`);
+            expect(response).to.have.property('message', `Execute RUN CmdLine Job ${JOB.id}: finished`);
             expect(response).to.have.property('process')
               .and.to.be.an.instanceOf(cp.ChildProcess);
             expect(response).to.have.property('code', 0);

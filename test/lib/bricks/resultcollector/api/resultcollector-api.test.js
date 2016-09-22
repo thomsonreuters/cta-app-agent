@@ -9,8 +9,8 @@ const ResultCollector = require(nodepath.join(appRootPath,
 const runningJobId = 123;
 const getRunningJobIdInput = {
   nature: {
-    type: 'ResultCollector',
-    quality: 'getRunningJobId',
+    type: 'resultcollector',
+    quality: 'getrunningjobid',
   },
   payload: {
     customParam: 'foo bar',
@@ -25,8 +25,8 @@ describe('Result Collector API', function() {
     resultCollector.doJob(getRunningJobIdInput).then(function(output) {
       expect(output).deep.equals({
         nature: {
-          type: 'ResultCollector',
-          quality: 'Result',
+          type: 'resultcollector',
+          quality: 'result',
         },
         payload: {
           runningJobsIds: [ runningJobId ],

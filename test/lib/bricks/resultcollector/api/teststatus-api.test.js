@@ -12,7 +12,7 @@ const ResultCollector = require(nodepath.join(appRootPath,
 const runningJobId = 123;
 const testStatusCollectInput = {
   nature: {
-    type: 'TestStatus',
+    type: 'teststatus',
     quality: 'collect',
   },
   payload: {
@@ -24,8 +24,8 @@ const testStatusCollectInput = {
 };
 const testStatusCollectOutput = {
   nature: {
-    quality: 'Result',
-    type: 'TestStatus',
+    quality: 'result',
+    type: 'teststatus',
   },
   payload: {
     testStatus: {
@@ -41,8 +41,8 @@ const testStatusCollectOutput = {
 };
 const testStatusCaptureInput = {
   nature: {
-    type: 'TestStatus',
-    quality: 'captureScreen',
+    type: 'teststatus',
+    quality: 'capturescreen',
   },
   payload: {
     testName: 'Say Hello',
@@ -51,8 +51,8 @@ const testStatusCaptureInput = {
 };
 const testStatusCaptureOutput = {
   nature: {
-    quality: 'Result',
-    type: 'TestStatus',
+    quality: 'result',
+    type: 'teststatus',
   },
   payload: {
     ids: [ runningJobId ],
