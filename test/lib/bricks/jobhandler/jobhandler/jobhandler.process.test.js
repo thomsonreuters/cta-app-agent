@@ -59,7 +59,7 @@ describe('JobHandler - process', function() {
     it('should emit done events', function() {
       const response = {
         ok: 1,
-        state: 'FINISHED',
+        state: 'finished',
         message: `Cancelation job ${cancelJob.id} tried to cancel job ${cancelJob.payload.jobid} but it wasn't running.`,
       };
       expect(context.emit.calledWithExactly('done', jobHandler.name, response)).to.be.equal(true);

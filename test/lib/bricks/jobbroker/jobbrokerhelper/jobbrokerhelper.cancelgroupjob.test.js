@@ -113,7 +113,7 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
       expect(jobBrokerHelper.runningJobs.set.calledWithExactly(cancelationJob.id, cancelationJob)).to.equal(true);
     });
 
-    it('should send RUNNING changestate for the cancelation job', function() {
+    it('should send running changestate for the cancelation job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
           type: 'execution',
@@ -121,7 +121,7 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
         },
         payload: {
           jobid: cancelationJob.id,
-          state: 'RUNNING',
+          state: 'running',
           message: `Job ${cancelationJob.id} accepted by ${jobBrokerHelper.cementHelper.brickName}`,
         },
       })).to.equal(true);
@@ -161,7 +161,7 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
           expect(jobBrokerHelper.remove.calledWithExactly(cancelationJob.id)).to.equal(true);
         });
 
-        it('should send FINISHED changestate for the global cancelation job', function() {
+        it('should send finished changestate for the global cancelation job', function() {
           expect(jobBrokerHelper.send.calledWithExactly({
             nature: {
               type: 'execution',
@@ -169,8 +169,8 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
             },
             payload: {
               jobid: cancelationJob.id,
-              state: 'FINISHED',
-              message: `group Job ${cancelationJob.payload.jobid} CANCELED (MANUAL) with rejection error ${mockError}`,
+              state: 'finished',
+              message: `group Job ${cancelationJob.payload.jobid} canceled (MANUAL) with rejection error ${mockError}`,
               error: mockError,
             },
           })).to.equal(true);
@@ -190,7 +190,7 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
           expect(jobBrokerHelper.remove.calledWithExactly(cancelationJob.id)).to.equal(true);
         });
 
-        it('should send FINISHED changestate for the global cancelation job', function() {
+        it('should send finished changestate for the global cancelation job', function() {
           expect(jobBrokerHelper.send.calledWithExactly({
             nature: {
               type: 'execution',
@@ -198,8 +198,8 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
             },
             payload: {
               jobid: cancelationJob.id,
-              state: 'FINISHED',
-              message: `group Job ${cancelationJob.payload.jobid} CANCELED (MANUAL).`,
+              state: 'finished',
+              message: `group Job ${cancelationJob.payload.jobid} canceled (MANUAL).`,
             },
           })).to.equal(true);
         });
@@ -215,7 +215,7 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
           expect(jobBrokerHelper.remove.calledWithExactly(cancelationJob.id)).to.equal(true);
         });
 
-        it('should send FINISHED changestate for the global cancelation job', function() {
+        it('should send finished changestate for the global cancelation job', function() {
           expect(jobBrokerHelper.send.calledWithExactly({
             nature: {
               type: 'execution',
@@ -223,8 +223,8 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
             },
             payload: {
               jobid: cancelationJob.id,
-              state: 'FINISHED',
-              message: `group Job ${cancelationJob.payload.jobid} CANCELED (MANUAL) with error ${mockError}`,
+              state: 'finished',
+              message: `group Job ${cancelationJob.payload.jobid} canceled (MANUAL) with error ${mockError}`,
               error: mockError,
             },
           })).to.equal(true);
@@ -273,7 +273,7 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
       expect(jobBrokerHelper.runningJobs.set.calledWithExactly(cancelationJob.id, cancelationJob)).to.equal(true);
     });
 
-    it('should send RUNNING changestate for the cancelation job', function() {
+    it('should send running changestate for the cancelation job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
           type: 'execution',
@@ -281,7 +281,7 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
         },
         payload: {
           jobid: cancelationJob.id,
-          state: 'RUNNING',
+          state: 'running',
           message: `Job ${cancelationJob.id} accepted by ${jobBrokerHelper.cementHelper.brickName}`,
         },
       })).to.equal(true);
@@ -291,7 +291,7 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
       expect(jobBrokerHelper.remove.calledWithExactly(cancelationJob.id)).to.equal(true);
     });
 
-    it('should send FINISHED changestate for the cancelation job', function() {
+    it('should send finished changestate for the cancelation job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
           type: 'execution',
@@ -299,8 +299,8 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
         },
         payload: {
           jobid: cancelationJob.id,
-          state: 'FINISHED',
-          message: `group Job ${cancelationJob.payload.jobid} CANCELED (MANUAL).`,
+          state: 'finished',
+          message: `group Job ${cancelationJob.payload.jobid} canceled (MANUAL).`,
         },
       })).to.equal(true);
     });

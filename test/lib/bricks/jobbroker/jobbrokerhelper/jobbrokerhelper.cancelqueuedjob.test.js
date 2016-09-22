@@ -62,7 +62,7 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
       jobBrokerHelper.ack.restore();
     });
 
-    it('should send CANCELED changestate for the canceled job', function() {
+    it('should send canceled changestate for the canceled job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
           type: 'execution',
@@ -70,7 +70,7 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
         },
         payload: {
           jobid: job.payload.jobid,
-          state: 'CANCELED',
+          state: 'canceled',
           message: `Job ${job.payload.jobid} removed from queue successfully.`,
         },
       })).to.equal(true);
@@ -80,7 +80,7 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
       expect(jobBrokerHelper.ack.calledWithExactly(jobToCancel)).to.equal(true);
     });
 
-    it('should send FINISHED changestate for the cancelation job', function() {
+    it('should send finished changestate for the cancelation job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
           type: 'execution',
@@ -88,7 +88,7 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
         },
         payload: {
           jobid: job.id,
-          state: 'FINISHED',
+          state: 'finished',
           message: `Job ${job.payload.jobid} removed from queue successfully.`,
         },
       })).to.equal(true);
@@ -122,7 +122,7 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
       jobBrokerHelper.ack.restore();
     });
 
-    it('should send FINISHED changestate for the cancelation job', function() {
+    it('should send finished changestate for the cancelation job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
           type: 'execution',
@@ -130,7 +130,7 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
         },
         payload: {
           jobid: job.id,
-          state: 'FINISHED',
+          state: 'finished',
           message: `Job ${job.payload.jobid} neither running nor queued. Nothing to cancel.`,
         },
       })).to.equal(true);

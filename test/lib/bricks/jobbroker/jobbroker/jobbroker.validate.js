@@ -161,7 +161,7 @@ describe('Job Broker - job validation', function() {
       id: new ObjectID(),
       nature: {
         type: 'execution',
-        quality: 'Cancelation',
+        quality: 'cancelation',
       },
       payload: {
         jobid: {},
@@ -179,7 +179,7 @@ describe('Job Broker - job validation', function() {
           },
           payload: {
             jobid: job.id,
-            state: 'FINISHED',
+            state: 'finished',
             error: err,
             message: err.message,
           },

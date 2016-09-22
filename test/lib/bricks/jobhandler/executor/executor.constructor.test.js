@@ -13,11 +13,11 @@ const logger = require('cta-logger');
 
 let executor;
 const STATES = {
-  PENDING: 'PENDING',
-  ACKED: 'ACKED',
-  RUNNING: 'RUNNING',
-  CANCELED: 'CANCELED',
-  FINISHED: 'FINISHED',
+  pending: 'pending',
+  acked: 'acked',
+  running: 'running',
+  canceled: 'canceled',
+  finished: 'finished',
 };
 
 const CANCELMODE = {

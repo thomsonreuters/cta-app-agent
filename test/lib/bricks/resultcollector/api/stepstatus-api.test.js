@@ -12,7 +12,7 @@ const ResultCollector = require(nodepath.join(appRootPath,
 const runningJobId = 123;
 const stepStatusCollectInput = {
   nature: {
-    type: 'StepStatus',
+    type: 'stepstatus',
     quality: 'collect',
   },
   payload: {
@@ -25,8 +25,8 @@ const stepStatusCollectInput = {
 };
 const stepStatusCollectOutput = {
   nature: {
-    quality: 'Result',
-    type: 'StepStatus',
+    quality: 'result',
+    type: 'stepstatus',
   },
   payload: {
     stepStatus: {

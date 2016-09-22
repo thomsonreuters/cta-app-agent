@@ -47,10 +47,10 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
         it('should execute stop script, fulfill response with error', function(done) {
           executor.process(JOBSIMPLERSTUCKMANUAL, (error, response) => {
             expect(error).to.be.a('null');
-            expect(response).to.have.property('state', 'CANCELED');
+            expect(response).to.have.property('state', 'canceled');
             expect(response).to.have.property('ok', 1);
             expect(response).to.have.property('message')
-              .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERSTUCKMANUAL.id}: CANCELED`);
+              .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERSTUCKMANUAL.id}: canceled`);
             expect(response).to.have.property('process')
               .and.to.be.an.instanceOf(cp.ChildProcess);
             expect(response).to.have.property('code');
@@ -88,11 +88,11 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
         it('should kill process, execute stop script, fulfill response', function(done) {
           executor.process(JOBSIMPLERSTUCKMANUAL, (error, response) => {
             expect(error).to.be.a('null');
-            expect(response).to.have.property('state', 'CANCELED');
+            expect(response).to.have.property('state', 'canceled');
             expect(response).to.have.property('cancelMode', executor.CANCELMODE.MANUAL);
             expect(response).to.have.property('ok', 1);
             expect(response).to.have.property('message')
-              .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERSTUCKMANUAL.id}: CANCELED`);
+              .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERSTUCKMANUAL.id}: canceled`);
             expect(response).to.have.property('process')
               .and.to.be.an.instanceOf(cp.ChildProcess);
             expect(response).to.have.property('code');
@@ -127,7 +127,7 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
           expect(cancelResponse).to.be.an('object');
           expect(cancelResponse).to.have.property('ok', 1);
           expect(cancelResponse).to.have.property('message',
-            `Cancel CmdLine Job ${JOBSIMPLERSTUCKMANUAL.id}: FINISHED (No job running with id ${JOBSIMPLERSTUCKMANUAL.id})`);
+            `Cancel CmdLine Job ${JOBSIMPLERSTUCKMANUAL.id}: finished (No job running with id ${JOBSIMPLERSTUCKMANUAL.id})`);
           done();
         }).catch(done);
       });
@@ -139,11 +139,11 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
       it('should cancel job after expiring the timeout', function(done) {
         executor.process(JOBSIMPLERSTUCKJOB, (error, response) => {
           expect(error).to.be.a('null');
-          expect(response).to.have.property('state', 'CANCELED');
+          expect(response).to.have.property('state', 'canceled');
           expect(response).to.have.property('cancelMode', executor.CANCELMODE.JOBTIMEOUT);
           expect(response).to.have.property('ok', 1);
           expect(response).to.have.property('message')
-            .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERSTUCKJOB.id}: CANCELED`);
+            .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERSTUCKJOB.id}: canceled`);
           expect(response).to.have.property('process')
             .and.to.be.an.instanceOf(cp.ChildProcess);
           expect(response).to.have.property('code');
@@ -163,11 +163,11 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
       it('should cancel job after expiring the timeout', function(done) {
         executor.process(JOBSIMPLERSTUCKSTAGE, (error, response) => {
           expect(error).to.be.a('null');
-          expect(response).to.have.property('state', 'CANCELED');
+          expect(response).to.have.property('state', 'canceled');
           expect(response).to.have.property('cancelMode', executor.CANCELMODE.STAGETIMEOUT);
           expect(response).to.have.property('ok', 1);
           expect(response).to.have.property('message')
-            .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERSTUCKSTAGE.id}: CANCELED`);
+            .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERSTUCKSTAGE.id}: canceled`);
           expect(response).to.have.property('process')
             .and.to.be.an.instanceOf(cp.ChildProcess);
           expect(response).to.have.property('code');
@@ -187,10 +187,10 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
       it('should cancel job after expiring 2*stageTimeout', function(done) {
         executor.process(JOBSIMPLERSTUCKSTOP, (error, response) => {
           expect(error).to.be.a('null');
-          expect(response).to.have.property('state', 'CANCELED');
+          expect(response).to.have.property('state', 'canceled');
           expect(response).to.have.property('ok', 1);
           expect(response).to.have.property('message')
-            .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERSTUCKSTOP.id}: CANCELED`);
+            .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERSTUCKSTOP.id}: canceled`);
           expect(response).to.have.property('process')
             .and.to.be.an.instanceOf(cp.ChildProcess);
           expect(response).to.have.property('code');
