@@ -192,11 +192,11 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
           jobBrokerHelper.ack.restore();
           jobBrokerHelper.runningJobs.clear();
         });
-        it('should send finished changestate', function() {
+        it('should send finished state', function() {
           expect(jobBrokerHelper.send.calledWithExactly({
             nature: {
-              type: 'execution',
-              quality: 'changestate',
+              type: 'state',
+              quality: 'create',
             },
             payload: {
               jobid: job.id,

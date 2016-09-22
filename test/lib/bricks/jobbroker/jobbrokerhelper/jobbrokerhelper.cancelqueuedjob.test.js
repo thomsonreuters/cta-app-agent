@@ -62,11 +62,11 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
       jobBrokerHelper.ack.restore();
     });
 
-    it('should send canceled changestate for the canceled job', function() {
+    it('should send canceled state for the canceled job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
-          type: 'execution',
-          quality: 'changestate',
+          type: 'state',
+          quality: 'create',
         },
         payload: {
           jobid: job.payload.jobid,
@@ -80,11 +80,11 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
       expect(jobBrokerHelper.ack.calledWithExactly(jobToCancel)).to.equal(true);
     });
 
-    it('should send finished changestate for the cancelation job', function() {
+    it('should send finished state for the cancelation job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
-          type: 'execution',
-          quality: 'changestate',
+          type: 'state',
+          quality: 'create',
         },
         payload: {
           jobid: job.id,
@@ -122,11 +122,11 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
       jobBrokerHelper.ack.restore();
     });
 
-    it('should send finished changestate for the cancelation job', function() {
+    it('should send finished state for the cancelation job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
-          type: 'execution',
-          quality: 'changestate',
+          type: 'state',
+          quality: 'create',
         },
         payload: {
           jobid: job.id,

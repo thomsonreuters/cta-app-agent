@@ -168,14 +168,14 @@ describe('Job Broker - job validation', function() {
       },
     };
     const context = { data: job };
-    it('should send ack job and changestate job', function(done) {
+    it('should send ack job and create job', function(done) {
       jobBroker.validate(context).catch((err) => {
         expect(err).to.be.an.instanceOf(Error);
         expect(jobBroker.jobBrokerHelper.ack.calledWithExactly(job)).to.be.equal(true);
         expect(jobBroker.jobBrokerHelper.send.calledWithExactly({
           nature: {
-            type: 'execution',
-            quality: 'changestate',
+            type: 'state',
+            quality: 'create',
           },
           payload: {
             jobid: job.id,
