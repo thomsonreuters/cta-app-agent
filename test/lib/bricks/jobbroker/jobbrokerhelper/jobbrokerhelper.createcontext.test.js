@@ -15,6 +15,8 @@ const JobBrokerHelper = require(nodepath.join(appRootPath,
   '/lib/bricks/jobbroker/', 'jobbrokerhelper.js'));
 const JobQueue = require(nodepath.join(appRootPath,
   '/lib/bricks/jobbroker/', 'jobqueue.js'));
+const Utils = require(nodepath.join(appRootPath,
+  '/lib/bricks/jobbroker/', 'utils.js'));
 const jobQueueOpts = require('./jobqueueopts.testdata.js');
 const logger = require('cta-logger');
 const DEFAULTLOGGER = logger();
@@ -155,6 +157,59 @@ describe('JobBroker - JobBrokerHelper - createContext', function() {
     });
     it('should create a new context with createContextForCommandline', function() {
       expect(jobBrokerHelper[methodNameToCall].calledWith(job)).to.equal(true);
+    });
+    it('should return cementHelper created context', function() {
+      expect(result).to.deep.equal(mockContext);
+    });
+  });
+  context('when job is state-create', function() {
+    let jobBrokerHelper;
+    const runningJobs = new Map();
+    const jobQueue = new JobQueue(jobQueueOpts);
+
+    // input job
+    const job = {
+      nature: {
+        type: 'state',
+        quality: 'create',
+      },
+      payload: {
+        state: 'finished',
+      },
+    };
+
+    // expected job
+    const now = Date.now();
+    const messageJob = {
+      nature: {
+        type: 'message',
+        quality: 'produce',
+      },
+      payload: job,
+    };
+    messageJob.payload.ip = Utils.ip;
+    messageJob.payload.hosthame = Utils.hostname;
+    messageJob.payload.timestamp = now;
+
+    const mockContext = new EventEmitter();
+    const mockCementHelper = {
+      constructor: {
+        name: 'CementHelper',
+      },
+    };
+    const methodNameToCall = 'createContextDefault';
+    let result;
+    before(function() {
+      sinon.stub(Date, 'now').returns(now);
+      jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
+      sinon.stub(jobBrokerHelper, methodNameToCall).returns(mockContext);
+      result = jobBrokerHelper.createContext(job);
+    });
+    after(function() {
+      Date.now.restore();
+    });
+    it('should create a new context with createContextDefault', function() {
+      sinon.assert.calledWith(jobBrokerHelper[methodNameToCall], messageJob);
     });
     it('should return cementHelper created context', function() {
       expect(result).to.deep.equal(mockContext);
