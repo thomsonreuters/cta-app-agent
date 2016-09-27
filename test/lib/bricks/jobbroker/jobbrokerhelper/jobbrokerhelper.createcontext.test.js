@@ -15,8 +15,8 @@ const JobBrokerHelper = require(nodepath.join(appRootPath,
   '/lib/bricks/jobbroker/', 'jobbrokerhelper.js'));
 const JobQueue = require(nodepath.join(appRootPath,
   '/lib/bricks/jobbroker/', 'jobqueue.js'));
-const Utils = require(nodepath.join(appRootPath,
-  '/lib/bricks/jobbroker/', 'utils.js'));
+const SystemDetails = require(nodepath.join(appRootPath,
+  '/lib/utils/systemdetails/', 'index.js'));
 const jobQueueOpts = require('./jobqueueopts.testdata.js');
 const logger = require('cta-logger');
 const DEFAULTLOGGER = logger();
@@ -187,8 +187,8 @@ describe('JobBroker - JobBrokerHelper - createContext', function() {
       },
       payload: job,
     };
-    messageJob.payload.ip = Utils.ip;
-    messageJob.payload.hosthame = Utils.hostname;
+    messageJob.payload.ip = SystemDetails.ip;
+    messageJob.payload.hosthame = SystemDetails.hostname;
     messageJob.payload.timestamp = now;
 
     const mockContext = new EventEmitter();

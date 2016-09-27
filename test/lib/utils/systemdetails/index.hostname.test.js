@@ -9,9 +9,9 @@ const sinon = require('sinon');
 require('sinon-as-promised');
 const mockrequire = require('mock-require');
 
-describe('JobBroker - Utils - hostname', function() {
+describe('SystemDetails - hostname', function() {
   context('when it\'s first call', function() {
-    let Utils;
+    let SystemDetails;
     const hostname = 'Mock';
     before(function() {
       mockrequire('os',
@@ -19,30 +19,30 @@ describe('JobBroker - Utils - hostname', function() {
           hostname: sinon.stub().returns(hostname),
         }
       );
-      Utils = mockrequire.reRequire(nodepath.join(appRootPath,
-        '/lib/bricks/jobbroker/', 'utils.js'));
+      SystemDetails = mockrequire.reRequire(nodepath.join(appRootPath,
+        '/lib/utils/systemdetails/', 'index.js'));
     });
     after(function() {
       mockrequire.stopAll();
     });
     it('should return os.hostname() value', function() {
-      expect(Utils.hostname).to.equal(hostname.toLowerCase());
+      expect(SystemDetails.hostname).to.equal(hostname.toLowerCase());
     });
   });
 
   context('when it\'s not first call', function() {
-    let Utils;
+    let SystemDetails;
     const hostname = 'mock';
     before(function() {
-      Utils = mockrequire.reRequire(nodepath.join(appRootPath,
-        '/lib/bricks/jobbroker/', 'utils.js'));
-      Utils._hostname = hostname;
+      SystemDetails = mockrequire.reRequire(nodepath.join(appRootPath,
+        '/lib/utils/systemdetails/', 'index.js'));
+      SystemDetails._hostname = hostname;
     });
     after(function() {
       mockrequire.stopAll();
     });
     it('should return stored hostname value', function() {
-      expect(Utils.hostname).to.equal(hostname);
+      expect(SystemDetails.hostname).to.equal(hostname);
     });
   });
 });

@@ -9,9 +9,9 @@ const sinon = require('sinon');
 require('sinon-as-promised');
 const mockrequire = require('mock-require');
 
-describe('JobBroker - Utils - ip', function() {
+describe('SystemDetails - ip', function() {
   context('when it\'s first call', function() {
-    let Utils;
+    let SystemDetails;
     const interfaces = {
       1: [
         {
@@ -53,27 +53,27 @@ describe('JobBroker - Utils - ip', function() {
           networkInterfaces: sinon.stub().returns(interfaces),
         }
       );
-      Utils = mockrequire.reRequire(nodepath.join(appRootPath,
-        '/lib/bricks/jobbroker/', 'utils.js'));
+      SystemDetails = mockrequire.reRequire(nodepath.join(appRootPath,
+        '/lib/utils/systemdetails/', 'index.js'));
     });
     after(function() {
       mockrequire.stopAll();
     });
     it('should return first interface non-local ipv4 address value', function() {
-      expect(Utils.ip).to.equal(interfaces['1'][2].address);
+      expect(SystemDetails.ip).to.equal(interfaces['1'][2].address);
     });
   });
 
   context('when it\'s not first call', function() {
-    let Utils;
+    let SystemDetails;
     const ip = '10.10.10.10';
     before(function() {
-      Utils = mockrequire.reRequire(nodepath.join(appRootPath,
-        '/lib/bricks/jobbroker/', 'utils.js'));
-      Utils._ip = ip;
+      SystemDetails = mockrequire.reRequire(nodepath.join(appRootPath,
+        '/lib/utils/systemdetails/', 'index.js'));
+      SystemDetails._ip = ip;
     });
     it('should return stored ip value', function() {
-      expect(Utils.ip).to.equal(ip);
+      expect(SystemDetails.ip).to.equal(ip);
     });
   });
 });
