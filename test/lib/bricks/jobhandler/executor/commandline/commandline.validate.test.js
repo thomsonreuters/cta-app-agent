@@ -30,7 +30,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           timeout: 20,
@@ -47,7 +47,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           timeout: 20,
@@ -69,7 +69,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           timeout: 20,
@@ -91,7 +91,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           timeout: 20,
@@ -115,7 +115,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           timeout: 20,
@@ -139,7 +139,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           timeout: 20,
@@ -163,7 +163,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           timeout: 20,
@@ -187,7 +187,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           timeout: 20,
@@ -215,7 +215,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           timeout: 20,

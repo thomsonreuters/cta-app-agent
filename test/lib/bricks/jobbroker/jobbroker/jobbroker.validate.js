@@ -70,7 +70,7 @@ describe('Job Broker - job validation', function() {
       const job = {
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           timeout: 20,
@@ -88,7 +88,7 @@ describe('Job Broker - job validation', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           timeout: 20,
@@ -107,7 +107,7 @@ describe('Job Broker - job validation', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           timeout: 20,
@@ -126,7 +126,7 @@ describe('Job Broker - job validation', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'Cancelation',
+          quality: 'cancelation',
         },
         payload: {
           jobid: {},
@@ -168,14 +168,14 @@ describe('Job Broker - job validation', function() {
       },
     };
     const context = { data: job };
-    it('should send ack job and changestate job', function(done) {
+    it('should send ack job and create job', function(done) {
       jobBroker.validate(context).catch((err) => {
         expect(err).to.be.an.instanceOf(Error);
         expect(jobBroker.jobBrokerHelper.ack.calledWithExactly(job)).to.be.equal(true);
         expect(jobBroker.jobBrokerHelper.send.calledWithExactly({
           nature: {
-            type: 'execution',
-            quality: 'changestate',
+            type: 'state',
+            quality: 'create',
           },
           payload: {
             jobid: job.id,
@@ -203,7 +203,7 @@ describe('Job Broker - priority queue comparator', function() {
     id: new ObjectID(),
     nature: {
       type: 'execution',
-      quality: 'commandline',
+      quality: 'commandLine',
     },
     payload: {
       priority: defaultPriority,
@@ -213,7 +213,7 @@ describe('Job Broker - priority queue comparator', function() {
     id: new ObjectID(),
     nature: {
       type: 'execution',
-      quality: 'commandline',
+      quality: 'commandLine',
     },
     payload: {
     },
@@ -222,7 +222,7 @@ describe('Job Broker - priority queue comparator', function() {
     id: new ObjectID(),
     nature: {
       type: 'execution',
-      quality: 'commandline',
+      quality: 'commandLine',
     },
     payload: {
       priority: defaultPriority - 1,
@@ -232,7 +232,7 @@ describe('Job Broker - priority queue comparator', function() {
     id: new ObjectID(),
     nature: {
       type: 'execution',
-      quality: 'commandline',
+      quality: 'commandLine',
     },
     payload: {
       priority: defaultPriority + 1,
@@ -242,7 +242,7 @@ describe('Job Broker - priority queue comparator', function() {
     id: new ObjectID(),
     nature: {
       type: 'execution',
-      quality: 'commandline',
+      quality: 'commandLine',
     },
     payload: {
       priority: defaultPriority,

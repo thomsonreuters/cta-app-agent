@@ -48,7 +48,7 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
           id: new ObjectID(),
           nature: {
             type: 'execution',
-            quality: 'commandline',
+            quality: 'commandLine',
           },
           payload: {
             groupjobid: groupJob.id,
@@ -60,7 +60,7 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
           id: new ObjectID(),
           nature: {
             type: 'execution',
-            quality: 'commandline',
+            quality: 'commandLine',
           },
           payload: {
             groupjobid: groupJob.id,
@@ -113,11 +113,11 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
       expect(jobBrokerHelper.runningJobs.set.calledWithExactly(cancelationJob.id, cancelationJob)).to.equal(true);
     });
 
-    it('should send running changestate for the cancelation job', function() {
+    it('should send running state for the cancelation job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
-          type: 'execution',
-          quality: 'changestate',
+          type: 'state',
+          quality: 'create',
         },
         payload: {
           jobid: cancelationJob.id,
@@ -161,11 +161,11 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
           expect(jobBrokerHelper.remove.calledWithExactly(cancelationJob.id)).to.equal(true);
         });
 
-        it('should send finished changestate for the global cancelation job', function() {
+        it('should send finished state for the global cancelation job', function() {
           expect(jobBrokerHelper.send.calledWithExactly({
             nature: {
-              type: 'execution',
-              quality: 'changestate',
+              type: 'state',
+              quality: 'create',
             },
             payload: {
               jobid: cancelationJob.id,
@@ -190,11 +190,11 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
           expect(jobBrokerHelper.remove.calledWithExactly(cancelationJob.id)).to.equal(true);
         });
 
-        it('should send finished changestate for the global cancelation job', function() {
+        it('should send finished state for the global cancelation job', function() {
           expect(jobBrokerHelper.send.calledWithExactly({
             nature: {
-              type: 'execution',
-              quality: 'changestate',
+              type: 'state',
+              quality: 'create',
             },
             payload: {
               jobid: cancelationJob.id,
@@ -215,11 +215,11 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
           expect(jobBrokerHelper.remove.calledWithExactly(cancelationJob.id)).to.equal(true);
         });
 
-        it('should send finished changestate for the global cancelation job', function() {
+        it('should send finished state for the global cancelation job', function() {
           expect(jobBrokerHelper.send.calledWithExactly({
             nature: {
-              type: 'execution',
-              quality: 'changestate',
+              type: 'state',
+              quality: 'create',
             },
             payload: {
               jobid: cancelationJob.id,
@@ -273,11 +273,11 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
       expect(jobBrokerHelper.runningJobs.set.calledWithExactly(cancelationJob.id, cancelationJob)).to.equal(true);
     });
 
-    it('should send running changestate for the cancelation job', function() {
+    it('should send running state for the cancelation job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
-          type: 'execution',
-          quality: 'changestate',
+          type: 'state',
+          quality: 'create',
         },
         payload: {
           jobid: cancelationJob.id,
@@ -291,11 +291,11 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
       expect(jobBrokerHelper.remove.calledWithExactly(cancelationJob.id)).to.equal(true);
     });
 
-    it('should send finished changestate for the cancelation job', function() {
+    it('should send finished state for the cancelation job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
-          type: 'execution',
-          quality: 'changestate',
+          type: 'state',
+          quality: 'create',
         },
         payload: {
           jobid: cancelationJob.id,

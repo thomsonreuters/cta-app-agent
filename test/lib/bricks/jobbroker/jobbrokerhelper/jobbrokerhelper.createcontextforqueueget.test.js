@@ -92,11 +92,11 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
         jobBrokerHelper.send.restore();
       });
 
-      it('should send running changestate for the group job', function() {
+      it('should send running state for the group job', function() {
         expect(jobBrokerHelper.send.calledWithExactly({
           nature: {
-            type: 'execution',
-            quality: 'changestate',
+            type: 'state',
+            quality: 'create',
           },
           payload: {
             jobid: queuegetjob.payload.groupjobid,
@@ -123,10 +123,10 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
       });
 
       it('should terminate group job with acked state', function() {
-        const changestate = {
+        const stateJob = {
           nature: {
-            type: 'execution',
-            quality: 'changestate',
+            type: 'state',
+            quality: 'create',
           },
           payload: {
             jobid: queuegetjob.payload.groupjobid,
@@ -136,7 +136,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
           },
         };
         expect(jobBrokerHelper.terminateGroupJob
-          .calledWithExactly(queuegetjob.payload.groupjobid, changestate)).to.be.equal(true);
+          .calledWithExactly(queuegetjob.payload.groupjobid, stateJob)).to.be.equal(true);
       });
     });
   });
@@ -160,10 +160,10 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
         });
 
         it('should terminate group job with acked state', function() {
-          const changestate = {
+          const stateJob = {
             nature: {
-              type: 'execution',
-              quality: 'changestate',
+              type: 'state',
+              quality: 'create',
             },
             payload: {
               jobid: queuegetjob.payload.groupjobid,
@@ -172,7 +172,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
             },
           };
           expect(jobBrokerHelper.terminateGroupJob
-            .calledWithExactly(queuegetjob.payload.groupjobid, changestate)).to.be.equal(true);
+            .calledWithExactly(queuegetjob.payload.groupjobid, stateJob)).to.be.equal(true);
         });
       });
 
@@ -193,10 +193,10 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
         });
 
         it('should terminate group job with finished state', function() {
-          const changestate = {
+          const stateJob = {
             nature: {
-              type: 'execution',
-              quality: 'changestate',
+              type: 'state',
+              quality: 'create',
             },
             payload: {
               jobid: queuegetjob.payload.groupjobid,
@@ -205,7 +205,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
             },
           };
           expect(jobBrokerHelper.terminateGroupJob
-            .calledWithExactly(queuegetjob.payload.groupjobid, changestate)).to.be.equal(true);
+            .calledWithExactly(queuegetjob.payload.groupjobid, stateJob)).to.be.equal(true);
         });
       });
     });

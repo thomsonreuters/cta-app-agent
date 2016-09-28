@@ -27,7 +27,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
     id: new ObjectID(),
     nature: {
       type: 'execution',
-      quality: 'commandline',
+      quality: 'commandLine',
     },
     payload: {
     },
@@ -82,11 +82,11 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
       jobBrokerHelper.send.restore();
     });
 
-    it('should send running changestate', function() {
+    it('should send running state', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
-          type: 'execution',
-          quality: 'changestate',
+          type: 'state',
+          quality: 'create',
         },
         payload: {
           jobid: job.id,
@@ -117,11 +117,11 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
       jobBrokerHelper.remove.restore();
     });
 
-    it('should send finished changestate', function() {
+    it('should send finished state', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
-          type: 'execution',
-          quality: 'changestate',
+          type: 'state',
+          quality: 'create',
         },
         payload: {
           jobid: job.id,
@@ -161,11 +161,11 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
         jobBrokerHelper.remove.restore();
       });
 
-      it('should send finished changestate', function() {
+      it('should send finished state', function() {
         expect(jobBrokerHelper.send.calledWithExactly({
           nature: {
-            type: 'execution',
-            quality: 'changestate',
+            type: 'state',
+            quality: 'create',
           },
           payload: {
             jobid: job.id,
@@ -266,8 +266,8 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
         it('should terminate the running group job', function() {
           expect(jobBrokerHelper.terminateGroupJob.calledWithExactly(job.payload.groupjobid, {
             nature: {
-              type: 'execution',
-              quality: 'changestate',
+              type: 'state',
+              quality: 'create',
             },
             payload: {
               jobid: job.payload.groupjobid,
@@ -297,11 +297,11 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
         jobBrokerHelper.remove.restore();
       });
 
-      it('should send finished changestate', function() {
+      it('should send finished state', function() {
         expect(jobBrokerHelper.send.calledWithExactly({
           nature: {
-            type: 'execution',
-            quality: 'changestate',
+            type: 'state',
+            quality: 'create',
           },
           payload: {
             jobid: job.id,

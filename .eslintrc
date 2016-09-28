@@ -9,7 +9,7 @@
     "indent": [2, 2, {"SwitchCase": 1}],
     "linebreak-style": 0,
     "import/newline-after-import": 0,
-    "max-len": ["error", 100, { "ignoreTrailingComments": true }],
+    "max-len": ["error", 200, { "ignoreTrailingComments": true }],
     "prefer-arrow-callback": 0,
     "space-before-function-paren": 0,
     "object-shorthand": 0,

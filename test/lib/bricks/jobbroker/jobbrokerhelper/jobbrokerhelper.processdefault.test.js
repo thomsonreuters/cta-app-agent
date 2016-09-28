@@ -36,7 +36,7 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
       id: new ObjectID(),
       nature: {
         type: 'execution',
-        quality: 'commandline',
+        quality: 'commandLine',
       },
       payload: {
       },
@@ -60,7 +60,7 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           priority: 0,
@@ -70,7 +70,7 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {},
       };
@@ -101,7 +101,7 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           groupjobid: runningJob.id,
@@ -127,7 +127,7 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
           id: new ObjectID(),
           nature: {
             type: 'execution',
-            quality: 'commandline',
+            quality: 'commandLine',
           },
           payload: {
           },
@@ -136,7 +136,7 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
           id: new ObjectID(),
           nature: {
             type: 'execution',
-            quality: 'commandline',
+            quality: 'commandLine',
           },
           payload: {},
         };
@@ -165,7 +165,7 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
           id: new ObjectID(),
           nature: {
             type: 'execution',
-            quality: 'commandline',
+            quality: 'commandLine',
           },
           payload: {
           },
@@ -174,7 +174,7 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
           id: new ObjectID(),
           nature: {
             type: 'execution',
-            quality: 'commandline',
+            quality: 'commandLine',
           },
           payload: {},
         };
@@ -192,11 +192,11 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
           jobBrokerHelper.ack.restore();
           jobBrokerHelper.runningJobs.clear();
         });
-        it('should send finished changestate', function() {
+        it('should send finished state', function() {
           expect(jobBrokerHelper.send.calledWithExactly({
             nature: {
-              type: 'execution',
-              quality: 'changestate',
+              type: 'state',
+              quality: 'create',
             },
             payload: {
               jobid: job.id,

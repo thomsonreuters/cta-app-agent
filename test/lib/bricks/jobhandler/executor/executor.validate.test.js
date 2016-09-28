@@ -39,7 +39,7 @@ describe('JobHandler - Executor - Base - validate - default job', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           timeout: {},
@@ -56,7 +56,7 @@ describe('JobHandler - Executor - Base - validate - default job', function() {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {
           timeout: 20,

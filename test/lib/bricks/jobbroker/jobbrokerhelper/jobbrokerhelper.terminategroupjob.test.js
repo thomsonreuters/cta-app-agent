@@ -59,7 +59,7 @@ describe('JobBroker - JobBrokerHelper - terminateGroupJob', function() {
     });
   });
 
-  context('when terminating without a changestate job', function() {
+  context('when terminating without a state job', function() {
     let jobBrokerHelper;
     const runningJobs = new Map();
     const jobQueue = new JobQueue(jobQueueOpts);
@@ -80,8 +80,8 @@ describe('JobBroker - JobBrokerHelper - terminateGroupJob', function() {
     };
     const changestateJob = {
       nature: {
-        type: 'execution',
-        quality: 'changestate',
+        type: 'state',
+        quality: 'create',
       },
       payload: {},
     };
@@ -109,7 +109,7 @@ describe('JobBroker - JobBrokerHelper - terminateGroupJob', function() {
       expect(jobBrokerHelper.remove.calledWithExactly(job.id)).to.equal(true);
     });
 
-    it('should call jobBrokerHelper send with changestate job', function() {
+    it('should call jobBrokerHelper send with state job', function() {
       expect(jobBrokerHelper.send.calledWithExactly(changestateJob)).to.equal(true);
     });
   });

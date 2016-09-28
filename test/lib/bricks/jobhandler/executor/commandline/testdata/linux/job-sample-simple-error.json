@@ -2,7 +2,7 @@
   "id": "003",
   "nature": {
     "type": "execution",
-    "quality": "commandline"
+    "quality": "commandLine"
   },
   "payload": {
     "stages": [
