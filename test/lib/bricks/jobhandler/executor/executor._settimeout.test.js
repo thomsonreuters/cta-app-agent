@@ -26,7 +26,7 @@ describe('JobHandler - Executor - Base - _setTimeout', function() {
       id: new ObjectID(),
       nature: {
         type: 'execution',
-        quality: 'commandline',
+        quality: 'commandLine',
       },
       payload: {
         timeout: 20,
@@ -51,7 +51,7 @@ describe('JobHandler - Executor - Base - _setTimeout', function() {
       id: new ObjectID(),
       nature: {
         type: 'execution',
-        quality: 'commandline',
+        quality: 'commandLine',
       },
       payload: {
         timeout: 20,

@@ -95,12 +95,12 @@ describe('JobBroker - JobBrokerHelper - cancel', function() {
       });
     });
 
-    context('when job is execution-commandline', function() {
+    context('when job is execution-commandLine', function() {
       const jobToCancel = {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'commandline',
+          quality: 'commandLine',
         },
         payload: {},
       };

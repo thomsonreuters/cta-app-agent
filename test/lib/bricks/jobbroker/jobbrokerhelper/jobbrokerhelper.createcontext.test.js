@@ -22,7 +22,7 @@ const logger = require('cta-logger');
 const DEFAULTLOGGER = logger();
 
 describe('JobBroker - JobBrokerHelper - createContext', function() {
-  context('when job is execution-commandline', function() {
+  context('when job is execution-commandLine', function() {
     let jobBrokerHelper;
     const runningJobs = new Map();
     const jobQueue = new JobQueue(jobQueueOpts);
@@ -30,7 +30,7 @@ describe('JobBroker - JobBrokerHelper - createContext', function() {
       id: new ObjectID(),
       nature: {
         type: 'execution',
-        quality: 'commandline',
+        quality: 'commandLine',
       },
       payload: {
       },

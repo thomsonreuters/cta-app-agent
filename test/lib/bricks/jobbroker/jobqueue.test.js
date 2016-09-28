@@ -31,7 +31,7 @@ describe('Job Queue - has specific job', function() {
     id: new ObjectID(),
     nature: {
       type: 'execution',
-      quality: 'commandline',
+      quality: 'commandLine',
     },
     payload: {
       priority: 2,
@@ -64,7 +64,7 @@ describe('Job Queue - isEmpty check', function() {
     id: new ObjectID(),
     nature: {
       type: 'execution',
-      quality: 'commandline',
+      quality: 'commandLine',
     },
     payload: {
       priority: 2,
@@ -97,7 +97,7 @@ describe('Job Queue - enqueue a job', function() {
     id: new ObjectID(),
     nature: {
       type: 'execution',
-      quality: 'commandline',
+      quality: 'commandLine',
     },
     payload: {
       priority: 2,
@@ -144,7 +144,7 @@ describe('Job Queue - remove specific job', function() {
     id: id,
     nature: {
       type: 'execution',
-      quality: 'commandline',
+      quality: 'commandLine',
     },
     payload: {
       priority: 2,

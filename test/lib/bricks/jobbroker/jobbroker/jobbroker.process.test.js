@@ -60,10 +60,10 @@ describe('JobBroker - process', function() {
     });
   });
 
-  context('when job is execution-commandline', function() {
+  context('when job is execution-commandLine', function() {
     const job = _.cloneDeep(JOB);
     job.id = new ObjectID();
-    job.nature.quality = 'commandline';
+    job.nature.quality = 'commandLine';
     const context = {
       data: job,
     };

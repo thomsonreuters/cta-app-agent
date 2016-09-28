@@ -45,7 +45,7 @@ describe('JobHandler - Executor - Base - constructor', function() {
   });
 
   context('when all options are valid', function() {
-    it('should return a new Executor commandline instance', function(done) {
+    it('should return a new Executor commandLine instance', function(done) {
       expect(executor).to.be.an.instanceOf(Executor);
       expect(executor).to.have.property('runningJobs')
         .and.to.be.an('object');

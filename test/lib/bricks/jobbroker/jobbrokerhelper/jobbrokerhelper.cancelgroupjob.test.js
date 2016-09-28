@@ -48,7 +48,7 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
           id: new ObjectID(),
           nature: {
             type: 'execution',
-            quality: 'commandline',
+            quality: 'commandLine',
           },
           payload: {
             groupjobid: groupJob.id,
@@ -60,7 +60,7 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
           id: new ObjectID(),
           nature: {
             type: 'execution',
-            quality: 'commandline',
+            quality: 'commandLine',
           },
           payload: {
             groupjobid: groupJob.id,

@@ -36,7 +36,7 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
       id: new ObjectID(),
       nature: {
         type: 'execution',
-        quality: 'commandline',
+        quality: 'commandLine',
       },
       payload: {},
     };
