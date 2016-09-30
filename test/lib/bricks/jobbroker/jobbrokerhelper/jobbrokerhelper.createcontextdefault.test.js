@@ -21,7 +21,11 @@ const DEFAULTLOGGER = logger();
 
 describe('JobBroker - JobBrokerHelper - createContextDefault', function() {
   let jobBrokerHelper;
-  const runningJobs = new Map();
+  const runningJobs = {
+    run: new Map(),
+    read: new Map(),
+    cancel: new Map(),
+  };
   const jobQueue = new JobQueue(jobQueueOpts);
   const job = {
     id: new ObjectID(),

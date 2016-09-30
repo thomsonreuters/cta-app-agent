@@ -15,69 +15,62 @@ const JobQueue = require(nodepath.join(appRootPath,
 const jobQueueOpts = require('./jobqueueopts.testdata.js');
 const logger = require('cta-logger');
 const DEFAULTLOGGER = logger();
+const ReadJob = require('./jobbrokerhelper.execution.read.testdata.js');
 
 describe('JobBroker - JobBrokerHelper - terminateGroupJob', function() {
-  context('when terminating without a changeState job', function() {
+  context('when terminating without a state-create job', function() {
     let jobBrokerHelper;
-    const runningJobs = new Map();
+    const runningJobs = {
+      run: new Map(),
+      read: new Map(),
+      cancel: new Map(),
+    };
     const jobQueue = new JobQueue(jobQueueOpts);
     const mockCementHelper = {
       constructor: {
         name: 'CementHelper',
       },
     };
-    const job = {
-      id: 'some-groupjob-id',
-      nature: {
-        type: 'execution',
-        quality: 'group',
-      },
-      payload: {
-        queue: 'some-queue',
-      },
-    };
+    const job = new ReadJob();
+    const jobId = job.payload.execution.id;
     before(function() {
       jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
       sinon.stub(jobBrokerHelper, 'ack');
       sinon.stub(jobBrokerHelper, 'remove');
-      sinon.stub(jobBrokerHelper.runningJobs, 'has').withArgs(job.id).returns(true);
-      sinon.stub(jobBrokerHelper.runningJobs, 'get').withArgs(job.id).returns(job);
-      jobBrokerHelper.terminateGroupJob(job.id);
+      sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(jobId).returns(true);
+      sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(jobId).returns(job);
+      jobBrokerHelper.terminateGroupJob(jobId);
     });
     after(function() {
       jobBrokerHelper.ack.restore();
       jobBrokerHelper.remove.restore();
-      jobBrokerHelper.runningJobs.has.restore();
-      jobBrokerHelper.runningJobs.get.restore();
+      jobBrokerHelper.runningJobs.read.has.restore();
+      jobBrokerHelper.runningJobs.read.get.restore();
     });
     it('should call jobBrokerHelper ack with job', function() {
       expect(jobBrokerHelper.ack.calledWithExactly(job)).to.equal(true);
     });
 
     it('should call jobBrokerHelper remove with job.id', function() {
-      expect(jobBrokerHelper.remove.calledWithExactly(job.id)).to.equal(true);
+      expect(jobBrokerHelper.remove.calledWithExactly(job)).to.equal(true);
     });
   });
 
-  context('when terminating without a state job', function() {
+  context('when terminating with a state-create job', function() {
     let jobBrokerHelper;
-    const runningJobs = new Map();
+    const runningJobs = {
+      run: new Map(),
+      read: new Map(),
+      cancel: new Map(),
+    };
     const jobQueue = new JobQueue(jobQueueOpts);
     const mockCementHelper = {
       constructor: {
         name: 'CementHelper',
       },
     };
-    const job = {
-      id: 'some-groupjob-id',
-      nature: {
-        type: 'execution',
-        quality: 'group',
-      },
-      payload: {
-        queue: 'some-queue',
-      },
-    };
+    const job = new ReadJob();
+    const jobId = job.payload.execution.id;
     const changestateJob = {
       nature: {
         type: 'state',
@@ -90,23 +83,23 @@ describe('JobBroker - JobBrokerHelper - terminateGroupJob', function() {
       sinon.stub(jobBrokerHelper, 'ack');
       sinon.stub(jobBrokerHelper, 'remove');
       sinon.stub(jobBrokerHelper, 'send');
-      sinon.stub(jobBrokerHelper.runningJobs, 'has').withArgs(job.id).returns(true);
-      sinon.stub(jobBrokerHelper.runningJobs, 'get').withArgs(job.id).returns(job);
-      jobBrokerHelper.terminateGroupJob(job.id, changestateJob);
+      sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(jobId).returns(true);
+      sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(jobId).returns(job);
+      jobBrokerHelper.terminateGroupJob(jobId, changestateJob);
     });
     after(function() {
       jobBrokerHelper.ack.restore();
       jobBrokerHelper.remove.restore();
       jobBrokerHelper.send.restore();
-      jobBrokerHelper.runningJobs.has.restore();
-      jobBrokerHelper.runningJobs.get.restore();
+      jobBrokerHelper.runningJobs.read.has.restore();
+      jobBrokerHelper.runningJobs.read.get.restore();
     });
     it('should call jobBrokerHelper ack with job', function() {
       expect(jobBrokerHelper.ack.calledWithExactly(job)).to.equal(true);
     });
 
     it('should call jobBrokerHelper remove with job.id', function() {
-      expect(jobBrokerHelper.remove.calledWithExactly(job.id)).to.equal(true);
+      expect(jobBrokerHelper.remove.calledWithExactly(job)).to.equal(true);
     });
 
     it('should call jobBrokerHelper send with state job', function() {

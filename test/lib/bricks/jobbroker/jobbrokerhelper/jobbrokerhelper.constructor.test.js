@@ -46,14 +46,18 @@ describe('JobBroker - JobBrokerHelper - constructor', function() {
     };
     it('should throw an error', function() {
       return expect(function() {
-        return new JobBrokerHelper(cementHelper, new JobQueue(jobQueueOpts), {}, DEFAULTLOGGER);
-      }).to.throw(Error, 'missing/incorrect \'runningJobs\' Map argument');
+        return new JobBrokerHelper(cementHelper, new JobQueue(jobQueueOpts), '', DEFAULTLOGGER);
+      }).to.throw(Error, 'missing/incorrect \'runningJobs\' Object argument');
     });
   });
 
   context('when arguments are valid', function() {
     let jobBrokerHelper;
-    const runningJobs = new Map();
+    const runningJobs = {
+      run: new Map(),
+      read: new Map(),
+      cancel: new Map(),
+    };
     const jobQueue = new JobQueue(jobQueueOpts);
     const cementHelper = {
       constructor: {

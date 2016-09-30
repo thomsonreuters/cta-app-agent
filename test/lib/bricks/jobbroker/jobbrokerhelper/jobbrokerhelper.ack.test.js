@@ -23,56 +23,46 @@ const jobQueueOpts = {
   },
   strategy: JobQueue.ArrayStrategy,
 };
+const RunJob = require('./jobbrokerhelper.execution.run.testdata.js');
+const ReadJob = require('./jobbrokerhelper.execution.read.testdata.js');
 
 describe('JobBroker - JobBrokerHelper - ack', function() {
   context('when the job to ack belongs to a running group job', function() {
     let jobBrokerHelper;
-    const runningJobs = new Map();
+    const runningJobs = {
+      run: new Map(),
+      read: new Map(),
+      cancel: new Map(),
+    };
     const jobQueue = new JobQueue(jobQueueOpts);
     const mockCementHelper = {
       constructor: {
         name: 'CementHelper',
       },
     };
-    const groupJob = {
-      id: 'some-groupjob-id',
-      nature: {
-        type: 'execution',
-        quality: 'group',
-      },
-      payload: {
-        queue: 'some-queue',
-      },
-    };
-    const job = {
-      id: 'some-job-id',
-      nature: {
-        type: 'execution',
-        quality: 'bar',
-      },
-      payload: {
-        groupjobid: groupJob.id,
-      },
-    };
+    const groupJob = new ReadJob();
+    const job = new RunJob();
+    job.id = 'some-message-id';
+    job.payload.groupExecutionId = groupJob.payload.execution.id;
     before(function() {
       jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
       sinon.stub(jobBrokerHelper, 'send');
-      sinon.stub(jobBrokerHelper.runningJobs, 'get').withArgs(job.payload.groupjobid).returns(groupJob);
+      sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.groupExecutionId).returns(groupJob);
       jobBrokerHelper.ack(job);
     });
     after(function() {
       jobBrokerHelper.send.restore();
-      jobBrokerHelper.runningJobs.get.restore();
+      jobBrokerHelper.runningJobs.read.get.restore();
     });
     it('should call jobBrokerHelper send()', function() {
       const ackJob = {
-        'nature': {
-          'type': 'message',
-          'quality': 'acknowledge',
+        nature: {
+          type: 'message',
+          quality: 'acknowledge',
         },
-        'payload': {
-          'id': job.id,
-          'queue': groupJob.payload.queue,
+        payload: {
+          id: job.id,
+          queue: groupJob.payload.queue,
         },
       };
       expect(jobBrokerHelper.send.calledWithExactly(ackJob)).to.equal(true);
@@ -81,21 +71,19 @@ describe('JobBroker - JobBrokerHelper - ack', function() {
 
   context('when the job to ack does not belong to a running group job', function() {
     let jobBrokerHelper;
-    const runningJobs = new Map();
+    const runningJobs = {
+      run: new Map(),
+      read: new Map(),
+      cancel: new Map(),
+    };
     const jobQueue = new JobQueue(jobQueueOpts);
     const mockCementHelper = {
       constructor: {
         name: 'CementHelper',
       },
     };
-    const job = {
-      id: 'some-job-id',
-      nature: {
-        type: 'foo',
-        quality: 'bar',
-      },
-      payload: {},
-    };
+    const job = new RunJob();
+    job.id = 'some-message-id';
     before(function() {
       jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
       sinon.stub(jobBrokerHelper, 'send');
@@ -106,12 +94,12 @@ describe('JobBroker - JobBrokerHelper - ack', function() {
     });
     it('should call jobBrokerHelper send()', function() {
       const ackJob = {
-        'nature': {
-          'type': 'message',
-          'quality': 'acknowledge',
+        nature: {
+          type: 'message',
+          quality: 'acknowledge',
         },
-        'payload': {
-          'id': job.id,
+        payload: {
+          id: job.id,
         },
       };
       expect(jobBrokerHelper.send.calledWithExactly(ackJob)).to.equal(true);

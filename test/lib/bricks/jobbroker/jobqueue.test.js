@@ -13,8 +13,11 @@ const JobQueue = require(nodepath.join(appRootPath,
 const jobQueue = new JobQueue(
   {
     comparator: function comparator(jobA, jobB) {
-      const priorityA = jobA.hasOwnProperty('priority') ? jobA.payload.priority : self.DEFAULTS.priority;
-      const priorityB = jobB.hasOwnProperty('priority') ? jobB.payload.priority : self.DEFAULTS.priority;
+      const that = this;
+      const priorityA = jobA.payload.execution.hasOwnProperty('priority')
+        ? jobA.payload.execution.priority : that.DEFAULTS.priority;
+      const priorityB = jobB.payload.execution.hasOwnProperty('priority')
+        ? jobB.payload.execution.priority : that.DEFAULTS.priority;
       if (priorityA === priorityB) return -1;
       return priorityA - priorityB;
     },
@@ -28,13 +31,15 @@ before(function() {
 
 describe('Job Queue - has specific job', function() {
   const jobA = {
-    id: new ObjectID(),
     nature: {
       type: 'execution',
-      quality: 'commandLine',
+      quality: 'run',
     },
     payload: {
-      priority: 2,
+      execution: {
+        id: (new ObjectID()).toString(),
+        priority: 2,
+      },
     },
   };
 
@@ -48,26 +53,28 @@ describe('Job Queue - has specific job', function() {
     });
 
     it('should return true', function() {
-      expect(jobQueue.has(jobA.id)).to.equal(true);
+      expect(jobQueue.has(jobA.payload.execution.id)).to.equal(true);
     });
   });
 
   context('don\'t have', function() {
     it('should return false', function() {
-      expect(jobQueue.has(jobA.id)).to.equal(false);
+      expect(jobQueue.has(jobA.payload.execution.id)).to.equal(false);
     });
   });
 });
 
 describe('Job Queue - isEmpty check', function() {
   const jobA = {
-    id: new ObjectID(),
     nature: {
       type: 'execution',
-      quality: 'commandLine',
+      quality: 'run',
     },
     payload: {
-      priority: 2,
+      execution: {
+        id: (new ObjectID()).toString(),
+        priority: 2,
+      },
     },
   };
 
@@ -94,13 +101,15 @@ describe('Job Queue - isEmpty check', function() {
 
 describe('Job Queue - enqueue a job', function() {
   const jobA = {
-    id: new ObjectID(),
     nature: {
       type: 'execution',
-      quality: 'commandLine',
+      quality: 'run',
     },
     payload: {
-      priority: 2,
+      execution: {
+        id: (new ObjectID()).toString(),
+        priority: 2,
+      },
     },
   };
 
@@ -112,7 +121,13 @@ describe('Job Queue - enqueue a job', function() {
     it('should throw error', function() {
       return expect(function() {
         return jobQueue.queue({
-          nature: {},
+          nature: {
+            type: 'execution',
+            quality: 'run',
+          },
+          payload: {
+            execution: {},
+          },
         });
       }).to.throw(Error, 'missing/incorrect \'id\' ObjectID property in job');
     });
@@ -126,28 +141,30 @@ describe('Job Queue - enqueue a job', function() {
     it('should throw error', function() {
       return expect(function() {
         return jobQueue.queue(jobA);
-      }).to.throw(Error, `A job with id ${jobA.id} is already present in queue.`);
+      }).to.throw(Error, `A job with id ${jobA.payload.execution.id} is already present in queue.`);
     });
   });
 
   context('no job with same id', function() {
     it('should enqueue job', function() {
       jobQueue.queue(jobA);
-      expect(jobQueue.has(jobA.id)).to.equal(true);
+      expect(jobQueue.has(jobA.payload.execution.id)).to.equal(true);
     });
   });
 });
 
 describe('Job Queue - remove specific job', function() {
-  const id = new ObjectID();
+  const id = (new ObjectID()).toString();
   const jobA = {
-    id: id,
     nature: {
       type: 'execution',
-      quality: 'commandLine',
+      quality: 'run',
     },
     payload: {
-      priority: 2,
+      execution: {
+        id: id,
+        priority: 2,
+      },
     },
   };
 

@@ -18,20 +18,19 @@ const JobQueue = require(nodepath.join(appRootPath,
 const jobQueueOpts = require('./jobqueueopts.testdata.js');
 const logger = require('cta-logger');
 const DEFAULTLOGGER = logger();
+const RunJob = require('./jobbrokerhelper.execution.run.testdata.js');
+const ReadJob = require('./jobbrokerhelper.execution.read.testdata.js');
 
-describe('JobBroker - JobBrokerHelper - createContextForCommandline', function() {
+describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function() {
   let jobBrokerHelper;
-  const runningJobs = new Map();
-  const jobQueue = new JobQueue(jobQueueOpts);
-  const job = {
-    id: new ObjectID(),
-    nature: {
-      type: 'execution',
-      quality: 'commandLine',
-    },
-    payload: {
-    },
+  const runningJobs = {
+    run: new Map(),
+    read: new Map(),
+    cancel: new Map(),
   };
+  const jobQueue = new JobQueue(jobQueueOpts);
+  const job = new RunJob();
+  const jobId = job.payload.execution.id;
   const mockContext = new EventEmitter();
   const mockCementHelper = {
     constructor: {
@@ -42,19 +41,30 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
   let result;
   before(function() {
     jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
-    sinon.stub(jobBrokerHelper.runningJobs, 'set');
+    sinon.stub(jobBrokerHelper.runningJobs.run, 'set');
     sinon.spy(mockContext, 'once');
-    result = jobBrokerHelper.createContextForCommandline(job);
+    result = jobBrokerHelper.createContextForExecutionRun(job);
   });
   after(function() {
-    jobBrokerHelper.runningJobs.set.restore();
+    jobBrokerHelper.runningJobs.run.set.restore();
   });
-  it('should add job to runningJobs', function() {
-    expect(jobBrokerHelper.runningJobs.set.calledWithExactly(job.id, job)).to.equal(true);
+  it('should add job to runningJobs run', function() {
+    expect(jobBrokerHelper.runningJobs.run.set.calledWithExactly(jobId, job)).to.equal(true);
   });
 
   it('should create a new context with cementHelper', function() {
-    expect(mockCementHelper.createContext.calledWithExactly(job)).to.equal(true);
+    const execJob = {
+      id: jobId,
+      nature: {
+        type: 'execution',
+        quality: 'commandLine',
+      },
+      payload: {
+        timeout: job.payload.execution.runningTimeout,
+        stages: job.payload.testSuite.tests[0].stages,
+      },
+    };
+    expect(mockCementHelper.createContext.calledWithExactly(execJob)).to.equal(true);
   });
 
   it('should return cementHelper created context', function() {
@@ -73,7 +83,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
     before(function() {
       sinon.stub(jobBrokerHelper, 'ack');
       sinon.stub(jobBrokerHelper, 'send');
-      jobBrokerHelper.createContextForCommandline(job);
+      jobBrokerHelper.createContextForExecutionRun(job);
       mockContext.emit('accept', outputBrickName);
     });
 
@@ -89,9 +99,9 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
           quality: 'create',
         },
         payload: {
-          jobid: job.id,
-          state: 'running',
-          message: `Job ${job.id} accepted by ${outputBrickName}.`,
+          executionId: jobId,
+          status: 'running',
+          message: `Job ${jobId} accepted by ${outputBrickName}.`,
         },
       })).to.be.equal(true);
     });
@@ -107,7 +117,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
       sinon.stub(jobBrokerHelper, 'ack');
       sinon.stub(jobBrokerHelper, 'send');
       sinon.stub(jobBrokerHelper, 'remove');
-      jobBrokerHelper.createContextForCommandline(job);
+      jobBrokerHelper.createContextForExecutionRun(job);
       mockContext.emit('reject', 'jobhandler', mockRejectError);
     });
 
@@ -124,8 +134,8 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
           quality: 'create',
         },
         payload: {
-          jobid: job.id,
-          state: 'finished',
+          executionId: jobId,
+          status: 'finished',
           error: mockRejectError,
           message: mockRejectError.message,
         },
@@ -137,7 +147,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
     });
 
     it('should remove job', function() {
-      expect(jobBrokerHelper.remove.calledWithExactly(job.id)).to.be.equal(true);
+      expect(jobBrokerHelper.remove.calledWithExactly(job)).to.be.equal(true);
     });
   });
 
@@ -151,7 +161,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
         sinon.stub(jobBrokerHelper, 'ack');
         sinon.stub(jobBrokerHelper, 'send');
         sinon.stub(jobBrokerHelper, 'remove');
-        jobBrokerHelper.createContextForCommandline(job);
+        jobBrokerHelper.createContextForExecutionRun(job);
         mockContext.emit('done', 'jobhandler', mockDoneResponse);
       });
 
@@ -168,15 +178,15 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
             quality: 'create',
           },
           payload: {
-            jobid: job.id,
-            state: mockDoneResponse.state,
+            executionId: jobId,
+            status: mockDoneResponse.state,
             message: mockDoneResponse.message,
           },
         })).to.be.equal(true);
       });
 
       it('should remove job', function() {
-        expect(jobBrokerHelper.remove.calledWithExactly(job.id)).to.be.equal(true);
+        expect(jobBrokerHelper.remove.calledWithExactly(job)).to.be.equal(true);
       });
     });
 
@@ -186,43 +196,34 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
           state: 'finished',
           message: 'Mock done',
         };
-        const groupjob = {
-          id: new ObjectID(),
-          nature: {
-            type: 'execution',
-            quality: 'group',
-          },
-          payload: {
-            queue: 'some-queue',
-          },
-        };
+        const groupjob = new ReadJob();
         before(function() {
-          job.payload.groupjobid = groupjob.id;
+          job.payload.groupExecutionId = groupjob.payload.execution.id;
           sinon.stub(jobBrokerHelper, 'send');
           sinon.stub(jobBrokerHelper, 'remove');
-          sinon.stub(jobBrokerHelper.runningJobs, 'has').withArgs(job.payload.groupjobid).returns(true);
-          sinon.stub(jobBrokerHelper.runningJobs, 'get').withArgs(job.payload.groupjobid).returns(groupjob);
-          jobBrokerHelper.createContextForCommandline(job);
+          sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.groupExecutionId).returns(true);
+          sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.groupExecutionId).returns(groupjob);
+          jobBrokerHelper.createContextForExecutionRun(job);
           mockContext.emit('done', 'jobhandler', mockDoneResponse);
         });
 
         after(function() {
           jobBrokerHelper.send.restore();
           jobBrokerHelper.remove.restore();
-          jobBrokerHelper.runningJobs.has.restore();
-          jobBrokerHelper.runningJobs.get.restore();
+          jobBrokerHelper.runningJobs.read.has.restore();
+          jobBrokerHelper.runningJobs.read.get.restore();
         });
 
         it('should also send a queue-get job for the running group job', function() {
-          expect(jobBrokerHelper.runningJobs.get.calledWithExactly(job.payload.groupjobid)).to.equal(true);
+          expect(jobBrokerHelper.runningJobs.read.get.calledWithExactly(job.payload.groupExecutionId)).to.equal(true);
           expect(jobBrokerHelper.send.calledWithExactly({
-            'nature': {
-              'type': 'message',
-              'quality': 'get',
+            nature: {
+              type: 'message',
+              quality: 'get',
             },
-            'payload': {
-              'groupjobid': groupjob.id,
-              'queue': groupjob.payload.queue,
+            payload: {
+              groupExecutionId: groupjob.payload.execution.id,
+              queue: groupjob.payload.queue,
             },
           })).to.be.equal(true);
         });
@@ -234,24 +235,15 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
           message: 'Mock done',
           cancelMode: 'MANUAL',
         };
-        const groupjob = {
-          id: new ObjectID(),
-          nature: {
-            type: 'execution',
-            quality: 'group',
-          },
-          payload: {
-            queue: 'some-queue',
-          },
-        };
+        const groupjob = new ReadJob();
         before(function() {
-          job.payload.groupjobid = groupjob.id;
+          job.payload.groupExecutionId = groupjob.payload.execution.id;
           sinon.stub(jobBrokerHelper, 'send');
           sinon.stub(jobBrokerHelper, 'remove');
           sinon.stub(jobBrokerHelper, 'terminateGroupJob');
-          sinon.stub(jobBrokerHelper.runningJobs, 'has').withArgs(job.payload.groupjobid).returns(true);
-          sinon.stub(jobBrokerHelper.runningJobs, 'get').withArgs(job.payload.groupjobid).returns(groupjob);
-          jobBrokerHelper.createContextForCommandline(job);
+          sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.groupExecutionId).returns(true);
+          sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.groupExecutionId).returns(groupjob);
+          jobBrokerHelper.createContextForExecutionRun(job);
           mockContext.emit('done', 'jobhandler', mockDoneResponse);
         });
 
@@ -259,20 +251,20 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
           jobBrokerHelper.send.restore();
           jobBrokerHelper.remove.restore();
           jobBrokerHelper.terminateGroupJob.restore();
-          jobBrokerHelper.runningJobs.has.restore();
-          jobBrokerHelper.runningJobs.get.restore();
+          jobBrokerHelper.runningJobs.read.has.restore();
+          jobBrokerHelper.runningJobs.read.get.restore();
         });
 
         it('should terminate the running group job', function() {
-          expect(jobBrokerHelper.terminateGroupJob.calledWithExactly(job.payload.groupjobid, {
+          expect(jobBrokerHelper.terminateGroupJob.calledWithExactly(job.payload.groupExecutionId, {
             nature: {
               type: 'state',
               quality: 'create',
             },
             payload: {
-              jobid: job.payload.groupjobid,
+              jobid: job.payload.groupExecutionId,
               state: 'canceled',
-              message: `group Job ${job.payload.groupjobid} canceled (MANUAL) during sub-Job ${job.id}`,
+              message: `group Job ${job.payload.groupExecutionId} canceled (MANUAL) during sub-Job ${job.payload.execution.id}`,
             },
           }));
         });
@@ -287,7 +279,7 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
         sinon.stub(jobBrokerHelper, 'ack');
         sinon.stub(jobBrokerHelper, 'send');
         sinon.stub(jobBrokerHelper, 'remove');
-        jobBrokerHelper.createContextForCommandline(job);
+        jobBrokerHelper.createContextForExecutionRun(job);
         mockContext.emit('error', 'jobhandler', mockError);
       });
 
@@ -304,8 +296,8 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
             quality: 'create',
           },
           payload: {
-            jobid: job.id,
-            state: 'finished',
+            executionId: jobId,
+            status: 'finished',
             error: mockError,
             message: mockError.message,
           },
@@ -313,49 +305,40 @@ describe('JobBroker - JobBrokerHelper - createContextForCommandline', function()
       });
 
       it('should remove job', function() {
-        expect(jobBrokerHelper.remove.calledWithExactly(job.id)).to.be.equal(true);
+        expect(jobBrokerHelper.remove.calledWithExactly(job)).to.be.equal(true);
       });
     });
 
     context('when job belongs to a running group job', function() {
       const mockError = new Error('mock reject');
-      const groupjob = {
-        id: new ObjectID(),
-        nature: {
-          type: 'execution',
-          quality: 'group',
-        },
-        payload: {
-          queue: 'some-queue',
-        },
-      };
+      const groupjob = new ReadJob();
       before(function() {
-        job.payload.groupjobid = groupjob.id;
+        job.payload.groupExecutionId = groupjob.payload.execution.id;
         sinon.stub(jobBrokerHelper, 'send');
         sinon.stub(jobBrokerHelper, 'remove');
-        sinon.stub(jobBrokerHelper.runningJobs, 'has').withArgs(job.payload.groupjobid).returns(true);
-        sinon.stub(jobBrokerHelper.runningJobs, 'get').withArgs(job.payload.groupjobid).returns(groupjob);
-        jobBrokerHelper.createContextForCommandline(job);
+        sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.groupExecutionId).returns(true);
+        sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.groupExecutionId).returns(groupjob);
+        jobBrokerHelper.createContextForExecutionRun(job);
         mockContext.emit('error', 'jobhandler', mockError);
       });
 
       after(function() {
         jobBrokerHelper.send.restore();
         jobBrokerHelper.remove.restore();
-        jobBrokerHelper.runningJobs.has.restore();
-        jobBrokerHelper.runningJobs.get.restore();
+        jobBrokerHelper.runningJobs.read.has.restore();
+        jobBrokerHelper.runningJobs.read.get.restore();
       });
 
       it('should also send a queue-get job for the running group job', function() {
-        expect(jobBrokerHelper.runningJobs.get.calledWithExactly(job.payload.groupjobid)).to.equal(true);
+        expect(jobBrokerHelper.runningJobs.read.get.calledWithExactly(job.payload.groupExecutionId)).to.equal(true);
         expect(jobBrokerHelper.send.calledWithExactly({
-          'nature': {
-            'type': 'message',
-            'quality': 'get',
+          nature: {
+            type: 'message',
+            quality: 'get',
           },
-          'payload': {
-            'groupjobid': groupjob.id,
-            'queue': groupjob.payload.queue,
+          payload: {
+            groupExecutionId: groupjob.payload.execution.id,
+            queue: groupjob.payload.queue,
           },
         })).to.be.equal(true);
       });
