@@ -234,7 +234,7 @@ describe('JobBroker - JobBrokerHelper - createContext', function() {
     const job = {
       id: new ObjectID(),
       nature: {
-        type: 'execution',
+        type: 'message',
         quality: 'acknowledge',
       },
       payload: {

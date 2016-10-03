@@ -236,12 +236,12 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
         };
         const groupjob = new ReadJob();
         before(function() {
-          job.payload.groupExecutionId = groupjob.payload.execution.id;
+          job.payload.execution.id = groupjob.payload.execution.id;
           sinon.stub(jobBrokerHelper, 'send');
           sinon.stub(jobBrokerHelper, 'remove');
           sinon.stub(jobBrokerHelper, 'terminateGroupJob');
-          sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.groupExecutionId).returns(true);
-          sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.groupExecutionId).returns(groupjob);
+          sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(true);
+          sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.execution.id).returns(groupjob);
           jobBrokerHelper.createContextForExecutionRun(job);
           mockContext.emit('done', 'jobhandler', mockDoneResponse);
         });
@@ -255,15 +255,15 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
         });
 
         it('should terminate the running group job', function() {
-          expect(jobBrokerHelper.terminateGroupJob.calledWithExactly(job.payload.groupExecutionId, {
+          expect(jobBrokerHelper.terminateGroupJob.calledWithExactly(job.payload.execution.id, {
             nature: {
               type: 'state',
               quality: 'create',
             },
             payload: {
-              jobid: job.payload.groupExecutionId,
+              jobid: job.payload.execution.id,
               state: 'canceled',
-              message: `group Job ${job.payload.groupExecutionId} canceled (MANUAL) during sub-Job ${job.payload.execution.id}`,
+              message: `group Job ${job.payload.execution.id} canceled (MANUAL) during sub-Job ${job.payload.execution.id}`,
             },
           }));
         });
