@@ -73,7 +73,7 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
     context('when job belongs to a running group job', function() {
       const runningJob = new ReadJob();
       const job = new RunJob();
-      job.payload.groupExecutionId = runningJob.payload.execution.id;
+      job.payload.execution.id = runningJob.payload.execution.id;
       before(function() {
         sinon.stub(jobBrokerHelper, 'send');
         jobBrokerHelper.runningJobs.read.set(runningJob.payload.execution.id, runningJob);

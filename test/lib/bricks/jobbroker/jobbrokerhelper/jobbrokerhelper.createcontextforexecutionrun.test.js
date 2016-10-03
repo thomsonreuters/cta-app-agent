@@ -9,7 +9,6 @@ const sinon = require('sinon');
 require('sinon-as-promised');
 
 const EventEmitter = require('events').EventEmitter;
-const ObjectID = require('bson').ObjectID;
 
 const JobBrokerHelper = require(nodepath.join(appRootPath,
   '/lib/bricks/jobbroker/', 'jobbrokerhelper.js'));
@@ -198,11 +197,11 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
         };
         const groupjob = new ReadJob();
         before(function() {
-          job.payload.groupExecutionId = groupjob.payload.execution.id;
+          job.payload.execution.id = groupjob.payload.execution.id;
           sinon.stub(jobBrokerHelper, 'send');
           sinon.stub(jobBrokerHelper, 'remove');
-          sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.groupExecutionId).returns(true);
-          sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.groupExecutionId).returns(groupjob);
+          sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(true);
+          sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.execution.id).returns(groupjob);
           jobBrokerHelper.createContextForExecutionRun(job);
           mockContext.emit('done', 'jobhandler', mockDoneResponse);
         });
@@ -215,7 +214,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
         });
 
         it('should also send a queue-get job for the running group job', function() {
-          expect(jobBrokerHelper.runningJobs.read.get.calledWithExactly(job.payload.groupExecutionId)).to.equal(true);
+          expect(jobBrokerHelper.runningJobs.read.get.calledWithExactly(job.payload.execution.id)).to.equal(true);
           expect(jobBrokerHelper.send.calledWithExactly({
             nature: {
               type: 'message',
@@ -313,11 +312,11 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
       const mockError = new Error('mock reject');
       const groupjob = new ReadJob();
       before(function() {
-        job.payload.groupExecutionId = groupjob.payload.execution.id;
+        job.payload.execution.id = groupjob.payload.execution.id;
         sinon.stub(jobBrokerHelper, 'send');
         sinon.stub(jobBrokerHelper, 'remove');
-        sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.groupExecutionId).returns(true);
-        sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.groupExecutionId).returns(groupjob);
+        sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(true);
+        sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.execution.id).returns(groupjob);
         jobBrokerHelper.createContextForExecutionRun(job);
         mockContext.emit('error', 'jobhandler', mockError);
       });
@@ -330,7 +329,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
       });
 
       it('should also send a queue-get job for the running group job', function() {
-        expect(jobBrokerHelper.runningJobs.read.get.calledWithExactly(job.payload.groupExecutionId)).to.equal(true);
+        expect(jobBrokerHelper.runningJobs.read.get.calledWithExactly(job.payload.execution.id)).to.equal(true);
         expect(jobBrokerHelper.send.calledWithExactly({
           nature: {
             type: 'message',

@@ -16,8 +16,9 @@ const logger = require('cta-logger');
 const DEFAULTLOGGER = logger();
 const jobQueueOpts = {
   comparator: function comparator(jobA, jobB) {
-    const priorityA = jobA.payload.hasOwnProperty('priority') ? jobA.payload.priority : self.DEFAULTS.priority;
-    const priorityB = jobB.payload.hasOwnProperty('priority') ? jobB.payload.priority : self.DEFAULTS.priority;
+    const that = this;
+    const priorityA = jobA.payload.hasOwnProperty('priority') ? jobA.payload.priority : that.DEFAULTS.priority;
+    const priorityB = jobB.payload.hasOwnProperty('priority') ? jobB.payload.priority : that.DEFAULTS.priority;
     if (priorityA === priorityB) return -1;
     return priorityA - priorityB;
   },
@@ -43,11 +44,11 @@ describe('JobBroker - JobBrokerHelper - ack', function() {
     const groupJob = new ReadJob();
     const job = new RunJob();
     job.id = 'some-message-id';
-    job.payload.groupExecutionId = groupJob.payload.execution.id;
+    job.payload.execution.id = groupJob.payload.execution.id;
     before(function() {
       jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
       sinon.stub(jobBrokerHelper, 'send');
-      sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.groupExecutionId).returns(groupJob);
+      sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.execution.id).returns(groupJob);
       jobBrokerHelper.ack(job);
     });
     after(function() {

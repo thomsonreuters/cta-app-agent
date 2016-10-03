@@ -9,7 +9,6 @@ const sinon = require('sinon');
 require('sinon-as-promised');
 
 const EventEmitter = require('events').EventEmitter;
-const ObjectID = require('bson').ObjectID;
 
 const JobBrokerHelper = require(nodepath.join(appRootPath,
   '/lib/bricks/jobbroker/', 'jobbrokerhelper.js'));
@@ -46,12 +45,12 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
       {
         jobToCancel: new RunJob(),
       },
-      {
-        jobToCancel: new RunJob(),
-      },
+      // {
+      //   jobToCancel: new RunJob(),
+      // },
     ];
     subJobs.forEach(function(subJob) {
-      subJob.jobToCancel.payload.groupExecutionId = groupJob.payload.execution.id;
+      subJob.jobToCancel.payload.execution.id = groupJob.payload.execution.id;
     });
     const cancelationJob = new CancelJob(groupJob.payload.execution.id);
     before(function() {
@@ -123,7 +122,7 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
       context('when reject event is emitted on a sub Cancelation job', function() {
         const mockError = new Error('mock sub cancelation job error');
         before(function() {
-          subJobs[1].cancelationContext.emit('reject', jobBrokerHelper.cementHelper.brickName, mockError);
+          subJobs[0].cancelationContext.emit('reject', jobBrokerHelper.cementHelper.brickName, mockError);
         });
 
         it('should remove the global cancelation job from runningJobs Map', function() {
@@ -177,7 +176,7 @@ describe('JobBroker - JobBrokerHelper - cancelGroupJob', function() {
       context('when error event is emitted on a sub Cancelation job', function() {
         const mockError = new Error('mock sub cancelation job error');
         before(function() {
-          subJobs[1].cancelationContext.emit('error', jobBrokerHelper.cementHelper.brickName, mockError);
+          subJobs[0].cancelationContext.emit('error', jobBrokerHelper.cementHelper.brickName, mockError);
         });
 
         it('should remove the global cancelation job from runningJobs Map', function() {
