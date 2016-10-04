@@ -37,18 +37,48 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
     },
     createContext: sinon.stub().withArgs(job).returns(mockContext),
   };
+
+  let _createContextForExecutionRun;
   let result;
   before(function() {
     jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
+    _createContextForExecutionRun = jobBrokerHelper.createContextForExecutionRun.bind(jobBrokerHelper);
+    sinon.stub(jobBrokerHelper, 'createContextForExecutionRun').returns({ publish: sinon.stub() });
+      // the method being tested here is recursive. we need to stub the next calls but not the first one.
+      // solution is to copy and keep the original method in memory, then stub it
+
     sinon.stub(jobBrokerHelper.runningJobs.run, 'set');
+    sinon.stub(jobBrokerHelper, 'ack');
+    sinon.stub(jobBrokerHelper, 'send');
     sinon.spy(mockContext, 'once');
-    result = jobBrokerHelper.createContextForExecutionRun(job);
+    result = _createContextForExecutionRun(job);
+    console.log(result);
   });
   after(function() {
     jobBrokerHelper.runningJobs.run.set.restore();
+    jobBrokerHelper.ack.restore();
+    jobBrokerHelper.send.restore();
   });
   it('should add job to runningJobs run', function() {
     expect(jobBrokerHelper.runningJobs.run.set.calledWithExactly(jobId, job)).to.equal(true);
+  });
+
+  it('should send running state', function() {
+    expect(jobBrokerHelper.send.calledWithExactly({
+      nature: {
+        type: 'state',
+        quality: 'create',
+      },
+      payload: {
+        executionId: jobId,
+        status: 'running',
+        message: `Job ${jobId} started.`,
+      },
+    })).to.be.equal(true);
+  });
+
+  it('should ack job', function() {
+    expect(jobBrokerHelper.ack.calledWithExactly(job)).to.be.equal(true);
   });
 
   it('should create a new context with cementHelper', function() {
@@ -56,7 +86,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
       id: jobId,
       nature: {
         type: 'execution',
-        quality: 'commandLine',
+        quality: job.payload.testSuite.tests[0].type,
       },
       payload: {
         timeout: job.payload.execution.runningTimeout,
@@ -71,58 +101,20 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
   });
 
   it('should define accept, reject, done and error events listeners', function() {
-    expect(mockContext.once.calledWith('accept')).to.equal(true);
     expect(mockContext.once.calledWith('reject')).to.equal(true);
     expect(mockContext.once.calledWith('done')).to.equal(true);
     expect(mockContext.once.calledWith('error')).to.equal(true);
   });
 
-  describe('when mockContext emit accept event', function() {
-    const outputBrickName = 'jobhandler';
-    before(function() {
-      sinon.stub(jobBrokerHelper, 'ack');
-      sinon.stub(jobBrokerHelper, 'send');
-      jobBrokerHelper.createContextForExecutionRun(job);
-      mockContext.emit('accept', outputBrickName);
-    });
-
-    after(function() {
-      jobBrokerHelper.ack.restore();
-      jobBrokerHelper.send.restore();
-    });
-
-    it('should send running state', function() {
-      expect(jobBrokerHelper.send.calledWithExactly({
-        nature: {
-          type: 'state',
-          quality: 'create',
-        },
-        payload: {
-          executionId: jobId,
-          status: 'running',
-          message: `Job ${jobId} accepted by ${outputBrickName}.`,
-        },
-      })).to.be.equal(true);
-    });
-
-    it('should ack job', function() {
-      expect(jobBrokerHelper.ack.calledWithExactly(job)).to.be.equal(true);
-    });
-  });
-
   describe('when mockContext emit reject event', function() {
     const mockRejectError = new Error('mock reject');
     before(function() {
-      sinon.stub(jobBrokerHelper, 'ack');
-      sinon.stub(jobBrokerHelper, 'send');
       sinon.stub(jobBrokerHelper, 'remove');
-      jobBrokerHelper.createContextForExecutionRun(job);
+      _createContextForExecutionRun(job);
       mockContext.emit('reject', 'jobhandler', mockRejectError);
     });
 
     after(function() {
-      jobBrokerHelper.ack.restore();
-      jobBrokerHelper.send.restore();
       jobBrokerHelper.remove.restore();
     });
 
@@ -141,131 +133,155 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
       })).to.be.equal(true);
     });
 
-    it('should ack job', function() {
-      expect(jobBrokerHelper.ack.calledWithExactly(job)).to.be.equal(true);
-    });
-
     it('should remove job', function() {
       expect(jobBrokerHelper.remove.calledWithExactly(job)).to.be.equal(true);
     });
   });
 
   describe('when mockContext emit done event', function() {
-    context('when it is any job', function() {
+    context('when it is not the last test of tests Array', function() {
       const mockDoneResponse = {
         state: 'finished',
         message: 'Mock done',
       };
+      const options = {
+        testIndex: 1,
+      };
+      const nextOptions = {
+        testIndex: options.testIndex + 1,
+      };
       before(function() {
-        sinon.stub(jobBrokerHelper, 'ack');
-        sinon.stub(jobBrokerHelper, 'send');
         sinon.stub(jobBrokerHelper, 'remove');
-        jobBrokerHelper.createContextForExecutionRun(job);
+        _createContextForExecutionRun(job, options);
         mockContext.emit('done', 'jobhandler', mockDoneResponse);
       });
-
       after(function() {
-        jobBrokerHelper.ack.restore();
-        jobBrokerHelper.send.restore();
         jobBrokerHelper.remove.restore();
       });
 
-      it('should send finished state', function() {
-        expect(jobBrokerHelper.send.calledWithExactly({
-          nature: {
-            type: 'state',
-            quality: 'create',
-          },
-          payload: {
-            executionId: jobId,
-            status: mockDoneResponse.state,
-            message: mockDoneResponse.message,
-          },
-        })).to.be.equal(true);
-      });
-
-      it('should remove job', function() {
-        expect(jobBrokerHelper.remove.calledWithExactly(job)).to.be.equal(true);
+      it('should call createContextForExecutionRun with same job but next testIndex', function() {
+        sinon.assert.calledWith(jobBrokerHelper.createContextForExecutionRun, job, nextOptions);
       });
     });
 
-    context('when job belongs to a running group job', function() {
-      context('when job was finished normally', function() {
+    context('when it is the last test of tests Array', function() {
+      context('when it is any job', function() {
         const mockDoneResponse = {
           state: 'finished',
           message: 'Mock done',
         };
-        const groupjob = new ReadJob();
         before(function() {
-          job.payload.execution.id = groupjob.payload.execution.id;
-          sinon.stub(jobBrokerHelper, 'send');
           sinon.stub(jobBrokerHelper, 'remove');
-          sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(true);
-          sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.execution.id).returns(groupjob);
-          jobBrokerHelper.createContextForExecutionRun(job);
+          const options = {
+            testIndex: job.payload.testSuite.tests.length - 1,
+          };
+          _createContextForExecutionRun(job, options);
           mockContext.emit('done', 'jobhandler', mockDoneResponse);
         });
 
         after(function() {
-          jobBrokerHelper.send.restore();
           jobBrokerHelper.remove.restore();
-          jobBrokerHelper.runningJobs.read.has.restore();
-          jobBrokerHelper.runningJobs.read.get.restore();
         });
 
-        it('should also send a queue-get job for the running group job', function() {
-          expect(jobBrokerHelper.runningJobs.read.get.calledWithExactly(job.payload.execution.id)).to.equal(true);
+        it('should send finished state', function() {
           expect(jobBrokerHelper.send.calledWithExactly({
-            nature: {
-              type: 'message',
-              quality: 'get',
-            },
-            payload: {
-              groupExecutionId: groupjob.payload.execution.id,
-              queue: groupjob.payload.queue,
-            },
-          })).to.be.equal(true);
-        });
-      });
-
-      context('when job was finished by a manual cancelation', function() {
-        const mockDoneResponse = {
-          state: 'finished',
-          message: 'Mock done',
-          cancelMode: 'MANUAL',
-        };
-        const groupjob = new ReadJob();
-        before(function() {
-          job.payload.execution.id = groupjob.payload.execution.id;
-          sinon.stub(jobBrokerHelper, 'send');
-          sinon.stub(jobBrokerHelper, 'remove');
-          sinon.stub(jobBrokerHelper, 'terminateGroupJob');
-          sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(true);
-          sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.execution.id).returns(groupjob);
-          jobBrokerHelper.createContextForExecutionRun(job);
-          mockContext.emit('done', 'jobhandler', mockDoneResponse);
-        });
-
-        after(function() {
-          jobBrokerHelper.send.restore();
-          jobBrokerHelper.remove.restore();
-          jobBrokerHelper.terminateGroupJob.restore();
-          jobBrokerHelper.runningJobs.read.has.restore();
-          jobBrokerHelper.runningJobs.read.get.restore();
-        });
-
-        it('should terminate the running group job', function() {
-          expect(jobBrokerHelper.terminateGroupJob.calledWithExactly(job.payload.execution.id, {
             nature: {
               type: 'state',
               quality: 'create',
             },
             payload: {
-              jobid: job.payload.execution.id,
-              state: 'canceled',
-              message: `group Job ${job.payload.execution.id} canceled (MANUAL) during sub-Job ${job.payload.execution.id}`,
+              executionId: jobId,
+              status: mockDoneResponse.state,
+              message: mockDoneResponse.message,
             },
-          }));
+          })).to.be.equal(true);
+        });
+
+        it('should remove job', function() {
+          expect(jobBrokerHelper.remove.calledWithExactly(job)).to.be.equal(true);
+        });
+      });
+
+      context('when job belongs to a running group job', function() {
+        context('when job was finished normally', function() {
+          const mockDoneResponse = {
+            state: 'finished',
+            message: 'Mock done',
+          };
+          const groupjob = new ReadJob();
+          before(function() {
+            job.payload.execution.id = groupjob.payload.execution.id;
+            sinon.stub(jobBrokerHelper, 'remove');
+            sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(true);
+            sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.execution.id).returns(groupjob);
+            const options = {
+              testIndex: job.payload.testSuite.tests.length - 1,
+            };
+            _createContextForExecutionRun(job, options);
+            mockContext.emit('done', 'jobhandler', mockDoneResponse);
+          });
+
+          after(function() {
+            jobBrokerHelper.remove.restore();
+            jobBrokerHelper.runningJobs.read.has.restore();
+            jobBrokerHelper.runningJobs.read.get.restore();
+          });
+
+          it('should also send a queue-get job for the running group job', function() {
+            expect(jobBrokerHelper.runningJobs.read.get.calledWithExactly(job.payload.execution.id)).to.equal(true);
+            expect(jobBrokerHelper.send.calledWithExactly({
+              nature: {
+                type: 'message',
+                quality: 'get',
+              },
+              payload: {
+                groupExecutionId: groupjob.payload.execution.id,
+                queue: groupjob.payload.queue,
+              },
+            })).to.be.equal(true);
+          });
+        });
+
+        context('when job was finished by a manual cancelation', function() {
+          const mockDoneResponse = {
+            state: 'finished',
+            message: 'Mock done',
+            cancelMode: 'MANUAL',
+          };
+          const groupjob = new ReadJob();
+          before(function() {
+            job.payload.execution.id = groupjob.payload.execution.id;
+            sinon.stub(jobBrokerHelper, 'remove');
+            sinon.stub(jobBrokerHelper, 'terminateGroupJob');
+            sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(true);
+            sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.execution.id).returns(groupjob);
+            const options = {
+              testIndex: job.payload.testSuite.tests.length - 1,
+            };
+            _createContextForExecutionRun(job, options);
+            mockContext.emit('done', 'jobhandler', mockDoneResponse);
+          });
+
+          after(function() {
+            jobBrokerHelper.remove.restore();
+            jobBrokerHelper.terminateGroupJob.restore();
+            jobBrokerHelper.runningJobs.read.has.restore();
+            jobBrokerHelper.runningJobs.read.get.restore();
+          });
+
+          it('should terminate the running group job', function() {
+            expect(jobBrokerHelper.terminateGroupJob.calledWithExactly(job.payload.execution.id, {
+              nature: {
+                type: 'state',
+                quality: 'create',
+              },
+              payload: {
+                jobid: job.payload.execution.id,
+                state: 'canceled',
+                message: `group Job ${job.payload.execution.id} canceled (MANUAL) during sub-Job ${job.payload.execution.id}`,
+              },
+            }));
+          });
         });
       });
     });
@@ -275,16 +291,12 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
     context('when it is any job', function() {
       const mockError = new Error('mock reject');
       before(function() {
-        sinon.stub(jobBrokerHelper, 'ack');
-        sinon.stub(jobBrokerHelper, 'send');
         sinon.stub(jobBrokerHelper, 'remove');
-        jobBrokerHelper.createContextForExecutionRun(job);
+        _createContextForExecutionRun(job);
         mockContext.emit('error', 'jobhandler', mockError);
       });
 
       after(function() {
-        jobBrokerHelper.ack.restore();
-        jobBrokerHelper.send.restore();
         jobBrokerHelper.remove.restore();
       });
 
@@ -313,16 +325,14 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
       const groupjob = new ReadJob();
       before(function() {
         job.payload.execution.id = groupjob.payload.execution.id;
-        sinon.stub(jobBrokerHelper, 'send');
         sinon.stub(jobBrokerHelper, 'remove');
         sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(true);
         sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.execution.id).returns(groupjob);
-        jobBrokerHelper.createContextForExecutionRun(job);
+        _createContextForExecutionRun(job);
         mockContext.emit('error', 'jobhandler', mockError);
       });
 
       after(function() {
-        jobBrokerHelper.send.restore();
         jobBrokerHelper.remove.restore();
         jobBrokerHelper.runningJobs.read.has.restore();
         jobBrokerHelper.runningJobs.read.get.restore();

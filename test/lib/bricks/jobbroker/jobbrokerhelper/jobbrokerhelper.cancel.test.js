@@ -64,20 +64,18 @@ describe('JobBroker - JobBrokerHelper - cancel', function() {
       const job = new CancelJob(jobToCancel.payload.execution.id);
       before(function() {
         sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(true);
-        sinon.stub(jobBrokerHelper.runningJobs.run, 'has').withArgs(job.payload.execution.id).returns(false);
         sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.execution.id).returns(jobToCancel);
-        sinon.stub(jobBrokerHelper, 'cancelGroupJob');
+        sinon.stub(jobBrokerHelper, 'send');
         jobBrokerHelper.cancel(job);
       });
       after(function() {
         jobBrokerHelper.runningJobs.read.has.restore();
-        jobBrokerHelper.runningJobs.run.has.restore();
         jobBrokerHelper.runningJobs.read.get.restore();
-        jobBrokerHelper.cancelGroupJob.restore();
+        jobBrokerHelper.send.restore();
       });
 
-      it('should call cancelGroupJob method', function() {
-        expect(jobBrokerHelper.cancelGroupJob.calledWithExactly(job, jobToCancel)).to.equal(true);
+      it('should send cancelation job', function() {
+        expect(jobBrokerHelper.send.calledWithExactly(job)).to.equal(true);
       });
     });
 
