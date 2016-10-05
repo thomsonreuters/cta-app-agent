@@ -99,6 +99,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionCancel', functi
     before(function() {
       sinon.stub(jobBrokerHelper, 'ack');
       sinon.stub(jobBrokerHelper, 'remove');
+      sinon.stub(jobBrokerHelper.logger, 'error');
       jobBrokerHelper.createContextForExecutionCancel(job);
       mockContext.emit('reject', 'jobhandler', mockRejectError);
     });
@@ -106,6 +107,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionCancel', functi
     after(function() {
       jobBrokerHelper.ack.restore();
       jobBrokerHelper.remove.restore();
+      jobBrokerHelper.logger.error.restore();
     });
 
     it('should ack job', function() {
@@ -115,48 +117,92 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionCancel', functi
     it('should remove job', function() {
       expect(jobBrokerHelper.remove.calledWithExactly(job)).to.be.equal(true);
     });
+
+    it('should log error', function() {
+      const log = 'Execution: ' + job.payload.execution.id +
+        ' (CANCEL)' +
+        ' - finished with rejection: ' + mockRejectError;
+      expect(jobBrokerHelper.logger.error.calledWithExactly(log)).to.be.equal(true);
+    });
+  });
+
+  describe('when mockContext emit progress event', function() {
+    const mockDoneResponse = {
+      state: 'finished',
+      message: 'Mock done',
+    };
+    before(function() {
+      sinon.stub(jobBrokerHelper.logger, 'info');
+      jobBrokerHelper.createContextForExecutionCancel(job);
+      mockContext.emit('progress', 'jobhandler', mockDoneResponse);
+    });
+
+    after(function() {
+      jobBrokerHelper.logger.info.restore();
+    });
+
+    it('should log info', function() {
+      const log = 'Execution: ' + job.payload.execution.id +
+        ' (CANCEL)' +
+        ' - running';
+      expect(jobBrokerHelper.logger.info.calledWithExactly(log)).to.be.equal(true);
+    });
   });
 
   describe('when mockContext emit done event', function() {
-    context('when it is any job', function() {
-      const mockDoneResponse = {
-        state: 'finished',
-        message: 'Mock done',
-      };
-      before(function() {
-        sinon.stub(jobBrokerHelper, 'ack');
-        sinon.stub(jobBrokerHelper, 'remove');
-        jobBrokerHelper.createContextForExecutionCancel(job);
-        mockContext.emit('done', 'jobhandler', mockDoneResponse);
-      });
+    const mockDoneResponse = {
+      state: 'finished',
+      message: 'Mock done',
+    };
+    before(function() {
+      sinon.stub(jobBrokerHelper, 'ack');
+      sinon.stub(jobBrokerHelper, 'remove');
+      sinon.stub(jobBrokerHelper.logger, 'info');
+      jobBrokerHelper.createContextForExecutionCancel(job);
+      mockContext.emit('done', 'jobhandler', mockDoneResponse);
+    });
 
-      after(function() {
-        jobBrokerHelper.ack.restore();
-        jobBrokerHelper.remove.restore();
-      });
+    after(function() {
+      jobBrokerHelper.ack.restore();
+      jobBrokerHelper.remove.restore();
+      jobBrokerHelper.logger.info.restore();
+    });
 
-      it('should remove job', function() {
-        expect(jobBrokerHelper.remove.calledWithExactly(job)).to.be.equal(true);
-      });
+    it('should remove job', function() {
+      expect(jobBrokerHelper.remove.calledWithExactly(job)).to.be.equal(true);
+    });
+
+    it('should log info', function() {
+      const log = 'Execution: ' + job.payload.execution.id +
+        ' (CANCEL)' +
+        ' - finished';
+      expect(jobBrokerHelper.logger.info.calledWithExactly(log)).to.be.equal(true);
     });
   });
 
   describe('when mockContext emit error event', function() {
-    context('when it is any job', function() {
-      const mockError = new Error('mock reject');
-      before(function() {
-        sinon.stub(jobBrokerHelper, 'remove');
-        jobBrokerHelper.createContextForExecutionCancel(job);
-        mockContext.emit('error', 'jobhandler', mockError);
-      });
+    const mockError = new Error('mock reject');
+    before(function() {
+      sinon.stub(jobBrokerHelper, 'remove');
+      sinon.stub(jobBrokerHelper.logger, 'error');
+      jobBrokerHelper.createContextForExecutionCancel(job);
+      mockContext.emit('error', 'jobhandler', mockError);
+    });
 
-      after(function() {
-        jobBrokerHelper.remove.restore();
-      });
+    after(function() {
+      jobBrokerHelper.remove.restore();
+      jobBrokerHelper.logger.error.restore();
+    });
 
-      it('should remove job', function() {
-        expect(jobBrokerHelper.remove.calledWithExactly(job)).to.be.equal(true);
-      });
+    it('should remove job', function() {
+      expect(jobBrokerHelper.remove.calledWithExactly(job)).to.be.equal(true);
+    });
+
+    it('should log error', function() {
+      const log = 'Execution: ' + job.payload.execution.id +
+        ' (CANCEL)' +
+        ' - finished with error: ' + mockError;
+      expect(jobBrokerHelper.logger.error.calledWithExactly(log)).to.be.equal(true);
     });
   });
 });

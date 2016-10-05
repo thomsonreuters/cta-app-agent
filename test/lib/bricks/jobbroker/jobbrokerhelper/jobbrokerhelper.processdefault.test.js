@@ -107,7 +107,7 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
           expect(jobBrokerHelper.queue.queue.calledWithExactly(job)).to.equal(true);
         });
         it('should log info that job was queued', function() {
-          const message = `${jobBrokerHelper.cementHelper.brickName}: job ${job.payload.execution.id} has been queued.`;
+          const message = `Execution: ${job.payload.execution.id} - State: queued`;
           expect(jobBrokerHelper.logger.info.calledWithExactly(message)).to.equal(true);
         });
       });
