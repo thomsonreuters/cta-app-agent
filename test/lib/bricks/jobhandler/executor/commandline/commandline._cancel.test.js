@@ -196,8 +196,10 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
           expect(response).to.have.property('code');
         }).then(() => {
           // wait 1s after the stage+stop timeout before testing
-          const stopTimeout = (JOBSIMPLERSTUCKSTOP.payload.stages[0].timeout
-            || (executor.DEFAULTS.CMDTIMEOUT) * 2) + 1000;
+          const stopTimeout = ((JOBSIMPLERSTUCKSTOP.payload.stages[0].stopTimeout
+            || JOBSIMPLERSTUCKSTOP.payload.stages[0].timeout
+            || (executor.DEFAULTS.CMDTIMEOUT))
+            * 2) + 1000;
           setTimeout(() => {
             expect(executor.runningJobs).to.not.have.property(JOBSIMPLERSTUCKSTOP.id);
             done();

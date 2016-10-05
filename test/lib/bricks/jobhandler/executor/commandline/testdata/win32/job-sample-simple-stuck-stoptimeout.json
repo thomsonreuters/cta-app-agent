@@ -9,7 +9,9 @@
       {
         "id": "RUN01",
         "run": "notepad.exe",
-        "stop": "PING 1.1.1.1 -n 1 -w 10000 >NUL"
+        "stop": "PING 1.1.1.1 -n 1 -w 10000 >NUL",
+        "timeout": 2000,
+        "stopTimeout": 2000
       },
       {
         "id": "RUN02",
