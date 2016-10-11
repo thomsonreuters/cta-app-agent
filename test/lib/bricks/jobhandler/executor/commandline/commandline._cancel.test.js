@@ -135,30 +135,6 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
   });
 
   describe('timeout cancelation', function() {
-    context('when expiring the job timeout (aka global timeout)', function() {
-      it('should cancel job after expiring the timeout', function(done) {
-        executor.process(JOBSIMPLERSTUCKJOB, (error, response) => {
-          expect(error).to.be.a('null');
-          expect(response).to.have.property('state', 'canceled');
-          expect(response).to.have.property('cancelMode', executor.CANCELMODE.JOBTIMEOUT);
-          expect(response).to.have.property('ok', 1);
-          expect(response).to.have.property('message')
-            .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERSTUCKJOB.id}: canceled`);
-          expect(response).to.have.property('process')
-            .and.to.be.an.instanceOf(cp.ChildProcess);
-          expect(response).to.have.property('code');
-        }).then(() => {
-          // wait 1s after the job timeout before testing
-          const jobTimeout = (JOBSIMPLERSTUCKJOB.payload.timeout
-            || executor.DEFAULTS.JOBTIMEOUT) + 1000;
-          setTimeout(() => {
-            expect(executor.runningJobs).to.not.have.property(JOBSIMPLERSTUCKJOB.id);
-            done();
-          }, jobTimeout);
-        }).catch(done);
-      });
-    });
-
     context('when expiring the stage timeout', function() {
       it('should cancel job after expiring the timeout', function(done) {
         executor.process(JOBSIMPLERSTUCKSTAGE, (error, response) => {

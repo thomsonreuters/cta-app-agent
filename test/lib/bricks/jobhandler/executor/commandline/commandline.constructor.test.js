@@ -38,7 +38,7 @@ describe('JobHandler - Executor - CommandLine - constructor', function() {
       expect(executor).to.have.property('runningJobs')
         .and.to.be.an('object');
       expect(executor).to.have.property('CANCELMODE').and.to.contain({
-        'STAGETIMEOUT': 'STAGE TIMEOUT',
+        STAGETIMEOUT: 'stageTimeout',
       });
       expect(executor).to.have.property('DEFAULTS')
         .and.to.be.an('object');

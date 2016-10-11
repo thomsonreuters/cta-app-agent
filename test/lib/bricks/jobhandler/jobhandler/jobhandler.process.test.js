@@ -214,7 +214,7 @@ describe('JobHandler - process', function() {
     const mockExecutor = {};
     const stubResponse = { res: 'executor process() started' };
     const stubFinalResponse = {
-      cancelMode: 'MANUAL',
+      cancelMode: 'manual',
       res: 'executor process() canceled',
     };
     before(function() {

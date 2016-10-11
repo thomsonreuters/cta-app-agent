@@ -36,6 +36,8 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
       before(function() {
         jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
         sinon.spy(jobBrokerHelper.logger, 'warn');
+        sinon.stub(jobBrokerHelper.runningJobs[job.nature.quality], 'has').withArgs(job.payload.execution.id).returns(true);
+        sinon.stub(jobBrokerHelper.runningJobs[job.nature.quality], 'get').withArgs(job.payload.execution.id).returns(job);
         sinon.stub(jobBrokerHelper.runningJobs[job.nature.quality], 'delete').returns(job);
         sinon.stub(jobBrokerHelper.queue, 'isEmpty').returns(false);
         sinon.stub(jobBrokerHelper.queue, 'dequeue');
@@ -45,6 +47,8 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
       after(function() {
         jobBrokerHelper.logger.warn.restore();
         jobBrokerHelper.runningJobs[job.nature.quality].delete.restore();
+        jobBrokerHelper.runningJobs[job.nature.quality].has.restore();
+        jobBrokerHelper.runningJobs[job.nature.quality].get.restore();
         jobBrokerHelper.queue.isEmpty.restore();
         jobBrokerHelper.queue.dequeue.restore();
         jobBrokerHelper.send.restore();
@@ -80,6 +84,8 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
       before(function() {
         jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
         sinon.spy(jobBrokerHelper.logger, 'warn');
+        sinon.stub(jobBrokerHelper.runningJobs[job.nature.quality], 'has').withArgs(job.payload.execution.id).returns(true);
+        sinon.stub(jobBrokerHelper.runningJobs[job.nature.quality], 'get').withArgs(job.payload.execution.id).returns(job);
         sinon.stub(jobBrokerHelper.runningJobs[job.nature.quality], 'delete').returns(job);
         jobBrokerHelper.runningJobs[job.nature.quality].clear();
         sinon.stub(jobBrokerHelper.queue, 'isEmpty').returns(true);
@@ -90,6 +96,8 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
       after(function() {
         jobBrokerHelper.logger.warn.restore();
         jobBrokerHelper.runningJobs[job.nature.quality].delete.restore();
+        jobBrokerHelper.runningJobs[job.nature.quality].has.restore();
+        jobBrokerHelper.runningJobs[job.nature.quality].get.restore();
         jobBrokerHelper.queue.isEmpty.restore();
         jobBrokerHelper.queue.dequeue.restore();
         jobBrokerHelper.send.restore();
@@ -125,14 +133,10 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
     before(function() {
       jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
       sinon.spy(jobBrokerHelper.logger, 'warn');
-      sinon.stub(jobBrokerHelper.runningJobs[job.nature.quality], 'delete').returns(undefined);
       jobBrokerHelper.remove(job);
     });
     after(function() {
       jobBrokerHelper.logger.warn.restore();
-    });
-    it('should call queue delete()', function() {
-      expect(jobBrokerHelper.runningJobs[job.nature.quality].delete.calledWithExactly(job.payload.execution.id)).to.equal(true);
     });
 
     it('should call logger warn()', function() {
