@@ -40,7 +40,7 @@ describe('JobHandler - process', function() {
 
     const cancelJob = _.cloneDeep(JOB);
     cancelJob.id = new ObjectID();
-    cancelJob.nature.quality = 'cancelation';
+    cancelJob.nature.quality = 'cancel';
     cancelJob.payload.jobid = job.id;
     let context;
     before(function() {

@@ -61,7 +61,7 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
                 id: (new ObjectID()).toString(),
                 nature: {
                   type: 'execution',
-                  quality: 'cancelation',
+                  quality: 'cancel',
                 },
                 payload: {
                   jobid: JOBSIMPLERSTUCKMANUAL.id,
@@ -103,7 +103,7 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
                 id: (new ObjectID()).toString(),
                 nature: {
                   type: 'execution',
-                  quality: 'cancelation',
+                  quality: 'cancel',
                 },
                 payload: {
                   jobid: JOBSIMPLERSTUCKMANUAL.id,
