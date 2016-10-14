@@ -7,7 +7,6 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 const sinon = require('sinon');
 require('sinon-as-promised');
-const _ = require('lodash');
 
 const EventEmitter = require('events').EventEmitter;
 const ObjectID = require('bson').ObjectID;
@@ -16,8 +15,6 @@ const JobBrokerHelper = require(nodepath.join(appRootPath,
   '/lib/bricks/jobbroker/', 'jobbrokerhelper.js'));
 const JobQueue = require(nodepath.join(appRootPath,
   '/lib/bricks/jobbroker/', 'jobqueue.js'));
-const SystemDetails = require(nodepath.join(appRootPath,
-  '/lib/utils/systemdetails/', 'index.js'));
 const jobQueueOpts = require('./jobqueueopts.testdata.js');
 const logger = require('cta-logger');
 const DEFAULTLOGGER = logger();
@@ -187,17 +184,17 @@ describe('JobBroker - JobBrokerHelper - createContext', function() {
 
     // expected job
     const now = Date.now();
-    const stateJob = _.cloneDeep(job);
-    stateJob.payload.ip = SystemDetails.ip;
-    stateJob.payload.hostname = SystemDetails.hostname;
-    stateJob.payload.timestamp = now;
-    const messageJob = {
-      nature: {
-        type: 'message',
-        quality: 'produce',
-      },
-      payload: stateJob,
-    };
+    // const stateJob = _.cloneDeep(job);
+    // stateJob.payload.ip = SystemDetails.ip;
+    // stateJob.payload.hostname = SystemDetails.hostname;
+    // stateJob.payload.timestamp = now;
+    // const messageJob = {
+    //   nature: {
+    //     type: 'message',
+    //     quality: 'produce',
+    //   },
+    //   payload: stateJob,
+    // };
 
     const mockContext = new EventEmitter();
     const mockCementHelper = {
@@ -217,7 +214,7 @@ describe('JobBroker - JobBrokerHelper - createContext', function() {
       Date.now.restore();
     });
     it('should create a new context with createContextDefault', function() {
-      sinon.assert.calledWith(jobBrokerHelper[methodNameToCall], messageJob);
+      sinon.assert.calledWith(jobBrokerHelper[methodNameToCall], job);
     });
     it('should return cementHelper created context', function() {
       expect(result).to.deep.equal(mockContext);

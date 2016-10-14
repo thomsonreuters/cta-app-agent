@@ -57,7 +57,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionCancel', functi
       // id: jobId,
       nature: {
         type: 'execution',
-        quality: 'cancelation',
+        quality: 'cancel',
       },
       payload: {
         jobid: job.payload.execution.id,

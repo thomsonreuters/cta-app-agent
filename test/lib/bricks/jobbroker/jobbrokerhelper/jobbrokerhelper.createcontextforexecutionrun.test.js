@@ -96,7 +96,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
   });
 
   it('should create a new context with cementHelper', function() {
-    sinon.assert.calledWithExactly(mockCementHelper.createContext, execJob, ['canceled']);
+    sinon.assert.calledWithExactly(mockCementHelper.createContext, execJob, ['canceled', 'timeout']);
   });
 
   it('should return cementHelper created context', function() {
@@ -280,7 +280,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
       const mockDoneResponse = {
         state: 'canceled',
         message: 'Mock canceled',
-        cancelMode: 'MANUAL',
+        cancelMode: 'manual',
       };
       before(function() {
         sinon.stub(jobBrokerHelper, 'remove');
@@ -318,7 +318,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
       const mockDoneResponse = {
         state: 'canceled',
         message: 'Mock canceled',
-        cancelMode: 'MANUAL',
+        cancelMode: 'manual',
       };
       const groupjob = new ReadJob();
       before(function() {
@@ -350,7 +350,93 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
           payload: {
             jobid: job.payload.execution.id,
             state: 'canceled',
-            message: `group Job ${job.payload.execution.id} canceled (MANUAL) during sub-Job ${job.payload.execution.id}`,
+            message: `group Job ${job.payload.execution.id} canceled (${mockDoneResponse.cancelMode}) during sub-Job ${job.payload.execution.id}`,
+          },
+        }));
+      });
+
+      it('should remove job', function() {
+        expect(jobBrokerHelper.remove.calledWithExactly(job)).to.be.equal(true);
+      });
+    });
+  });
+
+  describe('when mockContext emit timeout event', function() {
+    context('when job does not belong to a running group job', function() {
+      const mockDoneResponse = {
+        state: 'canceled',
+        message: 'Mock timeout',
+        cancelMode: 'executionTimeout',
+      };
+      before(function() {
+        sinon.stub(jobBrokerHelper, 'remove');
+        const options = {
+          testIndex: job.payload.testSuite.tests.length - 1,
+        };
+        _createContextForExecutionRun(job, options);
+        mockContext.emit('timeout', 'jobhandler', mockDoneResponse);
+      });
+
+      after(function() {
+        jobBrokerHelper.remove.restore();
+      });
+
+      it('should send finished state', function() {
+        expect(jobBrokerHelper.send.calledWithExactly({
+          nature: {
+            type: 'state',
+            quality: 'create',
+          },
+          payload: {
+            executionId: jobId,
+            status: 'canceled',
+            message: mockDoneResponse.message,
+          },
+        })).to.be.equal(true);
+      });
+
+      it('should remove job', function() {
+        expect(jobBrokerHelper.remove.calledWithExactly(job)).to.be.equal(true);
+      });
+    });
+
+    context('when job belongs to a running group job', function() {
+      const mockDoneResponse = {
+        state: 'canceled',
+        message: 'Mock timeout',
+        cancelMode: 'executionTimeout',
+      };
+      const groupjob = new ReadJob();
+      before(function() {
+        job.payload.execution.id = groupjob.payload.execution.id;
+        sinon.stub(jobBrokerHelper, 'remove');
+        sinon.stub(jobBrokerHelper, 'terminateGroupJob');
+        sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(true);
+        sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.execution.id).returns(groupjob);
+        const options = {
+          testIndex: job.payload.testSuite.tests.length - 1,
+        };
+        _createContextForExecutionRun(job, options);
+        mockContext.emit('canceled', 'jobhandler', mockDoneResponse);
+      });
+
+      after(function() {
+        jobBrokerHelper.remove.restore();
+        jobBrokerHelper.terminateGroupJob.restore();
+        jobBrokerHelper.runningJobs.read.has.restore();
+        jobBrokerHelper.runningJobs.read.get.restore();
+      });
+
+      it('should terminate the running group job', function() {
+        expect(jobBrokerHelper.terminateGroupJob.calledWithExactly(job.payload.execution.id, {
+          nature: {
+            type: 'state',
+            quality: 'create',
+          },
+          payload: {
+            jobid: job.payload.execution.id,
+            state: 'canceled',
+            message: `group Job ${job.payload.execution.id} timeout (${mockDoneResponse.cancelMode}) during sub-Job ${job.payload.execution.id}`,
           },
         }));
       });
