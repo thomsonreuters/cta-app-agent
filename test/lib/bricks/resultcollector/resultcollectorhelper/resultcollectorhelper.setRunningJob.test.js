@@ -5,6 +5,8 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 const expect = chai.expect;
+const sinon = require('sinon');
+require('sinon-as-promised');
 const ObjectId = require('bson').ObjectId;
 
 const ResultCollectorHelper = require(nodepath.join(appRootPath,
@@ -46,6 +48,10 @@ describe('ResultCollector - ResultCollectorHelper - setRunningJob', function() {
       expect(helper.runningJob).to.have.property('testId', job.testId);
       expect(helper.runningJob).to.have.property('currentIndex', 0);
     });
+
+    it('should emit done on input context', function() {
+      sinon.assert.calledWithExactly(inputContext.emit, 'done', helper.cementHelper.brickName);
+    });
   });
 
   context('when helper.runningJob has different executionId', function() {
@@ -65,6 +71,10 @@ describe('ResultCollector - ResultCollectorHelper - setRunningJob', function() {
       expect(helper.runningJob).to.have.property('testId', job.testId);
       expect(helper.runningJob).to.have.property('currentIndex', 0);
     });
+
+    it('should emit done on input context', function() {
+      sinon.assert.calledWithExactly(inputContext.emit, 'done', helper.cementHelper.brickName);
+    });
   });
 
   context('when helper.runningJob has same executionId', function() {
@@ -83,6 +93,10 @@ describe('ResultCollector - ResultCollectorHelper - setRunningJob', function() {
       expect(helper.runningJob).to.have.property('testSuiteId', job.testSuiteId);
       expect(helper.runningJob).to.have.property('testId', job.testId);
       expect(helper.runningJob).to.have.property('currentIndex', alreadySetJob.currentIndex);
+    });
+
+    it('should emit done on input context', function() {
+      sinon.assert.calledWithExactly(inputContext.emit, 'done', helper.cementHelper.brickName);
     });
   });
 });

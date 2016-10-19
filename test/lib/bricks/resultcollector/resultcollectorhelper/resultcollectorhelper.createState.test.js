@@ -4,6 +4,7 @@ const nodepath = require('path');
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
+const expect = chai.expect;
 const sinon = require('sinon');
 require('sinon-as-promised');
 const _ = require('lodash');
@@ -18,10 +19,10 @@ const logger = require('cta-logger');
 const DEFAULTLOGGER = logger();
 
 describe('ResultCollector - ResultCollectorHelper - createState', function() {
-  describe('when receiving a non-finished state', function() {
+  context('when running job is null', function() {
     let helper;
     const body = {
-      status: 'running',
+      status: 'failed',
       executionId: 'id',
     };
     const inputContext = {
@@ -30,157 +31,199 @@ describe('ResultCollector - ResultCollectorHelper - createState', function() {
       },
       emit: sinon.stub(),
     };
-
-    const currentIndex = 2;
-    const runningJob = {
-      executionId: 'id',
-      testSuiteId: 'tsid',
-      testId: 'tid',
-      currentIndex: currentIndex,
-    };
-
-    const now = Date.now();
-    const resultPayload = _.pick(body, ['status', 'executionId']);
-    resultPayload.ip = SystemDetails.ip;
-    resultPayload.hostname = SystemDetails.hostname;
-    resultPayload.timestamp = now;
-    const messageJob = {
-      nature: {
-        type: 'message',
-        quality: 'produce',
-      },
-      payload: {
-        nature: {
-          type: 'state',
-          quality: 'create',
-        },
-        payload: resultPayload,
-      },
-    };
-    const mockContext = new EventEmitter();
-    mockContext.publish = sinon.stub().returns(mockContext);
     const mockCementHelper = {
       constructor: {
         name: 'CementHelper',
       },
-      createContext: sinon.stub().withArgs(messageJob).returns(mockContext),
+      createContext: sinon.stub(),
     };
 
     before(function() {
-      sinon.stub(Date, 'now').returns(now);
       helper = new ResultCollectorHelper(mockCementHelper, DEFAULTLOGGER);
-      helper.runningJob = _.cloneDeep(runningJob);
+      helper.runningJob = null;
       helper.createState(inputContext);
     });
     after(function() {
-      Date.now.restore();
     });
 
-    it('should create a new context with cementHelper', function() {
-      sinon.assert.calledWithExactly(mockCementHelper.createContext, messageJob);
-    });
-
-    it('should publish the context', function() {
-      sinon.assert.called(mockContext.publish);
-    });
-
-    describe('when context emit done event', function() {
-      const response = { foo: 'bar' };
-      before(function() {
-        helper = new ResultCollectorHelper(mockCementHelper, DEFAULTLOGGER);
-        helper.runningJob = _.cloneDeep(runningJob);
-        helper.createResult(inputContext);
-        mockContext.emit('done', 'sender', response);
-      });
-      after(function() {
-        helper.runningJob = null;
-      });
-      it('should emit done on input context', function() {
-        sinon.assert.calledWithExactly(inputContext.emit, 'done', helper.cementHelper.brickName, response);
-      });
+    it('should emit error  on inputContext', function() {
+      sinon.assert.calledWithExactly(
+        inputContext.emit,
+        'error',
+        helper.cementHelper.brickName,
+        new Error('Creating State failed: no job currently running'));
     });
   });
 
-  describe('when receiving a finished state', function() {
-    let helper;
-    const body = {
-      status: 'finished',
-      executionId: 'id',
-    };
-    const inputContext = {
-      data: {
-        payload: body,
-      },
-      emit: sinon.stub(),
-    };
-
-    const currentIndex = 2;
-    const runningJob = {
-      executionId: 'id',
-      testSuiteId: 'tsid',
-      testId: 'tid',
-      currentIndex: currentIndex,
-    };
-
-    const now = Date.now();
-    const resultPayload = _.pick(body, ['status', 'executionId']);
-    resultPayload.ip = SystemDetails.ip;
-    resultPayload.hostname = SystemDetails.hostname;
-    resultPayload.timestamp = now;
-    resultPayload.index = runningJob.currentIndex;
-    const messageJob = {
-      nature: {
-        type: 'message',
-        quality: 'produce',
-      },
-      payload: {
-        nature: {
-          type: 'state',
-          quality: 'create',
+  context('when running job has been set', function() {
+    describe('when receiving a non-finished state', function() {
+      let helper;
+      const body = {
+        status: 'running',
+        executionId: 'id',
+      };
+      const inputContext = {
+        data: {
+          payload: body,
         },
-        payload: resultPayload,
-      },
-    };
-    const mockContext = new EventEmitter();
-    mockContext.publish = sinon.stub().returns(mockContext);
-    const mockCementHelper = {
-      constructor: {
-        name: 'CementHelper',
-      },
-      createContext: sinon.stub().withArgs(messageJob).returns(mockContext),
-    };
+        emit: sinon.stub(),
+      };
 
-    before(function() {
-      sinon.stub(Date, 'now').returns(now);
-      helper = new ResultCollectorHelper(mockCementHelper, DEFAULTLOGGER);
-      helper.runningJob = _.cloneDeep(runningJob);
-      helper.createState(inputContext);
-    });
-    after(function() {
-      Date.now.restore();
-    });
+      const currentIndex = 2;
+      const runningJob = {
+        executionId: 'id',
+        testSuiteId: 'tsid',
+        testId: 'tid',
+        currentIndex: currentIndex,
+      };
 
-    it('should create a new context with cementHelper', function() {
-      sinon.assert.calledWithExactly(mockCementHelper.createContext, messageJob);
-    });
+      const now = Date.now();
+      const resultPayload = _.pick(body, ['status', 'executionId']);
+      resultPayload.ip = SystemDetails.ip;
+      resultPayload.hostname = SystemDetails.hostname;
+      resultPayload.timestamp = now;
+      const messageJob = {
+        nature: {
+          type: 'message',
+          quality: 'produce',
+        },
+        payload: {
+          nature: {
+            type: 'state',
+            quality: 'create',
+          },
+          payload: resultPayload,
+        },
+      };
+      const mockContext = new EventEmitter();
+      mockContext.publish = sinon.stub().returns(mockContext);
+      const mockCementHelper = {
+        constructor: {
+          name: 'CementHelper',
+        },
+        createContext: sinon.stub().withArgs(messageJob).returns(mockContext),
+      };
 
-    it('should publish the context', function() {
-      sinon.assert.called(mockContext.publish);
-    });
-
-    describe('when context emit done event', function() {
-      const response = { foo: 'bar' };
       before(function() {
+        sinon.stub(Date, 'now').returns(now);
         helper = new ResultCollectorHelper(mockCementHelper, DEFAULTLOGGER);
         helper.runningJob = _.cloneDeep(runningJob);
-        helper.createResult(inputContext);
-        mockContext.emit('done', 'sender', response);
+        helper.createState(inputContext);
       });
       after(function() {
-        helper.runningJob = null;
+        Date.now.restore();
       });
-      it('should emit done on input context', function() {
-        sinon.assert.calledWithExactly(inputContext.emit, 'done', helper.cementHelper.brickName, response);
+
+      it('should create a new context with cementHelper', function() {
+        sinon.assert.calledWithExactly(mockCementHelper.createContext, messageJob);
+      });
+
+      it('should publish the context', function() {
+        sinon.assert.called(mockContext.publish);
+      });
+
+      describe('when context emit done event', function() {
+        const response = { foo: 'bar' };
+        before(function() {
+          helper = new ResultCollectorHelper(mockCementHelper, DEFAULTLOGGER);
+          helper.runningJob = _.cloneDeep(runningJob);
+          helper.createResult(inputContext);
+          mockContext.emit('done', 'sender', response);
+        });
+        after(function() {
+          helper.runningJob = null;
+        });
+        it('should emit done on input context', function() {
+          sinon.assert.calledWithExactly(inputContext.emit, 'done', helper.cementHelper.brickName, response);
+        });
+      });
+    });
+
+    describe('when receiving a finished state', function() {
+      let helper;
+      const body = {
+        status: 'finished',
+        executionId: 'id',
+      };
+      const inputContext = {
+        data: {
+          payload: body,
+        },
+        emit: sinon.stub(),
+      };
+
+      const currentIndex = 2;
+      const runningJob = {
+        executionId: 'id',
+        testSuiteId: 'tsid',
+        testId: 'tid',
+        currentIndex: currentIndex,
+      };
+
+      const now = Date.now();
+      const resultPayload = _.pick(body, ['status', 'executionId']);
+      resultPayload.ip = SystemDetails.ip;
+      resultPayload.hostname = SystemDetails.hostname;
+      resultPayload.timestamp = now;
+      resultPayload.index = runningJob.currentIndex;
+      const messageJob = {
+        nature: {
+          type: 'message',
+          quality: 'produce',
+        },
+        payload: {
+          nature: {
+            type: 'state',
+            quality: 'create',
+          },
+          payload: resultPayload,
+        },
+      };
+      const mockContext = new EventEmitter();
+      mockContext.publish = sinon.stub().returns(mockContext);
+      const mockCementHelper = {
+        constructor: {
+          name: 'CementHelper',
+        },
+        createContext: sinon.stub().withArgs(messageJob).returns(mockContext),
+      };
+
+      before(function() {
+        sinon.stub(Date, 'now').returns(now);
+        helper = new ResultCollectorHelper(mockCementHelper, DEFAULTLOGGER);
+        helper.runningJob = _.cloneDeep(runningJob);
+        helper.createState(inputContext);
+      });
+      after(function() {
+        Date.now.restore();
+      });
+
+      it('should create a new context with cementHelper', function() {
+        sinon.assert.calledWithExactly(mockCementHelper.createContext, messageJob);
+      });
+
+      it('should publish the context', function() {
+        sinon.assert.called(mockContext.publish);
+      });
+
+      it('should set runningJob to null', function() {
+        return expect(helper.runningJob).to.be.null;
+      });
+
+      describe('when context emit done event', function() {
+        const response = { foo: 'bar' };
+        before(function() {
+          helper = new ResultCollectorHelper(mockCementHelper, DEFAULTLOGGER);
+          helper.runningJob = _.cloneDeep(runningJob);
+          helper.createResult(inputContext);
+          mockContext.emit('done', 'sender', response);
+        });
+        after(function() {
+          helper.runningJob = null;
+        });
+        it('should emit done on input context', function() {
+          sinon.assert.calledWithExactly(inputContext.emit, 'done', helper.cementHelper.brickName, response);
+        });
       });
     });
   });
