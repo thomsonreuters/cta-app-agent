@@ -9,7 +9,6 @@ const sinon = require('sinon');
 require('sinon-as-promised');
 
 const EventEmitter = require('events').EventEmitter;
-const ObjectID = require('bson').ObjectID;
 
 const JobBrokerHelper = require(nodepath.join(appRootPath,
   '/lib/bricks/jobbroker/', 'jobbrokerhelper.js'));
@@ -18,29 +17,25 @@ const JobQueue = require(nodepath.join(appRootPath,
 const jobQueueOpts = require('./jobqueueopts.testdata.js');
 const logger = require('cta-logger');
 const DEFAULTLOGGER = logger();
+const ReadJob = require('./jobbrokerhelper.execution.read.testdata.js');
 
-describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
+describe('JobBroker - JobBrokerHelper - createContextForMessageGet', function() {
   let jobBrokerHelper;
-  const runningJobs = new Map();
+  const runningJobs = {
+    run: new Map(),
+    read: new Map(),
+    cancel: new Map(),
+  };
   const jobQueue = new JobQueue(jobQueueOpts);
-  const groupjob = {
-    id: new ObjectID(),
+  const groupjob = new ReadJob();
+  const queuegetjob = {
     nature: {
-      type: 'execution',
-      quality: 'group',
+      type: 'message',
+      quality: 'get',
     },
     payload: {
-      queue: 'some-queue',
-    },
-  };
-  const queuegetjob = {
-    'nature': {
-      'type': 'message',
-      'quality': 'get',
-    },
-    'payload': {
-      'groupjobid': groupjob.id,
-      'queue': groupjob.payload.queue,
+      groupExecutionId: groupjob.payload.execution.id,
+      queue: groupjob.payload.queue,
     },
   };
   const queuegetopts = {
@@ -56,12 +51,10 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
   let result;
   before(function() {
     jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
-    sinon.stub(jobBrokerHelper.runningJobs, 'set');
     sinon.spy(mockContext, 'once');
-    result = jobBrokerHelper.createContextForQueueGet(queuegetjob);
+    result = jobBrokerHelper.createContextForMessageGet(queuegetjob);
   });
   after(function() {
-    jobBrokerHelper.runningJobs.set.restore();
   });
 
   it('should create a new context with cementHelper', function() {
@@ -76,7 +69,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
     expect(mockContext.once.calledWith('accept')).to.equal(true);
     expect(mockContext.once.calledWith('reject')).to.equal(true);
     expect(mockContext.once.calledWith('done')).to.equal(true);
-    // expect(mockContext.once.calledWith('error')).to.equal(true);
+    expect(mockContext.once.calledWith('error')).to.equal(true);
   });
 
   describe('when mockContext emit accept event', function() {
@@ -84,7 +77,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
       const outputBrickName = 'receiver';
       before(function() {
         sinon.stub(jobBrokerHelper, 'send');
-        jobBrokerHelper.createContextForQueueGet(queuegetjob, queuegetopts);
+        jobBrokerHelper.createContextForMessageGet(queuegetjob, queuegetopts);
         mockContext.emit('accept', outputBrickName);
       });
 
@@ -93,17 +86,17 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
       });
 
       it('should send running state for the group job', function() {
-        expect(jobBrokerHelper.send.calledWithExactly({
+        sinon.assert.calledWithExactly(jobBrokerHelper.send, {
           nature: {
             type: 'state',
             quality: 'create',
           },
           payload: {
-            jobid: queuegetjob.payload.groupjobid,
-            state: 'running',
-            message: `GET message request for group Job ${queuegetjob.payload.groupjobid} accepted by ${outputBrickName}.`,
+            executionId: queuegetjob.payload.groupExecutionId,
+            status: 'running',
+            message: `GET message request for group Job ${queuegetjob.payload.groupExecutionId} accepted by ${outputBrickName}.`,
           },
-        })).to.be.equal(true);
+        });
       });
     });
   });
@@ -114,7 +107,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
       const mockRejectError = new Error('mock reject');
       before(function() {
         sinon.stub(jobBrokerHelper, 'terminateGroupJob');
-        jobBrokerHelper.createContextForQueueGet(queuegetjob);
+        jobBrokerHelper.createContextForMessageGet(queuegetjob);
         mockContext.emit('reject', outputBrickName, mockRejectError);
       });
 
@@ -129,14 +122,14 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
             quality: 'create',
           },
           payload: {
-            jobid: queuegetjob.payload.groupjobid,
-            state: 'acked',
+            executionId: queuegetjob.payload.groupExecutionId,
+            status: 'acked',
             message: `message-get job was rejected by ${outputBrickName} with: ${mockRejectError.message}.`,
             error: mockRejectError,
           },
         };
         expect(jobBrokerHelper.terminateGroupJob
-          .calledWithExactly(queuegetjob.payload.groupjobid, stateJob)).to.be.equal(true);
+          .calledWithExactly(queuegetjob.payload.groupExecutionId, stateJob)).to.be.equal(true);
       });
     });
   });
@@ -151,7 +144,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
         };
         before(function() {
           sinon.stub(jobBrokerHelper, 'terminateGroupJob');
-          jobBrokerHelper.createContextForQueueGet(queuegetjob, queuegetopts);
+          jobBrokerHelper.createContextForMessageGet(queuegetjob, queuegetopts);
           mockContext.emit('done', 'receiver', mockDoneResponse);
         });
 
@@ -166,13 +159,13 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
               quality: 'create',
             },
             payload: {
-              jobid: queuegetjob.payload.groupjobid,
-              state: 'acked',
-              message: `No more Jobs to run for group Job ${queuegetjob.payload.groupjobid}.`,
+              executionId: queuegetjob.payload.groupExecutionId,
+              status: 'acked',
+              message: `No more Jobs to run for group Job ${queuegetjob.payload.groupExecutionId}.`,
             },
           };
           expect(jobBrokerHelper.terminateGroupJob
-            .calledWithExactly(queuegetjob.payload.groupjobid, stateJob)).to.be.equal(true);
+            .calledWithExactly(queuegetjob.payload.groupExecutionId, stateJob)).to.be.equal(true);
         });
       });
 
@@ -184,7 +177,7 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
         };
         before(function() {
           sinon.stub(jobBrokerHelper, 'terminateGroupJob');
-          jobBrokerHelper.createContextForQueueGet(queuegetjob);
+          jobBrokerHelper.createContextForMessageGet(queuegetjob);
           mockContext.emit('done', 'receiver', mockDoneResponse);
         });
 
@@ -199,14 +192,47 @@ describe('JobBroker - JobBrokerHelper - createContextForQueueGet', function() {
               quality: 'create',
             },
             payload: {
-              jobid: queuegetjob.payload.groupjobid,
-              state: 'finished',
-              message: `No more Jobs to run for group Job ${queuegetjob.payload.groupjobid}.`,
+              executionId: queuegetjob.payload.groupExecutionId,
+              status: 'finished',
+              message: `No more Jobs to run for group Job ${queuegetjob.payload.groupExecutionId}.`,
             },
           };
           expect(jobBrokerHelper.terminateGroupJob
-            .calledWithExactly(queuegetjob.payload.groupjobid, stateJob)).to.be.equal(true);
+            .calledWithExactly(queuegetjob.payload.groupExecutionId, stateJob)).to.be.equal(true);
         });
+      });
+    });
+  });
+
+  describe('when mockContext emit reject event', function() {
+    context('when queuegetjob is for a group job', function() {
+      const outputBrickName = 'receiver';
+      const mockError = new Error('mock error');
+      before(function() {
+        sinon.stub(jobBrokerHelper, 'terminateGroupJob');
+        jobBrokerHelper.createContextForMessageGet(queuegetjob);
+        mockContext.emit('error', outputBrickName, mockError);
+      });
+
+      after(function() {
+        jobBrokerHelper.terminateGroupJob.restore();
+      });
+
+      it('should terminate group job with acked state', function() {
+        const stateJob = {
+          nature: {
+            type: 'state',
+            quality: 'create',
+          },
+          payload: {
+            executionId: queuegetjob.payload.groupExecutionId,
+            status: 'acked',
+            message: `message-get job finished by ${outputBrickName} with error: ${mockError.message}.`,
+            error: mockError,
+          },
+        };
+        expect(jobBrokerHelper.terminateGroupJob
+          .calledWithExactly(queuegetjob.payload.groupExecutionId, stateJob)).to.be.equal(true);
       });
     });
   });

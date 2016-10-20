@@ -20,7 +20,8 @@
             "key": "BAZ",
             "value": "quz"
           }
-        ]
+        ],
+        "timeout": 10000
       },
       {
         "id": "RUN02",
@@ -36,7 +37,8 @@
             "key": "BAZ",
             "value": "quz"
           }
-        ]
+        ],
+        "timeout": 10000
       },
       {
         "id": "RUN03",
@@ -52,7 +54,8 @@
             "key": "BAZ",
             "value": "quz"
           }
-        ]
+        ],
+        "timeout": 10000
       }
     ],
     "timeout": 20000

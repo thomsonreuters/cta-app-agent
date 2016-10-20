@@ -9,7 +9,6 @@ const sinon = require('sinon');
 require('sinon-as-promised');
 
 const EventEmitter = require('events').EventEmitter;
-const ObjectID = require('bson').ObjectID;
 
 const JobBrokerHelper = require(nodepath.join(appRootPath,
   '/lib/bricks/jobbroker/', 'jobbrokerhelper.js'));
@@ -18,29 +17,26 @@ const JobQueue = require(nodepath.join(appRootPath,
 const jobQueueOpts = require('./jobqueueopts.testdata.js');
 const logger = require('cta-logger');
 const DEFAULTLOGGER = logger();
+const ReadJob = require('./jobbrokerhelper.execution.read.testdata.js');
 
-describe('JobBroker - JobBrokerHelper - createContextForGroup', function() {
+describe('JobBroker - JobBrokerHelper - createContextForExecutionRead', function() {
   let jobBrokerHelper;
-  const runningJobs = new Map();
+  const runningJobs = {
+    run: new Map(),
+    read: new Map(),
+    cancel: new Map(),
+  };
   const jobQueue = new JobQueue(jobQueueOpts);
-  const job = {
-    id: new ObjectID(),
+  const job = new ReadJob();
+  const jobId = job.payload.execution.id;
+  const queuegetjob = {
     nature: {
-      type: 'execution',
-      quality: 'group',
+      type: 'message',
+      quality: 'get',
     },
     payload: {
-      queue: 'some-queue',
-    },
-  };
-  const queuegetjob = {
-    'nature': {
-      'type': 'message',
-      'quality': 'get',
-    },
-    'payload': {
-      'groupjobid': job.id,
-      'queue': job.payload.queue,
+      groupExecutionId: jobId,
+      queue: job.payload.queue,
     },
   };
   const queuegetopts = {
@@ -56,20 +52,20 @@ describe('JobBroker - JobBrokerHelper - createContextForGroup', function() {
   let result;
   before(function() {
     jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
-    sinon.stub(jobBrokerHelper.runningJobs, 'set');
-    sinon.stub(jobBrokerHelper, 'createContextForQueueGet').returns(mockContext);
+    sinon.stub(jobBrokerHelper.runningJobs.read, 'set');
+    sinon.stub(jobBrokerHelper, 'createContextForMessageGet').returns(mockContext);
     sinon.spy(mockContext, 'once');
-    result = jobBrokerHelper.createContextForGroup(job);
+    result = jobBrokerHelper.createContextForExecutionRead(job);
   });
   after(function() {
-    jobBrokerHelper.runningJobs.set.restore();
+    jobBrokerHelper.runningJobs.read.set.restore();
   });
-  it('should add job to runningJobs', function() {
-    expect(jobBrokerHelper.runningJobs.set.calledWithExactly(job.id, job)).to.equal(true);
+  it('should add job to runningJobs read', function() {
+    sinon.assert.calledWithExactly(jobBrokerHelper.runningJobs.read.set, jobId, job);
   });
 
-  it('should create a new context using jobBrokerHelper.createContextQueueGet', function() {
-    expect(jobBrokerHelper.createContextForQueueGet.calledWithExactly(queuegetjob, queuegetopts)).to.equal(true);
+  it('should create a new context using jobBrokerHelper.createContextForMessageGet', function() {
+    sinon.assert.calledWithExactly(jobBrokerHelper.createContextForMessageGet, queuegetjob, queuegetopts);
   });
 
   it('should return created context', function() {

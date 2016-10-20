@@ -12,18 +12,6 @@ const Executor = require(nodepath.join(appRootPath,
 const logger = require('cta-logger');
 
 let executor;
-const STATES = {
-  pending: 'pending',
-  acked: 'acked',
-  running: 'running',
-  canceled: 'canceled',
-  finished: 'finished',
-};
-
-const CANCELMODE = {
-  MANUAL: 'MANUAL',
-  JOBTIMEOUT: 'JOB TIMEOUT',
-};
 const DEFAULTS = {
   JOBTIMEOUT: 4000,
 };
@@ -71,30 +59,30 @@ describe('JobHandler - Executor - Base - validate - default job', function() {
 });
 
 describe('JobHandler - Executor - Base - validate - cancelation job', function() {
-  context('when missing/incorrect \'jobid\' ObjectID property in cancelation job.payload', function() {
+  context('when missing/incorrect \'jobid\' ObjectID property in cancel job.payload', function() {
     it('should throw an error', function() {
       const job = {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'cancelation',
+          quality: 'cancel',
         },
         payload: {
           jobid: {},
         },
       };
       const validatePromise = executor.validate(job);
-      return expect(validatePromise).to.eventually.be.rejectedWith(Error, 'missing/incorrect \'jobid\' ObjectID property in cancelation job.payload');
+      return expect(validatePromise).to.eventually.be.rejectedWith(Error, 'missing/incorrect \'jobid\' ObjectID property in cancel job.payload');
     });
   });
 
-  context('when incorrect \'mode\' String property in cancelation job.payload', function() {
+  context('when incorrect \'mode\' String property in cancel job.payload', function() {
     it('should throw an error', function() {
       const job = {
         id: new ObjectID(),
         nature: {
           type: 'execution',
-          quality: 'cancelation',
+          quality: 'cancel',
         },
         payload: {
           jobid: new ObjectID(),
@@ -102,7 +90,7 @@ describe('JobHandler - Executor - Base - validate - cancelation job', function()
         },
       };
       const validatePromise = executor.validate(job);
-      return expect(validatePromise).to.eventually.be.rejectedWith(Error, 'incorrect \'mode\' String property in cancelation job.payload');
+      return expect(validatePromise).to.eventually.be.rejectedWith(Error, 'incorrect \'mode\' String property in cancel job.payload');
     });
   });
 });

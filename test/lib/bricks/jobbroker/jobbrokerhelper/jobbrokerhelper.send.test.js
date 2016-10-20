@@ -15,25 +15,22 @@ const JobQueue = require(nodepath.join(appRootPath,
 const jobQueueOpts = require('./jobqueueopts.testdata.js');
 const logger = require('cta-logger');
 const DEFAULTLOGGER = logger();
+const RunJob = require('./jobbrokerhelper.execution.run.testdata.js');
 
 describe('JobBroker - JobBrokerHelper - send', function() {
   let jobBrokerHelper;
-  const runningJobs = new Map();
+  const runningJobs = {
+    run: new Map(),
+    read: new Map(),
+    cancel: new Map(),
+  };
   const jobQueue = new JobQueue(jobQueueOpts);
   const mockCementHelper = {
     constructor: {
       name: 'CementHelper',
     },
   };
-  const job = {
-    id: 'some-job-id',
-    nature: {
-      type: 'foo',
-      quality: 'bar',
-    },
-    payload: {
-    },
-  };
+  const job = new RunJob();
   const mockContext = {
     publish() {
       return this;

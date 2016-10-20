@@ -17,10 +17,17 @@ const JobQueue = require(nodepath.join(appRootPath,
 const jobQueueOpts = require('./jobqueueopts.testdata.js');
 const logger = require('cta-logger');
 const DEFAULTLOGGER = logger();
+const RunJob = require('./jobbrokerhelper.execution.run.testdata.js');
+const ReadJob = require('./jobbrokerhelper.execution.read.testdata.js');
+const CancelJob = require('./jobbrokerhelper.execution.cancel.testdata.js');
 
 describe('JobBroker - JobBrokerHelper - cancel', function() {
   let jobBrokerHelper;
-  const runningJobs = new Map();
+  const runningJobs = {
+    run: new Map(),
+    read: new Map(),
+    cancel: new Map(),
+  };
   const jobQueue = new JobQueue(jobQueueOpts);
   const mockCementHelper = {
     constructor: {
@@ -33,23 +40,16 @@ describe('JobBroker - JobBrokerHelper - cancel', function() {
   });
 
   context('when job to cancel is not running', function() {
-    const job = {
-      id: new ObjectID(),
-      nature: {
-        type: 'execution',
-        quality: 'cancelation',
-      },
-      payload: {
-        jobid: new ObjectID(),
-      },
-    };
+    const job = new CancelJob((new ObjectID()).toString());
     before(function() {
-      sinon.stub(jobBrokerHelper.runningJobs, 'has').withArgs(job.payload.jobid).returns(false);
+      sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(false);
+      sinon.stub(jobBrokerHelper.runningJobs.run, 'has').withArgs(job.payload.execution.id).returns(false);
       sinon.stub(jobBrokerHelper, 'cancelQueuedJob');
       jobBrokerHelper.cancel(job);
     });
     after(function() {
-      jobBrokerHelper.runningJobs.has.restore();
+      jobBrokerHelper.runningJobs.read.has.restore();
+      jobBrokerHelper.runningJobs.run.has.restore();
       jobBrokerHelper.cancelQueuedJob.restore();
     });
 
@@ -59,70 +59,40 @@ describe('JobBroker - JobBrokerHelper - cancel', function() {
   });
 
   context('when job to cancel is running', function() {
-    context('when job is execution-group', function() {
-      const jobToCancel = {
-        id: new ObjectID(),
-        nature: {
-          type: 'execution',
-          quality: 'group',
-        },
-        payload: {},
-      };
-      const job = {
-        id: new ObjectID(),
-        nature: {
-          type: 'execution',
-          quality: 'cancelation',
-        },
-        payload: {
-          jobid: jobToCancel.id,
-        },
-      };
+    context('when job is execution-read', function() {
+      const jobToCancel = new ReadJob();
+      const job = new CancelJob(jobToCancel.payload.execution.id);
       before(function() {
-        sinon.stub(jobBrokerHelper.runningJobs, 'has').withArgs(job.payload.jobid).returns(true);
-        sinon.stub(jobBrokerHelper.runningJobs, 'get').withArgs(job.payload.jobid).returns(jobToCancel);
-        sinon.stub(jobBrokerHelper, 'cancelGroupJob');
-        jobBrokerHelper.cancel(job);
-      });
-      after(function() {
-        jobBrokerHelper.runningJobs.has.restore();
-        jobBrokerHelper.runningJobs.get.restore();
-        jobBrokerHelper.cancelGroupJob.restore();
-      });
-
-      it('should call cancelGroupJob method', function() {
-        expect(jobBrokerHelper.cancelGroupJob.calledWithExactly(job, jobToCancel)).to.equal(true);
-      });
-    });
-
-    context('when job is execution-commandLine', function() {
-      const jobToCancel = {
-        id: new ObjectID(),
-        nature: {
-          type: 'execution',
-          quality: 'commandLine',
-        },
-        payload: {},
-      };
-      const job = {
-        id: new ObjectID(),
-        nature: {
-          type: 'execution',
-          quality: 'cancelation',
-        },
-        payload: {
-          jobid: jobToCancel.id,
-        },
-      };
-      before(function() {
-        sinon.stub(jobBrokerHelper.runningJobs, 'has').withArgs(job.payload.jobid).returns(true);
-        sinon.stub(jobBrokerHelper.runningJobs, 'get').withArgs(job.payload.jobid).returns(jobToCancel);
+        sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(true);
+        sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.execution.id).returns(jobToCancel);
         sinon.stub(jobBrokerHelper, 'send');
         jobBrokerHelper.cancel(job);
       });
       after(function() {
-        jobBrokerHelper.runningJobs.has.restore();
-        jobBrokerHelper.runningJobs.get.restore();
+        jobBrokerHelper.runningJobs.read.has.restore();
+        jobBrokerHelper.runningJobs.read.get.restore();
+        jobBrokerHelper.send.restore();
+      });
+
+      it('should send cancelation job', function() {
+        expect(jobBrokerHelper.send.calledWithExactly(job)).to.equal(true);
+      });
+    });
+
+    context('when job is execution-run', function() {
+      const jobToCancel = new RunJob();
+      const job = new CancelJob(jobToCancel.payload.execution.id);
+      before(function() {
+        sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(false);
+        sinon.stub(jobBrokerHelper.runningJobs.run, 'has').withArgs(job.payload.execution.id).returns(true);
+        sinon.stub(jobBrokerHelper.runningJobs.run, 'get').withArgs(job.payload.execution.id).returns(jobToCancel);
+        sinon.stub(jobBrokerHelper, 'send');
+        jobBrokerHelper.cancel(job);
+      });
+      after(function() {
+        jobBrokerHelper.runningJobs.read.has.restore();
+        jobBrokerHelper.runningJobs.run.has.restore();
+        jobBrokerHelper.runningJobs.run.get.restore();
         jobBrokerHelper.send.restore();
       });
 

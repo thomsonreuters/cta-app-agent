@@ -14,20 +14,20 @@ const JobHandler = require(nodepath.join(appRootPath,
   '/lib/bricks/jobhandler/', 'index'));
 
 const JOB = {
-  'nature': {
-    'type': 'execution',
-    'quality': 'bar',
+  nature: {
+    type: 'execution',
+    quality: 'bar',
   },
-  'payload': {},
+  payload: {},
 };
 
 const DEFAULTS = {
-  'name': 'jobhandler',
-  'module': 'cta-jobhandler',
-  'properties': {
-    'COMMANDLINE': {
-      'JOBTIMEOUT': 5000,
-      'CMDTIMEOUT': 5000,
+  name: 'jobhandler',
+  module: 'cta-jobhandler',
+  properties: {
+    COMMANDLINE: {
+      JOBTIMEOUT: 5000,
+      CMDTIMEOUT: 5000,
     },
   },
 };
@@ -40,7 +40,7 @@ describe('JobHandler - process', function() {
 
     const cancelJob = _.cloneDeep(JOB);
     cancelJob.id = new ObjectID();
-    cancelJob.nature.quality = 'cancelation';
+    cancelJob.nature.quality = 'cancel';
     cancelJob.payload.jobid = job.id;
     let context;
     before(function() {
@@ -84,12 +84,12 @@ describe('JobHandler - process', function() {
       jobHandler = new JobHandler({}, DEFAULTS);
 
       // mock jobHandlerExecutor getExecutor
-      sinon.stub(jobHandler.jobHandlerHelper, 'getExecutor', function(job) {
+      sinon.stub(jobHandler.jobHandlerHelper, 'getExecutor', function() {
         return mockExecutor;
       });
 
       // mock jobHandlerHelper runExecutor
-      sinon.stub(jobHandler.jobHandlerHelper, 'runExecutor', function(executor, job, callback) {
+      sinon.stub(jobHandler.jobHandlerHelper, 'runExecutor', function(executor, resJob, callback) {
         return new Promise((resolve) => {
           resolve(stubResponse);
           callback(null, stubFinalResponse);
@@ -129,12 +129,12 @@ describe('JobHandler - process', function() {
       jobHandler = new JobHandler({}, DEFAULTS);
 
       // mock jobHandlerExecutor getExecutor
-      sinon.stub(jobHandler.jobHandlerHelper, 'getExecutor', function(job) {
+      sinon.stub(jobHandler.jobHandlerHelper, 'getExecutor', function() {
         return mockExecutor;
       });
 
       // mock jobHandlerHelper runExecutor
-      sinon.stub(jobHandler.jobHandlerHelper, 'runExecutor', function(executor, job, callback) {
+      sinon.stub(jobHandler.jobHandlerHelper, 'runExecutor', function() {
         return new Promise((resolve, reject) => {
           reject(stubError);
         });
@@ -174,12 +174,12 @@ describe('JobHandler - process', function() {
       jobHandler = new JobHandler({}, DEFAULTS);
 
       // mock jobHandlerExecutor getExecutor
-      sinon.stub(jobHandler.jobHandlerHelper, 'getExecutor', function(job) {
+      sinon.stub(jobHandler.jobHandlerHelper, 'getExecutor', function() {
         return mockExecutor;
       });
 
       // mock jobHandlerHelper runExecutor
-      sinon.stub(jobHandler.jobHandlerHelper, 'runExecutor', function(executor, job, callback) {
+      sinon.stub(jobHandler.jobHandlerHelper, 'runExecutor', function(executor, resJob, callback) {
         return new Promise((resolve) => {
           resolve(stubResponse);
           callback(null, stubFinalResponse);
@@ -206,6 +206,112 @@ describe('JobHandler - process', function() {
     });
   });
 
+  context('when jobHandlerHelper runExecutor() finishes by cancelation', function() {
+    let jobHandler;
+    const job = _.cloneDeep(JOB);
+    job.id = new ObjectID();
+    let context;
+    const mockExecutor = {};
+    const stubResponse = { res: 'executor process() started' };
+    const stubFinalResponse = {
+      cancelMode: 'manual',
+      res: 'executor process() canceled',
+    };
+    before(function() {
+      // mock context data and emit method
+      context = {
+        data: job,
+        emit: sinon.stub(),
+      };
+
+      jobHandler = new JobHandler({}, DEFAULTS);
+
+      // mock jobHandlerExecutor getExecutor
+      sinon.stub(jobHandler.jobHandlerHelper, 'getExecutor', function() {
+        return mockExecutor;
+      });
+
+      // mock jobHandlerHelper runExecutor
+      sinon.stub(jobHandler.jobHandlerHelper, 'runExecutor', function(executor, resJob, callback) {
+        return new Promise((resolve) => {
+          resolve(stubResponse);
+          callback(null, stubFinalResponse);
+        });
+      });
+
+      jobHandler.process(context);
+    });
+
+    it('should call jobHandlerHelper getExecutor', function() {
+      expect(jobHandler.jobHandlerHelper.getExecutor.calledWithExactly(job));
+    });
+
+    it('should call jobHandlerHelper runExecutor', function() {
+      expect(jobHandler.jobHandlerHelper.getExecutor.calledWith(mockExecutor, job));
+    });
+
+    it('should emit progress event', function() {
+      expect(context.emit.calledWithExactly('progress', jobHandler.name, stubResponse)).to.be.equal(true);
+    });
+
+    it('should emit canceled event', function() {
+      expect(context.emit.calledWithExactly('canceled', jobHandler.name, stubFinalResponse)).to.be.equal(true);
+    });
+  });
+
+  context('when jobHandlerHelper runExecutor() finishes by timeout', function() {
+    let jobHandler;
+    const job = _.cloneDeep(JOB);
+    job.id = new ObjectID();
+    let context;
+    const mockExecutor = {};
+    const stubResponse = { res: 'executor process() started' };
+    const stubFinalResponse = {
+      cancelMode: 'executionTimeout',
+      res: 'executor process() canceled',
+    };
+    before(function() {
+      // mock context data and emit method
+      context = {
+        data: job,
+        emit: sinon.stub(),
+      };
+
+      jobHandler = new JobHandler({}, DEFAULTS);
+
+      // mock jobHandlerExecutor getExecutor
+      sinon.stub(jobHandler.jobHandlerHelper, 'getExecutor', function() {
+        return mockExecutor;
+      });
+
+      // mock jobHandlerHelper runExecutor
+      sinon.stub(jobHandler.jobHandlerHelper, 'runExecutor', function(executor, resJob, callback) {
+        return new Promise((resolve) => {
+          resolve(stubResponse);
+          callback(null, stubFinalResponse);
+        });
+      });
+
+      jobHandler.process(context);
+    });
+
+    it('should call jobHandlerHelper getExecutor', function() {
+      expect(jobHandler.jobHandlerHelper.getExecutor.calledWithExactly(job));
+    });
+
+    it('should call jobHandlerHelper runExecutor', function() {
+      expect(jobHandler.jobHandlerHelper.getExecutor.calledWith(mockExecutor, job));
+    });
+
+    it('should emit progress event', function() {
+      expect(context.emit.calledWithExactly('progress', jobHandler.name, stubResponse)).to.be.equal(true);
+    });
+
+    it('should emit timeout event', function() {
+      expect(context.emit.calledWithExactly('timeout', jobHandler.name, stubFinalResponse)).to.be.equal(true);
+    });
+  });
+
   context('when jobHandlerHelper runExecutor() finishes with error (e.g. executing fails)', function() {
     let jobHandler;
     const job = _.cloneDeep(JOB);
@@ -224,12 +330,12 @@ describe('JobHandler - process', function() {
       jobHandler = new JobHandler({}, DEFAULTS);
 
       // mock jobHandlerExecutor getExecutor
-      sinon.stub(jobHandler.jobHandlerHelper, 'getExecutor', function(job) {
+      sinon.stub(jobHandler.jobHandlerHelper, 'getExecutor', function() {
         return mockExecutor;
       });
 
       // mock jobHandlerHelper runExecutor
-      sinon.stub(jobHandler.jobHandlerHelper, 'runExecutor', function(executor, job, callback) {
+      sinon.stub(jobHandler.jobHandlerHelper, 'runExecutor', function(executor, resJob, callback) {
         return new Promise((resolve) => {
           resolve(stubResponse);
           callback(stubFinalError);

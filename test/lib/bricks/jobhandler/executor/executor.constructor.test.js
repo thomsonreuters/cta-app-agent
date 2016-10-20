@@ -5,7 +5,6 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 const expect = chai.expect;
-const ObjectID = require('bson').ObjectID;
 
 const Executor = require(nodepath.join(appRootPath,
   '/lib/bricks/jobhandler/executor/', 'executor'));
@@ -21,8 +20,8 @@ const STATES = {
 };
 
 const CANCELMODE = {
-  MANUAL: 'MANUAL',
-  JOBTIMEOUT: 'JOB TIMEOUT',
+  MANUAL: 'manual',
+  JOBTIMEOUT: 'executionTimeout',
 };
 const DEFAULTS = {
   JOBTIMEOUT: 4000,

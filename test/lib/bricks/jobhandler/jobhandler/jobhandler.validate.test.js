@@ -17,20 +17,20 @@ const JobHandlerHelper = require(nodepath.join(appRootPath,
   '/lib/bricks/jobhandler/', 'jobhandlerhelper'));
 
 const JOB = {
-  'nature': {
-    'type': 'execution',
-    'quality': 'bar',
+  nature: {
+    type: 'execution',
+    quality: 'bar',
   },
-  'payload': {},
+  payload: {},
 };
 
 const DEFAULTS = {
-  'name': 'jobhandler',
-  'module': 'cta-jobhandler',
-  'properties': {
-    'COMMANDLINE': {
-      'JOBTIMEOUT': 5000,
-      'CMDTIMEOUT': 5000,
+  name: 'jobhandler',
+  module: 'cta-jobhandler',
+  properties: {
+    COMMANDLINE: {
+      JOBTIMEOUT: 5000,
+      CMDTIMEOUT: 5000,
     },
   },
 };
@@ -119,7 +119,7 @@ describe('JobHandler - validate', function() {
       // mock jobHandler and its providers
       jobHandler = new JobHandler({}, DEFAULTS);
       mockHandler = {
-        validate: function(somejob) {
+        validate: function() {
           return new Promise((resolve, reject) => {
             // resolve when process is started
             reject(mockHandlerValidateResponse);
@@ -141,7 +141,7 @@ describe('JobHandler - validate', function() {
     job.id = new ObjectID();
     let context;
     let mockHandler;
-    const mockHandlerValidateResponse = {ok: 1};
+    const mockHandlerValidateResponse = { ok: 1 };
     before(function() {
       jobHandler = new JobHandler({}, DEFAULTS);
       context = { data: job };
@@ -149,8 +149,8 @@ describe('JobHandler - validate', function() {
       // mock jobHandler and its providers
       jobHandler = new JobHandler({}, DEFAULTS);
       mockHandler = {
-        validate: function(somejob) {
-          return new Promise((resolve, reject) => {
+        validate: function() {
+          return new Promise((resolve) => {
             // resolve when process is started
             resolve(mockHandlerValidateResponse);
           });
@@ -174,7 +174,7 @@ describe('JobHandler - validate', function() {
       let context;
       before(function() {
         jobHandler = new JobHandler({}, DEFAULTS);
-        job.nature.quality = 'cancelation';
+        job.nature.quality = 'cancel';
         job.payload.jobid = {};
         context = { data: job };
         sinon.stub(jobHandler.executors, 'has').withArgs(job.nature.quality).returns(true);
@@ -195,7 +195,7 @@ describe('JobHandler - validate', function() {
       let context;
       before(function() {
         jobHandler = new JobHandler({}, DEFAULTS);
-        job.nature.quality = 'cancelation';
+        job.nature.quality = 'cancel';
         job.payload.jobid = new ObjectID();
         context = { data: job };
         sinon.stub(jobHandler.executors, 'has').withArgs(job.nature.quality).returns(true);

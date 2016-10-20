@@ -13,18 +13,12 @@ const _ = require('lodash');
 const JobBroker = require(nodepath.join(appRootPath,
   '/lib/bricks/jobbroker/', 'index.js'));
 
-const JOB = {
-  'nature': {
-    'type': 'execution',
-    'quality': 'bar',
-  },
-  'payload': {},
-};
+const JOB = require('./jobbroker.execution.run.testdata.js');
 
 const DEFAULTS = {
-  'name': 'jobbroker',
-  'module': 'cta-jobbroker',
-  'properties': {},
+  name: 'jobbroker',
+  module: 'cta-jobbroker',
+  properties: {},
 };
 
 describe('JobBroker - process', function() {
@@ -42,7 +36,7 @@ describe('JobBroker - process', function() {
   context('when job is execution-cancelation', function() {
     const job = _.cloneDeep(JOB);
     job.id = new ObjectID();
-    job.nature.quality = 'cancelation';
+    job.nature.quality = 'cancel';
     job.payload.jobid = job.id;
     const context = {
       data: job,
@@ -60,10 +54,10 @@ describe('JobBroker - process', function() {
     });
   });
 
-  context('when job is execution-commandLine', function() {
+  context('when job is execution-run', function() {
     const job = _.cloneDeep(JOB);
     job.id = new ObjectID();
-    job.nature.quality = 'commandLine';
+    job.nature.quality = 'run';
     const context = {
       data: job,
     };
@@ -80,10 +74,10 @@ describe('JobBroker - process', function() {
     });
   });
 
-  context('when job is execution-group', function() {
+  context('when job is execution-read', function() {
     const job = _.cloneDeep(JOB);
     job.id = new ObjectID();
-    job.nature.quality = 'group';
+    job.nature.quality = 'read';
     const context = {
       data: job,
     };

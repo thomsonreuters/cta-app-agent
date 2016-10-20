@@ -8,7 +8,7 @@
     "stages": [
       {
         "id": "RUN01",
-        "run": "echo Test - This is an error.\nPING 1.1.1.1 -n 1 -w 1000 >NUL\nexit 1",
+        "run": "echo Test - This is an error. 1>&2\nPING 1.1.1.1 -n 1 -w 1000 >NUL\nexit 1",
         "stop": "echo Test - Do stop operations..."
       },
       {

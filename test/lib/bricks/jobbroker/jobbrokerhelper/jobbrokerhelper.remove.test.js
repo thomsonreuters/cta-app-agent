@@ -15,37 +15,46 @@ const JobQueue = require(nodepath.join(appRootPath,
 const jobQueueOpts = require('./jobqueueopts.testdata.js');
 const logger = require('cta-logger');
 const DEFAULTLOGGER = logger();
+const RunJob = require('./jobbrokerhelper.execution.run.testdata.js');
 
 describe('JobBroker - JobBrokerHelper - remove', function() {
   context('job is present in runningJobs Map', function() {
     context('jobQueue is empty or another job is still running', function() {
       let jobBrokerHelper;
-      const runningJobs = new Map();
+      const runningJobs = {
+        run: new Map(),
+        read: new Map(),
+        cancel: new Map(),
+      };
       const jobQueue = new JobQueue(jobQueueOpts);
       const mockCementHelper = {
         constructor: {
           name: 'CementHelper',
         },
       };
-      const jobid = 'some-job-id';
+      const job = new RunJob();
       before(function() {
         jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
         sinon.spy(jobBrokerHelper.logger, 'warn');
-        sinon.stub(jobBrokerHelper.runningJobs, 'delete').returns({});
+        sinon.stub(jobBrokerHelper.runningJobs[job.nature.quality], 'has').withArgs(job.payload.execution.id).returns(true);
+        sinon.stub(jobBrokerHelper.runningJobs[job.nature.quality], 'get').withArgs(job.payload.execution.id).returns(job);
+        sinon.stub(jobBrokerHelper.runningJobs[job.nature.quality], 'delete').returns(job);
         sinon.stub(jobBrokerHelper.queue, 'isEmpty').returns(false);
         sinon.stub(jobBrokerHelper.queue, 'dequeue');
         sinon.stub(jobBrokerHelper, 'send');
-        jobBrokerHelper.remove(jobid);
+        jobBrokerHelper.remove(job);
       });
       after(function() {
         jobBrokerHelper.logger.warn.restore();
-        jobBrokerHelper.runningJobs.delete.restore();
+        jobBrokerHelper.runningJobs[job.nature.quality].delete.restore();
+        jobBrokerHelper.runningJobs[job.nature.quality].has.restore();
+        jobBrokerHelper.runningJobs[job.nature.quality].get.restore();
         jobBrokerHelper.queue.isEmpty.restore();
         jobBrokerHelper.queue.dequeue.restore();
         jobBrokerHelper.send.restore();
       });
       it('should call queue delete()', function() {
-        expect(jobBrokerHelper.runningJobs.delete.calledWithExactly(jobid)).to.equal(true);
+        expect(jobBrokerHelper.runningJobs[job.nature.quality].delete.calledWithExactly(job.payload.execution.id)).to.equal(true);
       });
 
       it('should not call queue dequeue()', function() {
@@ -59,34 +68,42 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
 
     context('jobQueue is not empty and no job is still running', function() {
       let jobBrokerHelper;
-      const runningJobs = new Map();
+      const runningJobs = {
+        run: new Map(),
+        read: new Map(),
+        cancel: new Map(),
+      };
       const jobQueue = new JobQueue(jobQueueOpts);
       const mockCementHelper = {
         constructor: {
           name: 'CementHelper',
         },
       };
-      const jobid = 'some-job-id';
-      const mockDequeuedJob = { 'id': 'bar' };
+      const job = new RunJob();
+      const mockDequeuedJob = new RunJob();
       before(function() {
         jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
         sinon.spy(jobBrokerHelper.logger, 'warn');
-        sinon.stub(jobBrokerHelper.runningJobs, 'delete').returns({});
-        jobBrokerHelper.runningJobs.clear();
+        sinon.stub(jobBrokerHelper.runningJobs[job.nature.quality], 'has').withArgs(job.payload.execution.id).returns(true);
+        sinon.stub(jobBrokerHelper.runningJobs[job.nature.quality], 'get').withArgs(job.payload.execution.id).returns(job);
+        sinon.stub(jobBrokerHelper.runningJobs[job.nature.quality], 'delete').returns(job);
+        jobBrokerHelper.runningJobs[job.nature.quality].clear();
         sinon.stub(jobBrokerHelper.queue, 'isEmpty').returns(true);
         sinon.stub(jobBrokerHelper.queue, 'dequeue').returns(mockDequeuedJob);
         sinon.stub(jobBrokerHelper, 'send');
-        jobBrokerHelper.remove(jobid);
+        jobBrokerHelper.remove(job);
       });
       after(function() {
         jobBrokerHelper.logger.warn.restore();
-        jobBrokerHelper.runningJobs.delete.restore();
+        jobBrokerHelper.runningJobs[job.nature.quality].delete.restore();
+        jobBrokerHelper.runningJobs[job.nature.quality].has.restore();
+        jobBrokerHelper.runningJobs[job.nature.quality].get.restore();
         jobBrokerHelper.queue.isEmpty.restore();
         jobBrokerHelper.queue.dequeue.restore();
         jobBrokerHelper.send.restore();
       });
       it('should call queue delete()', function() {
-        expect(jobBrokerHelper.runningJobs.delete.calledWithExactly(jobid)).to.equal(true);
+        expect(jobBrokerHelper.runningJobs[job.nature.quality].delete.calledWithExactly(job.payload.execution.id)).to.equal(true);
       });
 
       it('should call queue dequeue()', function() {
@@ -101,29 +118,31 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
 
   context('job is absent in runningJobs Map', function() {
     let jobBrokerHelper;
-    const runningJobs = new Map();
+    const runningJobs = {
+      run: new Map(),
+      read: new Map(),
+      cancel: new Map(),
+    };
     const jobQueue = new JobQueue(jobQueueOpts);
     const mockCementHelper = {
       constructor: {
         name: 'CementHelper',
       },
     };
-    const jobid = 'some-job-id';
+    const job = new RunJob();
     before(function() {
       jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
       sinon.spy(jobBrokerHelper.logger, 'warn');
-      sinon.stub(jobBrokerHelper.runningJobs, 'delete').returns(undefined);
-      jobBrokerHelper.remove(jobid);
+      jobBrokerHelper.remove(job);
     });
     after(function() {
       jobBrokerHelper.logger.warn.restore();
     });
-    it('should call queue delete()', function() {
-      expect(jobBrokerHelper.runningJobs.delete.calledWithExactly(jobid)).to.equal(true);
-    });
 
     it('should call logger warn()', function() {
-      expect(jobBrokerHelper.logger.warn.calledWith(`tried to remove an unknown running job (id: ${jobid}).`)).to.equal(true);
+      expect(jobBrokerHelper.logger.warn.calledWith(
+        `tried to remove an unknown running ${job.nature.quality} job (id: ${job.payload.execution.id}).`
+      )).to.equal(true);
     });
   });
 });

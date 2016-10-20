@@ -53,7 +53,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
           timeout: 20,
           stages: [
             {
-              run: {'incorrect': 'run'},
+              run: { incorrect: 'run' },
             },
           ],
         },
@@ -147,13 +147,37 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
             {
               run: 'somerun',
               stop: 'somestop',
-              timeout: { 'incorrect': 'timeout' },
+              timeout: { incorrect: 'timeout' },
             },
           ],
         },
       };
       const validatePromise = executor.validate(incorrectJob);
       return expect(validatePromise).to.eventually.be.rejectedWith(Error, 'incorrect \'timeout\' number property in stages[0]');
+    });
+  });
+
+  context('when incorrect \'stopTimeout\' number property in stages[0]', function() {
+    it('should reject with an error', function() {
+      const incorrectJob = {
+        id: new ObjectID(),
+        nature: {
+          type: 'execution',
+          quality: 'commandLine',
+        },
+        payload: {
+          timeout: 20,
+          stages: [
+            {
+              run: 'somerun',
+              stop: 'somestop',
+              stopTimeout: { incorrect: 'timeout' },
+            },
+          ],
+        },
+      };
+      const validatePromise = executor.validate(incorrectJob);
+      return expect(validatePromise).to.eventually.be.rejectedWith(Error, 'incorrect \'stopTimeout\' number property in stages[0]');
     });
   });
 
@@ -171,7 +195,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
             {
               run: 'somerun',
               stop: 'somestop',
-              env: { 'incorrect': 'env' },
+              env: { incorrect: 'env' },
             },
           ],
         },
