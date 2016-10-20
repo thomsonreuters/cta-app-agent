@@ -21,8 +21,15 @@ const DEFAULTCEMENTHELPER = {
   createContext: function() {},
 };
 const RESULT = {
-  status: 'failed',
   id: 'foobar',
+  status: 'failed',
+  message: 'message',
+  description: 'description',
+  attachment: 'attachment',
+  build: 'build',
+  screenshot: 'screenshot',
+  foo: 'bar',
+  quz: 'qux',
 };
 
 describe('Utils - OLDRESTAPI - Handlers - Results - createTestStatus', function() {
@@ -47,6 +54,21 @@ describe('Utils - OLDRESTAPI - Handlers - Results - createTestStatus', function(
       const payload = {
         testId: req.body.id,
         status: req.body.status.toLowerCase(),
+        name: req.body.message,
+        description: req.body.description,
+        attachment: req.body.attachment,
+        build: req.body.build,
+        screenshot: req.body.screenshot,
+        custom: [
+          {
+            key: 'foo',
+            value: 'bar',
+          },
+          {
+            key: 'quz',
+            value: 'qux',
+          },
+        ],
       };
       data = {
         nature: {
@@ -145,6 +167,21 @@ describe('Utils - OLDRESTAPI - Handlers - Results - createTestStatus', function(
       const payload = {
         testId: req.query.id,
         status: req.query.status.toLowerCase(),
+        name: req.query.message,
+        description: req.query.description,
+        attachment: req.query.attachment,
+        build: req.query.build,
+        screenshot: req.query.screenshot,
+        custom: [
+          {
+            key: 'foo',
+            value: 'bar',
+          },
+          {
+            key: 'quz',
+            value: 'qux',
+          },
+        ],
       };
       data = {
         nature: {

@@ -22,6 +22,21 @@ const DEFAULTCEMENTHELPER = {
 };
 const RESULT = {
   status: 'failed',
+  name: 'name',
+  description: 'description',
+  attachment: 'attachment',
+  build: 'build',
+  screenshot: 'screenshot',
+  custom: [
+    {
+      key: 'foo',
+      value: 'bar',
+    },
+    {
+      key: 'quz',
+      value: 'qux',
+    },
+  ],
 };
 
 describe('Utils - RESTAPI - Handlers - Results - create', function() {
