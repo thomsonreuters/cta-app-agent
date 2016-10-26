@@ -206,8 +206,8 @@ describe('ResultCollector - ResultCollectorHelper - createState', function() {
         sinon.assert.called(mockContext.publish);
       });
 
-      it('should set runningJob to null', function() {
-        return expect(helper.runningJob).to.be.null;
+      it('should set runningJob.active to false', function() {
+        return expect(helper.runningJob.active).to.be.false;
       });
 
       describe('when context emit done event', function() {

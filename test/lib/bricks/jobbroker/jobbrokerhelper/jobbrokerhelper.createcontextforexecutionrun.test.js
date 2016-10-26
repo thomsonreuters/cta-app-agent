@@ -37,6 +37,20 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
     },
     createContext: sinon.stub().withArgs(job).returns(mockContext),
   };
+
+  // const setRunningJobForResult = {
+  //   nature: {
+  //     type: 'result',
+  //     quality: 'setRunningJob',
+  //   },
+  //   payload: {
+  //     executionId: job.payload.execution.id,
+  //     testSuiteId: job.payload.testSuite.id,
+  //     testId: job.payload.testSuite.tests[0].id,
+  //   },
+  // };
+  const mockSetRunningJobContext = new EventEmitter();
+
   const execJob = {
     id: jobId,
     nature: {
@@ -63,7 +77,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
 
     sinon.stub(jobBrokerHelper.runningJobs.run, 'set');
     sinon.stub(jobBrokerHelper, 'ack');
-    sinon.stub(jobBrokerHelper, 'send');
+    sinon.stub(jobBrokerHelper, 'send').returns(mockSetRunningJobContext);
     sinon.spy(mockContext, 'once');
     result = _createContextForExecutionRun(job);
     console.log(result);
@@ -73,26 +87,35 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
     jobBrokerHelper.ack.restore();
     jobBrokerHelper.send.restore();
   });
-  it('should add job to runningJobs run', function() {
-    expect(jobBrokerHelper.runningJobs.run.set.calledWithExactly(jobId, job)).to.equal(true);
-  });
 
-  it('should send running state', function() {
-    expect(jobBrokerHelper.send.calledWithExactly({
-      nature: {
-        type: 'state',
-        quality: 'create',
-      },
-      payload: {
-        executionId: jobId,
-        status: 'running',
-        message: `Job ${jobId} started.`,
-      },
-    })).to.be.equal(true);
-  });
+  context('when mockSetRunningJobContext emit done event', function() {
+    before(function() {
+      mockSetRunningJobContext.emit('done');
+    });
 
-  it('should ack job', function() {
-    expect(jobBrokerHelper.ack.calledWithExactly(job)).to.be.equal(true);
+    it('should add job to runningJobs run', function() {
+      expect(jobBrokerHelper.runningJobs.run.set.calledWithExactly(jobId, job)).to.equal(true);
+    });
+
+    it('should send running state', function() {
+      expect(jobBrokerHelper.send.calledWithExactly({
+        nature: {
+          type: 'state',
+          quality: 'create',
+        },
+        payload: {
+          executionId: job.payload.execution.id,
+          testSuiteId: job.payload.testSuite.id,
+          testId: job.payload.testSuite.tests[0].id,
+          status: 'running',
+          message: `Job ${jobId} started.`,
+        },
+      })).to.be.equal(true);
+    });
+
+    it('should ack job', function() {
+      expect(jobBrokerHelper.ack.calledWithExactly(job)).to.be.equal(true);
+    });
   });
 
   it('should create a new context with cementHelper', function() {
@@ -130,7 +153,9 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
           quality: 'create',
         },
         payload: {
-          executionId: jobId,
+          executionId: job.payload.execution.id,
+          testSuiteId: job.payload.testSuite.id,
+          testId: job.payload.testSuite.tests[0].id,
           status: 'finished',
           error: mockRejectError,
           message: mockRejectError.message,
@@ -204,9 +229,10 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
           state: 'finished',
           message: 'Mock done',
         };
+        let options;
         before(function() {
           sinon.stub(jobBrokerHelper, 'remove');
-          const options = {
+          options = {
             testIndex: job.payload.testSuite.tests.length - 1,
           };
           _createContextForExecutionRun(job, options);
@@ -224,7 +250,9 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
               quality: 'create',
             },
             payload: {
-              executionId: jobId,
+              executionId: job.payload.execution.id,
+              testSuiteId: job.payload.testSuite.id,
+              testId: job.payload.testSuite.tests[options.testIndex].id,
               status: 'finished',
               message: mockDoneResponse.message,
             },
@@ -282,9 +310,10 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
         message: 'Mock canceled',
         cancelMode: 'manual',
       };
+      let options;
       before(function() {
         sinon.stub(jobBrokerHelper, 'remove');
-        const options = {
+        options = {
           testIndex: job.payload.testSuite.tests.length - 1,
         };
         _createContextForExecutionRun(job, options);
@@ -302,7 +331,9 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
             quality: 'create',
           },
           payload: {
-            executionId: jobId,
+            executionId: job.payload.execution.id,
+            testSuiteId: job.payload.testSuite.id,
+            testId: job.payload.testSuite.tests[options.testIndex].id,
             status: 'canceled',
             message: mockDoneResponse.message,
           },
@@ -321,13 +352,14 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
         cancelMode: 'manual',
       };
       const groupjob = new ReadJob();
+      let options;
       before(function() {
         job.payload.execution.id = groupjob.payload.execution.id;
         sinon.stub(jobBrokerHelper, 'remove');
         sinon.stub(jobBrokerHelper, 'terminateGroupJob');
         sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(true);
         sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.execution.id).returns(groupjob);
-        const options = {
+        options = {
           testIndex: job.payload.testSuite.tests.length - 1,
         };
         _createContextForExecutionRun(job, options);
@@ -348,7 +380,9 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
             quality: 'create',
           },
           payload: {
-            jobid: job.payload.execution.id,
+            executionId: job.payload.execution.id,
+            testSuiteId: job.payload.testSuite.id,
+            testId: job.payload.testSuite.tests[options.testIndex].id,
             state: 'canceled',
             message: `group Job ${job.payload.execution.id} canceled (${mockDoneResponse.cancelMode}) during sub-Job ${job.payload.execution.id}`,
           },
@@ -368,9 +402,10 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
         message: 'Mock timeout',
         cancelMode: 'executionTimeout',
       };
+      let options;
       before(function() {
         sinon.stub(jobBrokerHelper, 'remove');
-        const options = {
+        options = {
           testIndex: job.payload.testSuite.tests.length - 1,
         };
         _createContextForExecutionRun(job, options);
@@ -388,7 +423,9 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
             quality: 'create',
           },
           payload: {
-            executionId: jobId,
+            executionId: job.payload.execution.id,
+            testSuiteId: job.payload.testSuite.id,
+            testId: job.payload.testSuite.tests[options.testIndex].id,
             status: 'canceled',
             message: mockDoneResponse.message,
           },
@@ -407,13 +444,14 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
         cancelMode: 'executionTimeout',
       };
       const groupjob = new ReadJob();
+      let options;
       before(function() {
         job.payload.execution.id = groupjob.payload.execution.id;
         sinon.stub(jobBrokerHelper, 'remove');
         sinon.stub(jobBrokerHelper, 'terminateGroupJob');
         sinon.stub(jobBrokerHelper.runningJobs.read, 'has').withArgs(job.payload.execution.id).returns(true);
         sinon.stub(jobBrokerHelper.runningJobs.read, 'get').withArgs(job.payload.execution.id).returns(groupjob);
-        const options = {
+        options = {
           testIndex: job.payload.testSuite.tests.length - 1,
         };
         _createContextForExecutionRun(job, options);
@@ -434,7 +472,9 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
             quality: 'create',
           },
           payload: {
-            jobid: job.payload.execution.id,
+            executionId: job.payload.execution.id,
+            testSuiteId: job.payload.testSuite.id,
+            testId: job.payload.testSuite.tests[options.testIndex].id,
             state: 'canceled',
             message: `group Job ${job.payload.execution.id} timeout (${mockDoneResponse.cancelMode}) during sub-Job ${job.payload.execution.id}`,
           },
@@ -490,7 +530,9 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
             quality: 'create',
           },
           payload: {
-            executionId: jobId,
+            executionId: job.payload.execution.id,
+            testSuiteId: job.payload.testSuite.id,
+            testId: job.payload.testSuite.tests[0].id,
             status: 'finished',
             error: mockError,
             message: mockError.message,
