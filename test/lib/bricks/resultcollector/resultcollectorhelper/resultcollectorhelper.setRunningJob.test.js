@@ -25,6 +25,7 @@ describe('ResultCollector - ResultCollectorHelper - setRunningJob', function() {
     data: {
       payload: job,
     },
+    emit: sinon.stub(),
   };
   const mockCementHelper = {
     constructor: {
@@ -47,6 +48,7 @@ describe('ResultCollector - ResultCollectorHelper - setRunningJob', function() {
       expect(helper.runningJob).to.have.property('testSuiteId', job.testSuiteId);
       expect(helper.runningJob).to.have.property('testId', job.testId);
       expect(helper.runningJob).to.have.property('currentIndex', 0);
+      expect(helper.runningJob).to.have.property('active', true);
     });
 
     it('should emit done on input context', function() {
@@ -70,6 +72,7 @@ describe('ResultCollector - ResultCollectorHelper - setRunningJob', function() {
       expect(helper.runningJob).to.have.property('testSuiteId', job.testSuiteId);
       expect(helper.runningJob).to.have.property('testId', job.testId);
       expect(helper.runningJob).to.have.property('currentIndex', 0);
+      expect(helper.runningJob).to.have.property('active', true);
     });
 
     it('should emit done on input context', function() {
@@ -93,6 +96,7 @@ describe('ResultCollector - ResultCollectorHelper - setRunningJob', function() {
       expect(helper.runningJob).to.have.property('testSuiteId', job.testSuiteId);
       expect(helper.runningJob).to.have.property('testId', job.testId);
       expect(helper.runningJob).to.have.property('currentIndex', alreadySetJob.currentIndex);
+      expect(helper.runningJob).to.have.property('active', true);
     });
 
     it('should emit done on input context', function() {

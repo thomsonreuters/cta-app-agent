@@ -72,6 +72,7 @@ describe('ResultCollector - ResultCollectorHelper - createResult', function() {
       testSuiteId: 'tsid',
       testId: 'tid',
       currentIndex: currentIndex,
+      active: true,
     };
 
     const now = Date.now();

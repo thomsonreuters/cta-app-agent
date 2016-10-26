@@ -85,16 +85,14 @@ describe('JobBroker - JobBrokerHelper - createContextForMessageGet', function() 
         jobBrokerHelper.send.restore();
       });
 
-      it('should send running state for the group job', function() {
+      it('should send setRunningJob for the group job', function() {
         sinon.assert.calledWithExactly(jobBrokerHelper.send, {
           nature: {
-            type: 'state',
-            quality: 'create',
+            type: 'result',
+            quality: 'setRunningJob',
           },
           payload: {
             executionId: queuegetjob.payload.groupExecutionId,
-            status: 'running',
-            message: `GET message request for group Job ${queuegetjob.payload.groupExecutionId} accepted by ${outputBrickName}.`,
           },
         });
       });
@@ -185,20 +183,9 @@ describe('JobBroker - JobBrokerHelper - createContextForMessageGet', function() 
           jobBrokerHelper.terminateGroupJob.restore();
         });
 
-        it('should terminate group job with finished state', function() {
-          const stateJob = {
-            nature: {
-              type: 'state',
-              quality: 'create',
-            },
-            payload: {
-              executionId: queuegetjob.payload.groupExecutionId,
-              status: 'finished',
-              message: `No more Jobs to run for group Job ${queuegetjob.payload.groupExecutionId}.`,
-            },
-          };
+        it('should terminate group job', function() {
           expect(jobBrokerHelper.terminateGroupJob
-            .calledWithExactly(queuegetjob.payload.groupExecutionId, stateJob)).to.be.equal(true);
+            .calledWithExactly(queuegetjob.payload.groupExecutionId)).to.be.equal(true);
         });
       });
     });
