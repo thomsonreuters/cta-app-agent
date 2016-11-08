@@ -1,0 +1,25 @@
+image: node:4.2.2
+
+cache:
+  paths:
+    - node_modules/
+
+before_script:
+  - export
+  - mkdir /root/.ssh/
+  - cp cta_deploymentkey /root/.ssh/id_rsa
+  - chmod 600 /root/.ssh/id_rsa
+  - echo "    IdentityFile /root/.ssh/id_rsa" >> /etc/ssh/ssh_config
+  - touch /root/.ssh/known_hosts
+  - ssh-keyscan git.sami.int.thomsonreuters.com >> /root/.ssh/known_hosts
+  - npm config set proxy http://webproxy.lon.corp.services:80
+  - npm config set https-proxy http://webproxy.lon.corp.services:80
+  - npm install
+
+stages:
+  - test
+
+job_name:
+  stage: test
+  script:
+    - npm run gitlab-ci
