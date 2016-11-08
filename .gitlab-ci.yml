@@ -39,4 +39,4 @@ stages:
 job_name:
   stage: test
   script:
-    - npm run gitlab-ci
+    - npm run test
