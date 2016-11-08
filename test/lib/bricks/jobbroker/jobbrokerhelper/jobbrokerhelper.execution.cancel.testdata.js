@@ -11,6 +11,7 @@ class CancelJob {
         execution: {
           id: id,
         },
+        mode: 'manual',
       },
     };
     return job;

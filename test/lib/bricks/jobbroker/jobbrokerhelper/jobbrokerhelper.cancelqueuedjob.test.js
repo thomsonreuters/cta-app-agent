@@ -37,7 +37,46 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
   before(function() {
     jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
   });
-  context('when job was successfully removed from queue', function() {
+  context('when job was successfully removed from queue (pendingTimeout)', function() {
+    const jobToCancel = new RunJob();
+    const job = new CancelJob(jobToCancel.payload.execution.id);
+    job.payload.mode = 'pendingTimeout';
+    before(function() {
+      sinon.stub(jobBrokerHelper.queue, 'remove').withArgs(job.payload.execution.id).returns(jobToCancel);
+      sinon.stub(jobBrokerHelper, 'send');
+      sinon.stub(jobBrokerHelper, 'ack');
+      jobBrokerHelper.cancelQueuedJob(job);
+    });
+    after(function() {
+      jobBrokerHelper.queue.remove.restore();
+      jobBrokerHelper.send.restore();
+      jobBrokerHelper.ack.restore();
+    });
+
+    it('should send canceled state for the canceled job', function() {
+      expect(jobBrokerHelper.send.calledWithExactly({
+        nature: {
+          type: 'state',
+          quality: 'create',
+        },
+        payload: {
+          executionId: job.payload.execution.id,
+          status: 'timeout',
+          message: 'Job Pending Timeout exceeded.',
+        },
+      })).to.equal(true);
+    });
+
+    it('should ack the canceled job', function() {
+      expect(jobBrokerHelper.ack.calledWithExactly(jobToCancel)).to.equal(true);
+    });
+
+    it('should ack the cancelation job', function() {
+      expect(jobBrokerHelper.ack.calledWithExactly(job)).to.equal(true);
+    });
+  });
+
+  context('when job was successfully removed from queue (manual)', function() {
     const jobToCancel = new RunJob();
     const job = new CancelJob(jobToCancel.payload.execution.id);
     before(function() {
@@ -61,27 +100,13 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
         payload: {
           executionId: job.payload.execution.id,
           status: 'canceled',
-          message: `Job ${job.payload.execution.id} removed from queue successfully.`,
+          message: 'Job removed from queue successfully.',
         },
       })).to.equal(true);
     });
 
     it('should ack the canceled job', function() {
       expect(jobBrokerHelper.ack.calledWithExactly(jobToCancel)).to.equal(true);
-    });
-
-    it.skip('should send finished state for the cancelation job', function() {
-      expect(jobBrokerHelper.send.calledWithExactly({
-        nature: {
-          type: 'state',
-          quality: 'create',
-        },
-        payload: {
-          jobid: job.id,
-          state: 'finished',
-          message: `Job ${job.payload.jobid} removed from queue successfully.`,
-        },
-      })).to.equal(true);
     });
 
     it('should ack the cancelation job', function() {
@@ -101,20 +126,6 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
       jobBrokerHelper.queue.remove.restore();
       jobBrokerHelper.send.restore();
       jobBrokerHelper.ack.restore();
-    });
-
-    it.skip('should send finished state for the cancelation job', function() {
-      expect(jobBrokerHelper.send.calledWithExactly({
-        nature: {
-          type: 'state',
-          quality: 'create',
-        },
-        payload: {
-          jobid: job.id,
-          state: 'finished',
-          message: `Job ${job.payload.jobid} neither running nor queued. Nothing to cancel.`,
-        },
-      })).to.equal(true);
     });
 
     it('should ack the cancelation job', function() {

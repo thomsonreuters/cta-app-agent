@@ -398,7 +398,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
   describe('when mockContext emit timeout event', function() {
     context('when job does not belong to a running group job', function() {
       const mockDoneResponse = {
-        state: 'canceled',
+        state: 'timeout',
         message: 'Mock timeout',
         cancelMode: 'executionTimeout',
       };
@@ -426,7 +426,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
             executionId: job.payload.execution.id,
             testSuiteId: job.payload.testSuite.id,
             testId: job.payload.testSuite.tests[options.testIndex].id,
-            status: 'canceled',
+            status: 'timeout',
             message: mockDoneResponse.message,
           },
         })).to.be.equal(true);
@@ -439,7 +439,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
 
     context('when job belongs to a running group job', function() {
       const mockDoneResponse = {
-        state: 'canceled',
+        state: 'timeout',
         message: 'Mock timeout',
         cancelMode: 'executionTimeout',
       };
@@ -455,7 +455,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
           testIndex: job.payload.testSuite.tests.length - 1,
         };
         _createContextForExecutionRun(job, options);
-        mockContext.emit('canceled', 'jobhandler', mockDoneResponse);
+        mockContext.emit('timeout', 'jobhandler', mockDoneResponse);
       });
 
       after(function() {
@@ -475,7 +475,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
             executionId: job.payload.execution.id,
             testSuiteId: job.payload.testSuite.id,
             testId: job.payload.testSuite.tests[options.testIndex].id,
-            state: 'canceled',
+            state: 'timeout',
             message: `group Job ${job.payload.execution.id} timeout (${mockDoneResponse.cancelMode}) during sub-Job ${job.payload.execution.id}`,
           },
         }));
