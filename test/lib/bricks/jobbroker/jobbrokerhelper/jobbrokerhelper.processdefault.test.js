@@ -35,11 +35,56 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
   before(function() {
     jobBrokerHelper = new JobBrokerHelper(mockCementHelper, jobQueue, runningJobs, DEFAULTLOGGER);
   });
+
+  context('when job pendingTimestamp has been exceeded', function() {
+    const now = Date.now();
+    const job = new RunJob();
+    job.payload.execution.pendingTimeout = 1000;
+    job.payload.execution.requestTimestamp = now - (job.payload.execution.pendingTimeout + 1000);
+    const runningJob = new RunJob();
+    before(function() {
+      sinon.stub(jobBrokerHelper, 'send');
+      sinon.stub(jobBrokerHelper, 'ack');
+      sinon.stub(jobBrokerHelper.logger, 'info');
+      sinon.stub(Date, 'now').returns(now);
+      jobBrokerHelper.runningJobs.run.set(runningJob.payload.execution.id, runningJob);
+      jobBrokerHelper.processDefault(job);
+    });
+    after(function() {
+      jobBrokerHelper.send.restore();
+      jobBrokerHelper.ack.restore();
+      jobBrokerHelper.logger.info.restore();
+      Date.now.restore();
+      jobBrokerHelper.runningJobs.run.clear();
+    });
+    it('should log info that job was canceled (pendingTimeout)', function() {
+      const message = `Job Pending Timeout exceeded for Job ${job.payload.execution.id}`;
+      expect(jobBrokerHelper.logger.info.calledWithExactly(message)).to.equal(true);
+    });
+    it('should send canceled state', function() {
+      const stateJob = {
+        nature: {
+          type: 'state',
+          quality: 'create',
+        },
+        payload: {
+          executionId: job.payload.execution.id,
+          status: 'timeout',
+          message: 'Job Pending Timeout exceeded.',
+        },
+      };
+      sinon.assert.calledWith(jobBrokerHelper.send, stateJob);
+    });
+    it('should ack the job', function() {
+      sinon.assert.calledWith(jobBrokerHelper.ack, job);
+    });
+  });
+
   context('when no job is running', function() {
     const job = new RunJob();
     before(function() {
       sinon.stub(jobBrokerHelper, 'send');
-      sinon.stub(jobBrokerHelper, 'setRunTimeout');
+      sinon.stub(jobBrokerHelper, 'setRunningTimeout');
       jobBrokerHelper.runningJobs.run.clear();
       jobBrokerHelper.runningJobs.read.clear();
       jobBrokerHelper.runningJobs.cancel.clear();
@@ -47,14 +92,14 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
     });
     after(function() {
       jobBrokerHelper.send.restore();
-      jobBrokerHelper.setRunTimeout.restore();
+      jobBrokerHelper.setRunningTimeout.restore();
     });
     it('should send the job', function() {
       expect(jobBrokerHelper.send.calledWithExactly(job)).to.equal(true);
     });
 
     it('should set a running timeout for the job', function() {
-      expect(jobBrokerHelper.setRunTimeout.calledWithExactly(job)).to.equal(true);
+      expect(jobBrokerHelper.setRunningTimeout.calledWithExactly(job)).to.equal(true);
     });
   });
 
@@ -64,20 +109,20 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
       const runningJob = new RunJob(1);
       before(function() {
         sinon.stub(jobBrokerHelper, 'send');
-        sinon.stub(jobBrokerHelper, 'setRunTimeout');
+        sinon.stub(jobBrokerHelper, 'setRunningTimeout');
         jobBrokerHelper.runningJobs.run.set(runningJob.payload.execution.id, runningJob);
         jobBrokerHelper.processDefault(job);
       });
       after(function() {
         jobBrokerHelper.send.restore();
-        jobBrokerHelper.setRunTimeout.restore();
+        jobBrokerHelper.setRunningTimeout.restore();
         jobBrokerHelper.runningJobs.run.clear();
       });
       it('should send the job', function() {
         expect(jobBrokerHelper.send.calledWithExactly(job)).to.equal(true);
       });
       it('should set a running timeout for the job', function() {
-        expect(jobBrokerHelper.setRunTimeout.calledWithExactly(job)).to.equal(true);
+        expect(jobBrokerHelper.setRunningTimeout.calledWithExactly(job)).to.equal(true);
       });
     });
 
@@ -87,20 +132,20 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
       job.payload.execution.id = runningJob.payload.execution.id;
       before(function() {
         sinon.stub(jobBrokerHelper, 'send');
-        sinon.stub(jobBrokerHelper, 'setRunTimeout');
+        sinon.stub(jobBrokerHelper, 'setRunningTimeout');
         jobBrokerHelper.runningJobs.read.set(runningJob.payload.execution.id, runningJob);
         jobBrokerHelper.processDefault(job);
       });
       after(function() {
         jobBrokerHelper.send.restore();
-        jobBrokerHelper.setRunTimeout.restore();
+        jobBrokerHelper.setRunningTimeout.restore();
         jobBrokerHelper.runningJobs.read.clear();
       });
       it('should send the job', function() {
         expect(jobBrokerHelper.send.calledWithExactly(job)).to.equal(true);
       });
       it('should NOT set a running timeout for the job', function() {
-        expect(jobBrokerHelper.setRunTimeout.calledWithExactly(job)).to.equal(false);
+        expect(jobBrokerHelper.setRunningTimeout.calledWithExactly(job)).to.equal(false);
       });
     });
 

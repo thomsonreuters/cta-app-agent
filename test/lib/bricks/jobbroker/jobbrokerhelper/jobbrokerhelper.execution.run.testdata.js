@@ -2,7 +2,7 @@
 const ObjectID = require('bson').ObjectID;
 
 class RunJob {
-  constructor(priority, runningTimeout) {
+  constructor(priority, runningTimeout, pendingTimeout) {
     const id = (new ObjectID()).toString();
     const job = {
       nature: {
@@ -16,6 +16,9 @@ class RunJob {
             ? priority : 2,
           runningTimeout: (runningTimeout !== undefined) && (runningTimeout !== null)
             ? runningTimeout : 20000,
+          pendingTimeout: (pendingTimeout !== undefined) && (pendingTimeout !== null)
+            ? pendingTimeout : 20000,
+          requestTimestamp: Date.now(),
         },
         testSuite: {
           id: (new ObjectID()).toString(),

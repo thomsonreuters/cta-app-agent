@@ -61,6 +61,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionCancel', functi
       },
       payload: {
         jobid: job.payload.execution.id,
+        mode: job.payload.mode,
       },
     };
     expect(mockCementHelper.createContext.calledWith(sinon.match(execJob))).to.equal(true);

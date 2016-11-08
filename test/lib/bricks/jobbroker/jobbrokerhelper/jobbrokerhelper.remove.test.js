@@ -42,6 +42,7 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
         sinon.stub(jobBrokerHelper.queue, 'isEmpty').returns(false);
         sinon.stub(jobBrokerHelper.queue, 'dequeue');
         sinon.stub(jobBrokerHelper, 'send');
+        sinon.stub(jobBrokerHelper, 'setRunningTimeout');
         jobBrokerHelper.remove(job);
       });
       after(function() {
@@ -52,6 +53,7 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
         jobBrokerHelper.queue.isEmpty.restore();
         jobBrokerHelper.queue.dequeue.restore();
         jobBrokerHelper.send.restore();
+        jobBrokerHelper.setRunningTimeout.restore();
       });
       it('should call queue delete()', function() {
         expect(jobBrokerHelper.runningJobs[job.nature.quality].delete.calledWithExactly(job.payload.execution.id)).to.equal(true);
@@ -63,6 +65,10 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
 
       it('should not call jobBrokerHelper send()', function() {
         expect(jobBrokerHelper.send.called).to.equal(false);
+      });
+
+      it('should not call jobBrokerHelper setRunningTimeout()', function() {
+        expect(jobBrokerHelper.setRunningTimeout.called).to.equal(false);
       });
     });
 
@@ -91,6 +97,7 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
         sinon.stub(jobBrokerHelper.queue, 'isEmpty').returns(true);
         sinon.stub(jobBrokerHelper.queue, 'dequeue').returns(mockDequeuedJob);
         sinon.stub(jobBrokerHelper, 'send');
+        sinon.stub(jobBrokerHelper, 'setRunningTimeout');
         jobBrokerHelper.remove(job);
       });
       after(function() {
@@ -101,6 +108,7 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
         jobBrokerHelper.queue.isEmpty.restore();
         jobBrokerHelper.queue.dequeue.restore();
         jobBrokerHelper.send.restore();
+        jobBrokerHelper.setRunningTimeout.restore();
       });
       it('should call queue delete()', function() {
         expect(jobBrokerHelper.runningJobs[job.nature.quality].delete.calledWithExactly(job.payload.execution.id)).to.equal(true);
@@ -112,6 +120,10 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
 
       it('should call jobBrokerHelper send()', function() {
         expect(jobBrokerHelper.send.calledWithExactly(mockDequeuedJob)).to.equal(true);
+      });
+
+      it('should call jobBrokerHelper setRunningTimeout()', function() {
+        expect(jobBrokerHelper.setRunningTimeout.calledWithExactly(mockDequeuedJob)).to.equal(true);
       });
     });
   });

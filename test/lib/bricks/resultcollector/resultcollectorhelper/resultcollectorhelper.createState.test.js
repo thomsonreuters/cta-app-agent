@@ -19,11 +19,11 @@ const logger = require('cta-logger');
 const DEFAULTLOGGER = logger();
 
 describe('ResultCollector - ResultCollectorHelper - createState', function() {
-  context('when running job is null', function() {
+  context('when running job is null and no executionId is provided', function() {
     let helper;
     const body = {
       status: 'failed',
-      executionId: 'id',
+      // executionId: 'id',
     };
     const inputContext = {
       data: {
@@ -55,12 +55,86 @@ describe('ResultCollector - ResultCollectorHelper - createState', function() {
     });
   });
 
+  context('when running job is null but an executionId is provided', function() {
+    let helper;
+    const body = {
+      status: 'finished',
+      executionId: 'id',
+    };
+    const inputContext = {
+      data: {
+        payload: body,
+      },
+      emit: sinon.stub(),
+    };
+
+    const now = Date.now();
+    const resultPayload = _.pick(body, ['status', 'executionId']);
+    resultPayload.ip = SystemDetails.ip;
+    resultPayload.hostname = SystemDetails.hostname;
+    resultPayload.timestamp = now;
+    resultPayload.index = 0;
+    const messageJob = {
+      nature: {
+        type: 'message',
+        quality: 'produce',
+      },
+      payload: {
+        nature: {
+          type: 'state',
+          quality: 'create',
+        },
+        payload: resultPayload,
+      },
+    };
+    const mockContext = new EventEmitter();
+    mockContext.publish = sinon.stub().returns(mockContext);
+    const mockCementHelper = {
+      constructor: {
+        name: 'CementHelper',
+      },
+      createContext: sinon.stub().withArgs(messageJob).returns(mockContext),
+    };
+
+    before(function() {
+      sinon.stub(Date, 'now').returns(now);
+      helper = new ResultCollectorHelper(mockCementHelper, DEFAULTLOGGER);
+      helper.createState(inputContext);
+    });
+    after(function() {
+      Date.now.restore();
+    });
+
+    it('should create a new context with cementHelper', function() {
+      sinon.assert.calledWithExactly(mockCementHelper.createContext, messageJob);
+    });
+
+    it('should publish the context', function() {
+      sinon.assert.called(mockContext.publish);
+    });
+
+    describe('when context emit done event', function() {
+      const response = { foo: 'bar' };
+      before(function() {
+        helper = new ResultCollectorHelper(mockCementHelper, DEFAULTLOGGER);
+        helper.createResult(inputContext);
+        mockContext.emit('done', 'sender', response);
+      });
+      after(function() {
+        helper.runningJob = null;
+      });
+      it('should emit done on input context', function() {
+        sinon.assert.calledWithExactly(inputContext.emit, 'done', helper.cementHelper.brickName, response);
+      });
+    });
+  });
+
   context('when running job has been set', function() {
     describe('when receiving a non-finished state', function() {
       let helper;
       const body = {
         status: 'running',
-        executionId: 'id',
+        // executionId: 'id',
       };
       const inputContext = {
         data: {
@@ -79,6 +153,7 @@ describe('ResultCollector - ResultCollectorHelper - createState', function() {
 
       const now = Date.now();
       const resultPayload = _.pick(body, ['status', 'executionId']);
+      resultPayload.executionId = runningJob.executionId;
       resultPayload.ip = SystemDetails.ip;
       resultPayload.hostname = SystemDetails.hostname;
       resultPayload.timestamp = now;
