@@ -6,12 +6,29 @@ cache:
 
 before_script:
   - export
-  - mkdir /root/.ssh/
-  - cp cta_deploymentkey /root/.ssh/id_rsa
-  - chmod 600 /root/.ssh/id_rsa
-  - echo "    IdentityFile /root/.ssh/id_rsa" >> /etc/ssh/ssh_config
-  - touch /root/.ssh/known_hosts
-  - ssh-keyscan git.sami.int.thomsonreuters.com >> /root/.ssh/known_hosts
+#  - mkdir /root/.ssh/
+#  - cp cta_deploymentkey /root/.ssh/id_rsa
+#  - chmod 600 /root/.ssh/id_rsa
+#  - echo "    IdentityFile /root/.ssh/id_rsa" >> /etc/ssh/ssh_config
+#  - touch /root/.ssh/known_hosts
+#  - ssh-keyscan git.sami.int.thomsonreuters.com >> /root/.ssh/known_hosts
+# Install ssh-agent if not already installed, it is required by Docker.
+  # (change apt-get to yum if you use a CentOS-based image)
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+
+  # Run ssh-agent (inside the build environment)
+  - eval $(ssh-agent -s)
+
+  # Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+  - ssh-add <(echo "$SSH_PRIVATE_KEY")
+
+  # For Docker builds disable host key checking. Be aware that by adding that
+  # you are suspectible to man-in-the-middle attacks.
+  # WARNING: Use this only with the Docker executor, if you use it with shell
+  # you will overwrite your user's SSH config.
+  - mkdir -p ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
   - npm config set proxy http://webproxy.lon.corp.services:80
   - npm config set https-proxy http://webproxy.lon.corp.services:80
   - npm install
