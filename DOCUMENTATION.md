@@ -136,6 +136,8 @@ JobBrokerHelper class
     * [.createContextForExecutionRead(job, [options])](#JobBrokerHelper+createContextForExecutionRead) ⇒ <code>Context</code>
     * [.createContextForMessageGet(job, [options])](#JobBrokerHelper+createContextForMessageGet) ⇒ <code>Context</code>
     * [.createContextDefault(job, [options])](#JobBrokerHelper+createContextDefault) ⇒ <code>Context</code>
+    * [.setPendingTimeout(job)](#JobBrokerHelper+setPendingTimeout)
+    * [.setRunningTimeout(job)](#JobBrokerHelper+setRunningTimeout)
     * [.processDefault(job)](#JobBrokerHelper+processDefault)
     * [.cancel(cancelationJob)](#JobBrokerHelper+cancel)
     * [.cancelQueuedJob(cancelationJob)](#JobBrokerHelper+cancelQueuedJob)
@@ -196,7 +198,7 @@ createContext submethod for execution-read job
 <a name="JobBrokerHelper+createContextForMessageGet"></a>
 
 ### jobBrokerHelper.createContextForMessageGet(job, [options]) ⇒ <code>Context</code>
-createContext submethod for execution group job
+createContext submethod for message-get job
 
 **Kind**: instance method of <code>[JobBrokerHelper](#JobBrokerHelper)</code>  
 **Returns**: <code>Context</code> - the created context  
@@ -219,10 +221,32 @@ createContext submethod for default case
 | job | <code>[Job](#Job)</code> | the Job to send |
 | [options] | <code>Object</code> | optional arguments |
 
+<a name="JobBrokerHelper+setPendingTimeout"></a>
+
+### jobBrokerHelper.setPendingTimeout(job)
+Creates a timeout for handling pendingTimeout process
+
+**Kind**: instance method of <code>[JobBrokerHelper](#JobBrokerHelper)</code>  
+
+| Param |
+| --- |
+| job | 
+
+<a name="JobBrokerHelper+setRunningTimeout"></a>
+
+### jobBrokerHelper.setRunningTimeout(job)
+Creates a timeout for handling runningTimeout
+
+**Kind**: instance method of <code>[JobBrokerHelper](#JobBrokerHelper)</code>  
+
+| Param |
+| --- |
+| job | 
+
 <a name="JobBrokerHelper+processDefault"></a>
 
 ### jobBrokerHelper.processDefault(job)
-process sub-method for default case (execution-commandline, execution-group)
+process sub-method for default case (execution-run and execution-read)
 
 **Kind**: instance method of <code>[JobBrokerHelper](#JobBrokerHelper)</code>  
 
@@ -233,7 +257,7 @@ process sub-method for default case (execution-commandline, execution-group)
 <a name="JobBrokerHelper+cancel"></a>
 
 ### jobBrokerHelper.cancel(cancelationJob)
-process sub-method for execution-Cancelation case
+process sub-method for execution-cancel case
 
 **Kind**: instance method of <code>[JobBrokerHelper](#JobBrokerHelper)</code>  
 
@@ -590,6 +614,13 @@ ResultCollectorHelper class
 | logger | <code>Logger</code> | cta-logger instance |
 | runningJob | <code>Object</code> | the currently running job |
 
+
+* [ResultCollectorHelper](#ResultCollectorHelper)
+    * [new ResultCollectorHelper(cementHelper, [logger])](#new_ResultCollectorHelper_new)
+    * [.setRunningJob(context)](#ResultCollectorHelper+setRunningJob)
+    * [.createResult(context)](#ResultCollectorHelper+createResult)
+    * [.createState(context)](#ResultCollectorHelper+createState)
+
 <a name="new_ResultCollectorHelper_new"></a>
 
 ### new ResultCollectorHelper(cementHelper, [logger])
@@ -600,6 +631,39 @@ Create a new ResultCollectorHelper instance
 | --- | --- | --- |
 | cementHelper | <code>CementHelper</code> | cementHelper instance |
 | [logger] | <code>Logger</code> | cta-logger instance |
+
+<a name="ResultCollectorHelper+setRunningJob"></a>
+
+### resultCollectorHelper.setRunningJob(context)
+Sets job as runningJob property of ResultCollector
+
+**Kind**: instance method of <code>[ResultCollectorHelper](#ResultCollectorHelper)</code>  
+
+| Param |
+| --- |
+| context | 
+
+<a name="ResultCollectorHelper+createResult"></a>
+
+### resultCollectorHelper.createResult(context)
+Creates a new Result payload and sends it as a message-produce context
+
+**Kind**: instance method of <code>[ResultCollectorHelper](#ResultCollectorHelper)</code>  
+
+| Param |
+| --- |
+| context | 
+
+<a name="ResultCollectorHelper+createState"></a>
+
+### resultCollectorHelper.createState(context)
+Creates a new State payload and sends it as a message-produce context
+
+**Kind**: instance method of <code>[ResultCollectorHelper](#ResultCollectorHelper)</code>  
+
+| Param |
+| --- |
+| context | 
 
 <a name="ResultsHandler"></a>
 
