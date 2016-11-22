@@ -35,14 +35,17 @@ describe('ResultCollector - start', function() {
     },
     createContext: function() {},
   };
-  const createReportJob = {
+  const updateInstanceJob = {
     nature: {
-      type: 'instanceReport',
-      quality: 'create',
+      type: 'instances',
+      quality: 'update',
     },
     payload: {
       hostname: SystemDetails.hostname,
       ip: SystemDetails.ip,
+      properties: {
+        platform: SystemDetails.platform,
+      },
     },
   };
   const produceJob = {
@@ -51,8 +54,8 @@ describe('ResultCollector - start', function() {
       quality: 'produce',
     },
     payload: {
-      queue: DEFAULTS.properties.reportsQueue,
-      message: createReportJob,
+      queue: DEFAULTS.properties.instancesQueue,
+      message: updateInstanceJob,
     },
   };
   const produceContext = new Context(mockCementHelper, produceJob);
