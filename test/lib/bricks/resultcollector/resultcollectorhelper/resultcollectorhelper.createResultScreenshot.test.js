@@ -45,10 +45,10 @@ describe('ResultCollector - ResultCollectorHelper - createResultScreenshot', fun
 
   if (process.platform === 'win32') {
     context('when process.platform is win32', function() {
-      const directory = `%TEMP%\\cta\\${result.executionId}`;
+      const directory = nodepath.join('%TEMP%', 'cta', result.executionId);
       const mkdirCmd = `(If Not Exist "${directory}" (mkdir "${directory}"))`;
 
-      const fullpath = `${directory}\\${filename}`;
+      const fullpath = nodepath.join(directory, filename);
       const screenshotExe = nodepath.join(appRootPath,
         '/bin/screenshot-cmd.exe');
       const screenshotCmd = `${screenshotExe} -o "${fullpath}"`;
