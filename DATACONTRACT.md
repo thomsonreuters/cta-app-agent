@@ -8,7 +8,7 @@
 ## Output
 * [Send a State](#send-a-state)
 * [Send a Result](#send-a-result)
-* [Send a Report](#send-a-report)
+* [Send an Instance Update](#send-an-instance-update)
 
 ### Execution Run
 Contract
@@ -163,16 +163,34 @@ Example:
 }
 ```
 
-## Send a Report
+### Send an Instance Update:
 Contract: 
 ```javascript
 {
-
+    "nature": {
+        "type": "instances",
+        "quality": "update"
+      },
+    "payload": {
+        "hostname": String,
+        "ip": String,
+        "properties": Object,
+    }
 }
 ```
 Example: 
 ```javascript
 {
-
+    "nature": {
+        "type": "instances",
+        "quality": "update"
+      },
+    "payload": {
+        "hostname": "mymachine",
+        "ip": "127.0.0.1",
+        "properties": {
+            "platform": "win32",
+        },
+    }
 }
 ```
