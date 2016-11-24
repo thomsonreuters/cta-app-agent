@@ -133,14 +133,20 @@ describe('ResultCollector - ResultCollectorHelper - createResult', function() {
       before(function() {
         helper = new ResultCollectorHelper(mockCementHelper, DEFAULTLOGGER);
         helper.runningJob = _.cloneDeep(runningJob);
+        sinon.stub(helper, 'createResultScreenshot');
         helper.createResult(inputContext);
         mockContext.emit('done', 'sender', response);
       });
       after(function() {
         helper.runningJob = null;
+        helper.createResultScreenshot.restore();
       });
       it('should emit done on input context', function() {
         sinon.assert.calledWithExactly(inputContext.emit, 'done', helper.cementHelper.brickName, response);
+      });
+
+      it('should call createResultScreenshot', function() {
+        sinon.assert.calledWithExactly(helper.createResultScreenshot, resultPayload);
       });
     });
   });
