@@ -1,5 +1,5 @@
 'use strict';
-const appRootPath = require('app-root-path').path;
+const appRootPath = require('cta-common').root('cta-app-agent');
 const sinon = require('sinon');
 const _ = require('lodash');
 const nodepath = require('path');

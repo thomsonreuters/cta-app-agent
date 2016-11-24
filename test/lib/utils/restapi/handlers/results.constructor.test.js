@@ -1,5 +1,5 @@
 'use strict';
-const appRootPath = require('app-root-path').path;
+const appRootPath = require('cta-common').root('cta-app-agent');
 const chai = require('chai');
 const expect = chai.expect;
 const nodepath = require('path');
