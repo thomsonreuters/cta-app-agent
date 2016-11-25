@@ -5,8 +5,6 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 const expect = chai.expect;
-const sinon = require('sinon');
-require('sinon-as-promised');
 
 const ObjectID = require('bson').ObjectID;
 const _ = require('lodash');
@@ -15,11 +13,11 @@ const JobHandlerHelper = require(nodepath.join(appRootPath,
   '/lib/bricks/jobhandler/', 'jobhandlerhelper'));
 
 const JOB = {
-  'nature': {
-    'type': 'execution',
-    'quality': 'bar',
+  nature: {
+    type: 'execution',
+    quality: 'bar',
   },
-  'payload': {},
+  payload: {},
 };
 
 describe('JobHandler - JobHandlerHelper - runExecutor', function() {
@@ -30,8 +28,8 @@ describe('JobHandler - JobHandlerHelper - runExecutor', function() {
     const executors = new Map();
     const runningJobs = new Map();
     let mockExecutor;
-    const mockHandlerProcessStartResponse = {ok: 1};
-    const mockHandlerProcessEndResponse = {ok: 1};
+    const mockHandlerProcessStartResponse = { ok: 1 };
+    const mockHandlerProcessEndResponse = { ok: 1 };
     before(function() {
       // mock jobHandlerHelper and its executors
       mockExecutor = {
@@ -71,7 +69,7 @@ describe('JobHandler - JobHandlerHelper - runExecutor', function() {
     const executors = new Map();
     const runningJobs = new Map();
     let mockExecutor;
-    const mockHandlerProcessStartResponse = {ok: 1};
+    const mockHandlerProcessStartResponse = { ok: 1 };
     const mockHandlerProcessEndResponse = new Error('mock process finish error');
     before(function() {
       // mock jobHandlerHelper and its executors
@@ -115,7 +113,7 @@ describe('JobHandler - JobHandlerHelper - runExecutor', function() {
     before(function() {
       // mock jobHandlerHelper and its executors
       mockExecutor = {
-        process: function(somejob, callback) {
+        process: function() {
           return new Promise((resolve, reject) => {
             // reject
             reject(mockHandlerProcessStartResponse);
