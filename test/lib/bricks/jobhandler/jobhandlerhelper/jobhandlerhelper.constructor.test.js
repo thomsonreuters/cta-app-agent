@@ -5,8 +5,6 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 const expect = chai.expect;
-const sinon = require('sinon');
-require('sinon-as-promised');
 
 const JobHandlerHelper = require(nodepath.join(appRootPath,
   '/lib/bricks/jobhandler/', 'jobhandlerhelper'));

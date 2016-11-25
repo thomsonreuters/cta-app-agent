@@ -6,7 +6,9 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "NODE_PATH=. _mocha",
-    "codecoverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec && opener ./coverage/lcov-report/index.html",
+    "test_win32": "_mocha",
+    "codecoverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
+    "lint": "eslint --quiet lib test",
     "docs": "jsdoc2md \"lib/**/*.js\" > DOCUMENTATION.md && jsdoc --readme README.md lib -r -d docs && opener ./docs/index.html"
   },
   "repository": {

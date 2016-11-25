@@ -36,10 +36,17 @@ describe('SystemDetails - ip', function() {
           mac: '34:e6:d7:02:19:c5',
           internal: false,
         },
+        {
+          address: '10.10.10.2',
+          netmask: '255.255.254.0',
+          family: 'IPv4',
+          mac: '34:e6:d7:02:19:c5',
+          internal: false,
+        },
       ],
       2: [
         {
-          address: '10.10.10.2',
+          address: '10.10.10.3',
           netmask: '255.255.254.0',
           family: 'IPv4',
           mac: '34:e6:d7:02:19:c5',

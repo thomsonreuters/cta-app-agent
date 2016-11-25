@@ -8,7 +8,6 @@ const expect = chai.expect;
 const sinon = require('sinon');
 
 const ObjectID = require('bson').ObjectID;
-const _ = require('lodash');
 
 const JobBroker = require(nodepath.join(appRootPath,
   '/lib/bricks/jobbroker/', 'index.js'));
@@ -16,8 +15,6 @@ const JobBrokerHelper = require(nodepath.join(appRootPath,
   '/lib/bricks/jobbroker/', 'jobbrokerhelper.js'));
 const JobQueue = require(nodepath.join(appRootPath,
   '/lib/bricks/jobbroker/', 'jobqueue.js'));
-
-const JOB = require('./jobbroker.execution.run.testdata.js');
 
 const DEFAULTS = {
   name: 'jobbroker',
