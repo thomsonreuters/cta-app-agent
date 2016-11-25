@@ -110,8 +110,10 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
                 },
               };
               executor.process(CANCELJOB, () => {
-                expect(executor.runningJobs).to.not.have.property(JOBSIMPLERSTUCKMANUAL.id);
-                done();
+                setTimeout(() => {
+                  expect(executor.runningJobs).to.not.have.property(JOBSIMPLERSTUCKMANUAL.id);
+                  done();
+                }, 2000);
               }).then((cancelResponse) => {
                 expect(cancelResponse).to.be.an('object');
               });

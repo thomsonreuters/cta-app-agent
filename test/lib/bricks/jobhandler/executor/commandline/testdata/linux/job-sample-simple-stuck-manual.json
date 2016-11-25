@@ -8,8 +8,8 @@
     "stages": [
       {
         "id": "RUN02",
-        "run": "gedit",
-        "stop": "killall gedit"
+        "run": "sleep 100",
+        "stop": "echo killall gedit"
       }
     ],
     "timeout": 150000
