@@ -41,10 +41,14 @@ describe('ResultCollector - start', function() {
       quality: 'update',
     },
     payload: {
-      hostname: SystemDetails.hostname,
-      ip: SystemDetails.ip,
-      properties: {
-        platform: SystemDetails.platform,
+      query: {
+        hostname: SystemDetails.hostname,
+      },
+      content: {
+        ip: SystemDetails.ip,
+        properties: {
+          platform: SystemDetails.platform,
+        },
       },
     },
   };
