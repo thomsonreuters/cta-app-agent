@@ -54,7 +54,7 @@ describe('ResultCollector - start', function() {
   };
   const produceJob = {
     nature: {
-      type: 'message',
+      type: 'messages',
       quality: 'produce',
     },
     payload: {

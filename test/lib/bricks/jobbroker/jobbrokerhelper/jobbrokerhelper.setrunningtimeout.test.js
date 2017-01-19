@@ -50,7 +50,7 @@ describe('JobBroker - JobBrokerHelper - setPendingTimeout', function() {
 
     const cancelationJob = {
       nature: {
-        type: 'execution',
+        type: 'executions',
         quality: 'cancel',
       },
       payload: {

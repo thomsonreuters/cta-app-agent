@@ -31,7 +31,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRead', function
   const jobId = job.payload.execution.id;
   const queuegetjob = {
     nature: {
-      type: 'message',
+      type: 'messages',
       quality: 'get',
     },
     payload: {

@@ -54,7 +54,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
   const execJob = {
     id: jobId,
     nature: {
-      type: 'execution',
+      type: 'executions',
       quality: job.payload.testSuite.tests[0].type,
     },
     payload: {
@@ -100,7 +100,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
     it('should send running state', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
-          type: 'state',
+          type: 'states',
           quality: 'create',
         },
         payload: {
@@ -149,7 +149,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
     it('should send finished state', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
-          type: 'state',
+          type: 'states',
           quality: 'create',
         },
         payload: {
@@ -246,7 +246,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
         it('should send finished state', function() {
           sinon.assert.calledWithExactly(jobBrokerHelper.send, {
             nature: {
-              type: 'state',
+              type: 'states',
               quality: 'create',
             },
             payload: {
@@ -290,7 +290,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
           expect(jobBrokerHelper.runningJobs.read.get.calledWithExactly(job.payload.execution.id)).to.equal(true);
           expect(jobBrokerHelper.send.calledWithExactly({
             nature: {
-              type: 'message',
+              type: 'messages',
               quality: 'get',
             },
             payload: {
@@ -327,7 +327,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
       it('should send finished state', function() {
         expect(jobBrokerHelper.send.calledWithExactly({
           nature: {
-            type: 'state',
+            type: 'states',
             quality: 'create',
           },
           payload: {
@@ -376,7 +376,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
       it('should terminate the running group job', function() {
         expect(jobBrokerHelper.terminateGroupJob.calledWithExactly(job.payload.execution.id, {
           nature: {
-            type: 'state',
+            type: 'states',
             quality: 'create',
           },
           payload: {
@@ -419,7 +419,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
       it('should send finished state', function() {
         expect(jobBrokerHelper.send.calledWithExactly({
           nature: {
-            type: 'state',
+            type: 'states',
             quality: 'create',
           },
           payload: {
@@ -468,7 +468,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
       it('should terminate the running group job', function() {
         expect(jobBrokerHelper.terminateGroupJob.calledWithExactly(job.payload.execution.id, {
           nature: {
-            type: 'state',
+            type: 'states',
             quality: 'create',
           },
           payload: {
@@ -526,7 +526,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
       it('should send finished state', function() {
         expect(jobBrokerHelper.send.calledWithExactly({
           nature: {
-            type: 'state',
+            type: 'states',
             quality: 'create',
           },
           payload: {
@@ -561,7 +561,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
         expect(jobBrokerHelper.runningJobs.read.get.calledWithExactly(job.payload.execution.id)).to.equal(true);
         expect(jobBrokerHelper.send.calledWithExactly({
           nature: {
-            type: 'message',
+            type: 'messages',
             quality: 'get',
           },
           payload: {

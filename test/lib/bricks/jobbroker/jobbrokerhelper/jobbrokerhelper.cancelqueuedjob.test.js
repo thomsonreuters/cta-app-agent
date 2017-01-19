@@ -56,7 +56,7 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
     it('should send canceled state for the canceled job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
-          type: 'state',
+          type: 'states',
           quality: 'create',
         },
         payload: {
@@ -94,7 +94,7 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
     it('should send canceled state for the canceled job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
-          type: 'state',
+          type: 'states',
           quality: 'create',
         },
         payload: {

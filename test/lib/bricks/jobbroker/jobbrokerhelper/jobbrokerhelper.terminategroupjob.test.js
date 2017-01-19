@@ -73,7 +73,7 @@ describe('JobBroker - JobBrokerHelper - terminateGroupJob', function() {
     const jobId = job.payload.execution.id;
     const changestateJob = {
       nature: {
-        type: 'state',
+        type: 'states',
         quality: 'create',
       },
       payload: {},

@@ -1,0 +1,22 @@
+{
+  "id": "003",
+  "nature": {
+    "type": "execution",
+    "quality": "commandLine"
+  },
+  "payload": {
+    "stages": [
+      {
+        "id": "RUN01",
+        "run": "echo Test - This is an error.\nsleep 1\nexit 1",
+        "stop": "echo Test - Do stop operations..."
+      },
+      {
+        "id": "RUN02",
+        "run": "echo Test - This should not be ran.\nexit 0",
+        "stop": "echo Test - Do stop operations..."
+      }
+    ],
+    "timeout": 20000
+  }
+}

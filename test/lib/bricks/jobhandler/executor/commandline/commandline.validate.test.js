@@ -29,7 +29,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
       const incorrectJob = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executionss',
           quality: 'commandLine',
         },
         payload: {
@@ -46,7 +46,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
       const incorrectJob = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -68,7 +68,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
       const incorrectJob = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -90,7 +90,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
       const incorrectJob = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -114,7 +114,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
       const incorrectJob = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -138,7 +138,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
       const incorrectJob = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -162,7 +162,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
       const incorrectJob = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -186,7 +186,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
       const incorrectJob = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -210,7 +210,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
       const incorrectJob = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -238,7 +238,7 @@ describe('JobHandler - Executor - CommandLine - validate', function() {
       const incorrectJob = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {

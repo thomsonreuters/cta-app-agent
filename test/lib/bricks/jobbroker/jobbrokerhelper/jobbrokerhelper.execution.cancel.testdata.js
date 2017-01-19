@@ -4,7 +4,7 @@ class CancelJob {
   constructor(id) {
     const job = {
       nature: {
-        type: 'execution',
+        type: 'executions',
         quality: 'cancel',
       },
       payload: {

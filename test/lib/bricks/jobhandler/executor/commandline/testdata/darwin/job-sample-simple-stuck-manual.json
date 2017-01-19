@@ -1,0 +1,17 @@
+{
+  "id": "004",
+  "nature": {
+    "type": "execution",
+    "quality": "commandLine"
+  },
+  "payload": {
+    "stages": [
+      {
+        "id": "RUN02",
+        "run": "sleep 100",
+        "stop": "echo killall gedit"
+      }
+    ],
+    "timeout": 150000
+  }
+}

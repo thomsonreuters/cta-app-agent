@@ -74,7 +74,7 @@ describe.skip('Job Broker - job validation', function() {
     it('should throw an error', function() {
       const job = {
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -92,7 +92,7 @@ describe.skip('Job Broker - job validation', function() {
       const job = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -111,7 +111,7 @@ describe.skip('Job Broker - job validation', function() {
       const job = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -130,7 +130,7 @@ describe.skip('Job Broker - job validation', function() {
       const job = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'cancelation',
         },
         payload: {
@@ -148,7 +148,7 @@ describe.skip('Job Broker - job validation', function() {
       const job = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'group',
         },
         payload: {
@@ -165,7 +165,7 @@ describe.skip('Job Broker - job validation', function() {
     const job = {
       id: new ObjectID(),
       nature: {
-        type: 'execution',
+        type: 'executions',
         quality: 'cancelation',
       },
       payload: {
@@ -179,7 +179,7 @@ describe.skip('Job Broker - job validation', function() {
         expect(jobBroker.jobBrokerHelper.ack.calledWithExactly(job)).to.be.equal(true);
         expect(jobBroker.jobBrokerHelper.send.calledWithExactly({
           nature: {
-            type: 'state',
+            type: 'states',
             quality: 'create',
           },
           payload: {
@@ -207,7 +207,7 @@ describe('Job Broker - priority queue comparator', function() {
   const createNewJob = function(priority) {
     const job = {
       nature: {
-        type: 'execution',
+        type: 'executions',
         quality: 'run',
       },
       payload: {
