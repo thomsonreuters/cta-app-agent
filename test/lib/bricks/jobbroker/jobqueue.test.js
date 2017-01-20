@@ -32,7 +32,7 @@ before(function() {
 describe('Job Queue - has specific job', function() {
   const jobA = {
     nature: {
-      type: 'execution',
+      type: 'executions',
       quality: 'run',
     },
     payload: {
@@ -67,7 +67,7 @@ describe('Job Queue - has specific job', function() {
 describe('Job Queue - isEmpty check', function() {
   const jobA = {
     nature: {
-      type: 'execution',
+      type: 'executions',
       quality: 'run',
     },
     payload: {
@@ -102,7 +102,7 @@ describe('Job Queue - isEmpty check', function() {
 describe('Job Queue - enqueue a job', function() {
   const jobA = {
     nature: {
-      type: 'execution',
+      type: 'executions',
       quality: 'run',
     },
     payload: {
@@ -122,7 +122,7 @@ describe('Job Queue - enqueue a job', function() {
       return expect(function() {
         return jobQueue.queue({
           nature: {
-            type: 'execution',
+            type: 'executions',
             quality: 'run',
           },
           payload: {
@@ -157,7 +157,7 @@ describe('Job Queue - remove specific job', function() {
   const id = (new ObjectID()).toString();
   const jobA = {
     nature: {
-      type: 'execution',
+      type: 'executions',
       quality: 'run',
     },
     payload: {

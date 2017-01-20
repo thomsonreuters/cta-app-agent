@@ -83,7 +83,7 @@ describe('ResultCollector - process', function() {
       const methodName = 'createState';
       const job = {
         nature: {
-          type: 'state',
+          type: 'states',
           quality: quality,
         },
         payload: {},

@@ -30,7 +30,7 @@ describe('JobBroker - JobBrokerHelper - createContextForMessageGet', function() 
   const groupjob = new ReadJob();
   const queuegetjob = {
     nature: {
-      type: 'message',
+      type: 'messages',
       quality: 'get',
     },
     payload: {
@@ -116,7 +116,7 @@ describe('JobBroker - JobBrokerHelper - createContextForMessageGet', function() 
       it('should terminate group job with acked state', function() {
         const stateJob = {
           nature: {
-            type: 'state',
+            type: 'states',
             quality: 'create',
           },
           payload: {
@@ -153,7 +153,7 @@ describe('JobBroker - JobBrokerHelper - createContextForMessageGet', function() 
         it('should terminate group job with acked state', function() {
           const stateJob = {
             nature: {
-              type: 'state',
+              type: 'states',
               quality: 'create',
             },
             payload: {
@@ -208,7 +208,7 @@ describe('JobBroker - JobBrokerHelper - createContextForMessageGet', function() 
       it('should terminate group job with acked state', function() {
         const stateJob = {
           nature: {
-            type: 'state',
+            type: 'states',
             quality: 'create',
           },
           payload: {

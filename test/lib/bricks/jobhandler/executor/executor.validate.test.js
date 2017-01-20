@@ -26,7 +26,7 @@ describe('JobHandler - Executor - Base - validate - default job', function() {
       const job = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -43,7 +43,7 @@ describe('JobHandler - Executor - Base - validate - default job', function() {
       const job = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -64,7 +64,7 @@ describe('JobHandler - Executor - Base - validate - cancelation job', function()
       const job = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'cancel',
         },
         payload: {
@@ -81,7 +81,7 @@ describe('JobHandler - Executor - Base - validate - cancelation job', function()
       const job = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'cancel',
         },
         payload: {

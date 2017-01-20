@@ -76,12 +76,12 @@ describe('ResultCollector - ResultCollectorHelper - createState', function() {
     resultPayload.index = 0;
     const messageJob = {
       nature: {
-        type: 'message',
+        type: 'messages',
         quality: 'produce',
       },
       payload: {
         nature: {
-          type: 'state',
+          type: 'states',
           quality: 'create',
         },
         payload: resultPayload,
@@ -159,12 +159,12 @@ describe('ResultCollector - ResultCollectorHelper - createState', function() {
       resultPayload.timestamp = now;
       const messageJob = {
         nature: {
-          type: 'message',
+          type: 'messages',
           quality: 'produce',
         },
         payload: {
           nature: {
-            type: 'state',
+            type: 'states',
             quality: 'create',
           },
           payload: resultPayload,
@@ -243,12 +243,12 @@ describe('ResultCollector - ResultCollectorHelper - createState', function() {
       resultPayload.index = runningJob.currentIndex;
       const messageJob = {
         nature: {
-          type: 'message',
+          type: 'messages',
           quality: 'produce',
         },
         payload: {
           nature: {
-            type: 'state',
+            type: 'states',
             quality: 'create',
           },
           payload: resultPayload,

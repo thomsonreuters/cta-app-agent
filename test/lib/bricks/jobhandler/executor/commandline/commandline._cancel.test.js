@@ -60,7 +60,7 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
               const CANCELJOB = {
                 id: (new ObjectID()).toString(),
                 nature: {
-                  type: 'execution',
+                  type: 'executions',
                   quality: 'cancel',
                 },
                 payload: {
@@ -102,7 +102,7 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
               const CANCELJOB = {
                 id: (new ObjectID()).toString(),
                 nature: {
-                  type: 'execution',
+                  type: 'executions',
                   quality: 'cancel',
                 },
                 payload: {

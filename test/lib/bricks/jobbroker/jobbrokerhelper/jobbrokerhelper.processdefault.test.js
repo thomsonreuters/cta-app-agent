@@ -64,7 +64,7 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
     it('should send canceled state', function() {
       const stateJob = {
         nature: {
-          type: 'state',
+          type: 'states',
           quality: 'create',
         },
         payload: {
@@ -198,7 +198,7 @@ describe('JobBroker - JobBrokerHelper - processDefault', function() {
         it('should send finished state', function() {
           const stateJob = {
             nature: {
-              type: 'state',
+              type: 'states',
               quality: 'create',
             },
             payload: {

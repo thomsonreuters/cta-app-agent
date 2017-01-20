@@ -86,7 +86,7 @@ describe('ResultCollector - ResultCollectorHelper - createResult', function() {
     resultPayload.timestamp = now;
     const messageJob = {
       nature: {
-        type: 'message',
+        type: 'messages',
         quality: 'produce',
       },
       payload: {

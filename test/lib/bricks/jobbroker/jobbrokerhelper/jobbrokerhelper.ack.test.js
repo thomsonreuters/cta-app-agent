@@ -58,7 +58,7 @@ describe('JobBroker - JobBrokerHelper - ack', function() {
     it('should call jobBrokerHelper send()', function() {
       const ackJob = {
         nature: {
-          type: 'message',
+          type: 'messages',
           quality: 'acknowledge',
         },
         payload: {
@@ -96,7 +96,7 @@ describe('JobBroker - JobBrokerHelper - ack', function() {
     it('should call jobBrokerHelper send()', function() {
       const ackJob = {
         nature: {
-          type: 'message',
+          type: 'messages',
           quality: 'acknowledge',
         },
         payload: {
