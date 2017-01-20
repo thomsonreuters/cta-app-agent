@@ -47,7 +47,7 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
         it('should execute stop script, fulfill response with error', function(done) {
           executor.process(JOBSIMPLERSTUCKMANUAL, (error, response) => {
             expect(error).to.be.a('null');
-            expect(response).to.have.property('states', 'canceled');
+            expect(response).to.have.property('state', 'canceled');
             expect(response).to.have.property('ok', 1);
             expect(response).to.have.property('message')
               .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERSTUCKMANUAL.id}: canceled`);
@@ -88,7 +88,7 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
         it('should kill process, execute stop script, fulfill response', function(done) {
           executor.process(JOBSIMPLERSTUCKMANUAL, (error, response) => {
             expect(error).to.be.a('null');
-            expect(response).to.have.property('states', 'canceled');
+            expect(response).to.have.property('state', 'canceled');
             expect(response).to.have.property('cancelMode', executor.CANCELMODE.MANUAL);
             expect(response).to.have.property('ok', 1);
             expect(response).to.have.property('message')
@@ -141,7 +141,7 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
       it('should cancel job after expiring the timeout', function(done) {
         executor.process(JOBSIMPLERSTUCKSTAGE, (error, response) => {
           expect(error).to.be.a('null');
-          expect(response).to.have.property('states', 'canceled');
+          expect(response).to.have.property('state', 'canceled');
           expect(response).to.have.property('cancelMode', executor.CANCELMODE.STAGETIMEOUT);
           expect(response).to.have.property('ok', 1);
           expect(response).to.have.property('message')
@@ -165,7 +165,7 @@ describe('JobHandler - Executor - CommandLine - _cancel', function() {
       it('should cancel job after expiring 2*stageTimeout', function(done) {
         executor.process(JOBSIMPLERSTUCKSTOP, (error, response) => {
           expect(error).to.be.a('null');
-          expect(response).to.have.property('states', 'canceled');
+          expect(response).to.have.property('state', 'canceled');
           expect(response).to.have.property('ok', 1);
           expect(response).to.have.property('message')
             .and.to.include(`Execute RUN CmdLine Job ${JOBSIMPLERSTUCKSTOP.id}: canceled`);

@@ -18,7 +18,7 @@ const DEFAULTS = {
   name: 'resultcollector',
   module: 'cta-resultcollector',
   properties: {
-    reportsQueue: 'cta.ids',
+    reportsQueue: 'cta.ids.',
   },
 };
 const DEFAULTLOGGER = new Logger(null, null, DEFAULTS.name);
@@ -48,6 +48,7 @@ describe('ResultCollector - start', function() {
         ip: SystemDetails.ip,
         properties: {
           platform: SystemDetails.platform,
+          hostname: SystemDetails.hostname,
         },
       },
     },
@@ -59,7 +60,7 @@ describe('ResultCollector - start', function() {
     },
     payload: {
       queue: DEFAULTS.properties.instancesQueue,
-      message: updateInstanceJob,
+      content: updateInstanceJob,
     },
   };
   const produceContext = new Context(mockCementHelper, produceJob);
