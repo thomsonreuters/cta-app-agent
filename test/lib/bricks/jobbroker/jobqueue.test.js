@@ -23,7 +23,7 @@ const jobQueue = new JobQueue(
       return priorityA - priorityB;
     },
     strategy: JobQueue.ArrayStrategy,
-  },
+  }
 );
 
 before(function() {

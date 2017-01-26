@@ -75,7 +75,7 @@ describe('JobBroker - JobBrokerHelper - setPendingTimeout', function() {
     clock.tick(10);
     sinon.assert.calledWithExactly(
       jobBrokerHelper.logger.info,
-      `Job Pending Timeout exceeded for Job ${jobid}`,
+      `Job Pending Timeout exceeded for Job ${jobid}`
     );
     sinon.assert.calledWithExactly(jobBrokerHelper.cancel, cancelationJob);
 

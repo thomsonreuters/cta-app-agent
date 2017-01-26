@@ -154,7 +154,7 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
 
     it('should call logger warn()', function() {
       expect(jobBrokerHelper.logger.warn.calledWith(
-        `tried to remove an unknown running ${job.nature.quality} job (id: ${job.payload.execution.id}).`,
+        `tried to remove an unknown running ${job.nature.quality} job (id: ${job.payload.execution.id}).`
       )).to.equal(true);
     });
   });

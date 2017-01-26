@@ -18,7 +18,7 @@ describe('SystemDetails - hostname', function() {
       mockrequire('os',
         {
           hostname: sinon.stub().returns(hostname),
-        },
+        }
       );
       SystemDetails = mockrequire.reRequire(nodepath.join(appRootPath,
         '/lib/utils/systemdetails/', 'index.js'));

@@ -59,7 +59,7 @@ describe('SystemDetails - ip', function() {
       mockrequire('os',
         {
           networkInterfaces: sinon.stub().returns(interfaces),
-        },
+        }
       );
       SystemDetails = mockrequire.reRequire(nodepath.join(appRootPath,
         '/lib/utils/systemdetails/', 'index.js'));
