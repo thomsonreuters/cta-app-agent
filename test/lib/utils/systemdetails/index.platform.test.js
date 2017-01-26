@@ -1,4 +1,5 @@
 'use strict';
+
 const appRootPath = require('cta-common').root('cta-app-agent');
 const nodepath = require('path');
 const chai = require('chai');
@@ -17,7 +18,7 @@ describe('SystemDetails - platform', function() {
       mockrequire('os',
         {
           platform: sinon.stub().returns(platform),
-        }
+        },
       );
       SystemDetails = mockrequire.reRequire(nodepath.join(appRootPath,
         '/lib/utils/systemdetails/', 'index.js'));

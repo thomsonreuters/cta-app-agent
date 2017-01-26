@@ -1,4 +1,5 @@
 'use strict';
+
 const ObjectID = require('bson').ObjectID;
 
 class ReadJob {

@@ -1,4 +1,5 @@
 'use strict';
+
 const appRootPath = require('cta-common').root('cta-app-agent');
 const nodepath = require('path');
 const chai = require('chai');
@@ -153,7 +154,7 @@ describe('JobBroker - JobBrokerHelper - remove', function() {
 
     it('should call logger warn()', function() {
       expect(jobBrokerHelper.logger.warn.calledWith(
-        `tried to remove an unknown running ${job.nature.quality} job (id: ${job.payload.execution.id}).`
+        `tried to remove an unknown running ${job.nature.quality} job (id: ${job.payload.execution.id}).`,
       )).to.equal(true);
     });
   });

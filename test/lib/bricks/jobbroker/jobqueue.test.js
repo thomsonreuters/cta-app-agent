@@ -1,4 +1,5 @@
 'use strict';
+
 const appRootPath = require('cta-common').root('cta-app-agent');
 const nodepath = require('path');
 const chai = require('chai');
@@ -22,7 +23,7 @@ const jobQueue = new JobQueue(
       return priorityA - priorityB;
     },
     strategy: JobQueue.ArrayStrategy,
-  }
+  },
 );
 
 before(function() {
