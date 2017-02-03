@@ -1,4 +1,5 @@
 'use strict';
+
 const appRootPath = require('cta-common').root('cta-app-agent');
 const nodepath = require('path');
 const chai = require('chai');
@@ -26,7 +27,7 @@ describe('JobHandler - Executor - Base - validate - default job', function() {
       const job = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -43,7 +44,7 @@ describe('JobHandler - Executor - Base - validate - default job', function() {
       const job = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'commandLine',
         },
         payload: {
@@ -64,7 +65,7 @@ describe('JobHandler - Executor - Base - validate - cancelation job', function()
       const job = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'cancel',
         },
         payload: {
@@ -81,7 +82,7 @@ describe('JobHandler - Executor - Base - validate - cancelation job', function()
       const job = {
         id: new ObjectID(),
         nature: {
-          type: 'execution',
+          type: 'executions',
           quality: 'cancel',
         },
         payload: {

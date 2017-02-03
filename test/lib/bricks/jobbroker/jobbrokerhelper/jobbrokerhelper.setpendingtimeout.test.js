@@ -1,4 +1,5 @@
 'use strict';
+
 const appRootPath = require('cta-common').root('cta-app-agent');
 const nodepath = require('path');
 const chai = require('chai');
@@ -54,7 +55,7 @@ describe('JobBroker - JobBrokerHelper - setPendingTimeout', function() {
 
     const cancelationJob = {
       nature: {
-        type: 'execution',
+        type: 'executions',
         quality: 'cancel',
       },
       payload: {

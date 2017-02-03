@@ -1,4 +1,5 @@
 'use strict';
+
 const appRootPath = require('cta-common').root('cta-app-agent');
 const nodepath = require('path');
 const chai = require('chai');
@@ -31,7 +32,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRead', function
   const jobId = job.payload.execution.id;
   const queuegetjob = {
     nature: {
-      type: 'message',
+      type: 'messages',
       quality: 'get',
     },
     payload: {

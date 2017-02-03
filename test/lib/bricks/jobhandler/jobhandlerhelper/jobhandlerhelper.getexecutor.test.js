@@ -1,4 +1,5 @@
 'use strict';
+
 const appRootPath = require('cta-common').root('cta-app-agent');
 const nodepath = require('path');
 const chai = require('chai');
@@ -15,7 +16,7 @@ const JobHandlerHelper = require(nodepath.join(appRootPath,
 
 const JOB = {
   nature: {
-    type: 'execution',
+    type: 'executions',
     quality: 'bar',
   },
   payload: {},

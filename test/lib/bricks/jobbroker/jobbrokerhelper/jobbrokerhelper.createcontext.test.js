@@ -1,4 +1,5 @@
 'use strict';
+
 const appRootPath = require('cta-common').root('cta-app-agent');
 const nodepath = require('path');
 const chai = require('chai');
@@ -64,7 +65,7 @@ describe('JobBroker - JobBrokerHelper - createContext', function() {
     const job = {
       id: new ObjectID(),
       nature: {
-        type: 'execution',
+        type: 'executions',
         quality: 'cancel',
       },
       payload: {
@@ -134,7 +135,7 @@ describe('JobBroker - JobBrokerHelper - createContext', function() {
     const job = {
       id: new ObjectID(),
       nature: {
-        type: 'message',
+        type: 'messages',
         quality: 'get',
       },
       payload: {
@@ -174,7 +175,7 @@ describe('JobBroker - JobBrokerHelper - createContext', function() {
     // input job
     const job = {
       nature: {
-        type: 'state',
+        type: 'states',
         quality: 'create',
       },
       payload: {
@@ -190,7 +191,7 @@ describe('JobBroker - JobBrokerHelper - createContext', function() {
     // stateJob.payload.timestamp = now;
     // const messageJob = {
     //   nature: {
-    //     type: 'message',
+    //     type: 'messages',
     //     quality: 'produce',
     //   },
     //   payload: stateJob,
@@ -231,7 +232,7 @@ describe('JobBroker - JobBrokerHelper - createContext', function() {
     const job = {
       id: new ObjectID(),
       nature: {
-        type: 'message',
+        type: 'messages',
         quality: 'acknowledge',
       },
       payload: {

@@ -1,4 +1,5 @@
 'use strict';
+
 const appRootPath = require('cta-common').root('cta-app-agent');
 const nodepath = require('path');
 const chai = require('chai');
@@ -82,11 +83,12 @@ describe('ResultCollector - ResultCollectorHelper - createResult', function() {
     resultPayload.testId = runningJob.testId;
     resultPayload.index = runningJob.currentIndex + 1;
     resultPayload.ip = SystemDetails.ip;
-    resultPayload.hostname = SystemDetails.hostname;
+    // resultPayload.hostname = SystemDetails.hostname;
+    resultPayload.hostname = SystemDetails.getHostnameAsIS();
     resultPayload.timestamp = now;
     const messageJob = {
       nature: {
-        type: 'message',
+        type: 'messages',
         quality: 'produce',
       },
       payload: {

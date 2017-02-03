@@ -1,4 +1,5 @@
 'use strict';
+
 const appRootPath = require('cta-common').root('cta-app-agent');
 const nodepath = require('path');
 const chai = require('chai');
@@ -83,7 +84,7 @@ describe('ResultCollector - process', function() {
       const methodName = 'createState';
       const job = {
         nature: {
-          type: 'state',
+          type: 'states',
           quality: quality,
         },
         payload: {},

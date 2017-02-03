@@ -1,4 +1,5 @@
 'use strict';
+
 const appRootPath = require('cta-common').root('cta-app-agent');
 const nodepath = require('path');
 const chai = require('chai');
@@ -71,17 +72,18 @@ describe('ResultCollector - ResultCollectorHelper - createState', function() {
     const now = Date.now();
     const resultPayload = _.pick(body, ['status', 'executionId']);
     resultPayload.ip = SystemDetails.ip;
-    resultPayload.hostname = SystemDetails.hostname;
+    // resultPayload.hostname = SystemDetails.hostname;
+    resultPayload.hostname = SystemDetails.getHostnameAsIS();
     resultPayload.timestamp = now;
     resultPayload.index = 0;
     const messageJob = {
       nature: {
-        type: 'message',
+        type: 'messages',
         quality: 'produce',
       },
       payload: {
         nature: {
-          type: 'state',
+          type: 'states',
           quality: 'create',
         },
         payload: resultPayload,
@@ -155,16 +157,17 @@ describe('ResultCollector - ResultCollectorHelper - createState', function() {
       const resultPayload = _.pick(body, ['status', 'executionId']);
       resultPayload.executionId = runningJob.executionId;
       resultPayload.ip = SystemDetails.ip;
-      resultPayload.hostname = SystemDetails.hostname;
+      // resultPayload.hostname = SystemDetails.hostname;
+      resultPayload.hostname = SystemDetails.getHostnameAsIS();
       resultPayload.timestamp = now;
       const messageJob = {
         nature: {
-          type: 'message',
+          type: 'messages',
           quality: 'produce',
         },
         payload: {
           nature: {
-            type: 'state',
+            type: 'states',
             quality: 'create',
           },
           payload: resultPayload,
@@ -238,17 +241,18 @@ describe('ResultCollector - ResultCollectorHelper - createState', function() {
       const now = Date.now();
       const resultPayload = _.pick(body, ['status', 'executionId']);
       resultPayload.ip = SystemDetails.ip;
-      resultPayload.hostname = SystemDetails.hostname;
+      // resultPayload.hostname = SystemDetails.hostname;
+      resultPayload.hostname = SystemDetails.getHostnameAsIS();
       resultPayload.timestamp = now;
       resultPayload.index = runningJob.currentIndex;
       const messageJob = {
         nature: {
-          type: 'message',
+          type: 'messages',
           quality: 'produce',
         },
         payload: {
           nature: {
-            type: 'state',
+            type: 'states',
             quality: 'create',
           },
           payload: resultPayload,

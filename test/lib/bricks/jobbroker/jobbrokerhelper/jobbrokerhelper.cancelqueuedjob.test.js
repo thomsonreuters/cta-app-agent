@@ -1,4 +1,5 @@
 'use strict';
+
 const appRootPath = require('cta-common').root('cta-app-agent');
 const nodepath = require('path');
 const chai = require('chai');
@@ -56,7 +57,7 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
     it('should send canceled state for the canceled job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
-          type: 'state',
+          type: 'states',
           quality: 'create',
         },
         payload: {
@@ -94,7 +95,7 @@ describe('JobBroker - JobBrokerHelper - cancelQueuedJob', function() {
     it('should send canceled state for the canceled job', function() {
       expect(jobBrokerHelper.send.calledWithExactly({
         nature: {
-          type: 'state',
+          type: 'states',
           quality: 'create',
         },
         payload: {

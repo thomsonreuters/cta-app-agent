@@ -1,9 +1,10 @@
 'use strict';
+
 const ObjectID = require('bson').ObjectID;
 
 const job = {
   nature: {
-    type: 'execution',
+    type: 'executions',
     quality: 'run',
   },
   payload: {

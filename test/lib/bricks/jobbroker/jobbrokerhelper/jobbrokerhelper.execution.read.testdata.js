@@ -1,4 +1,5 @@
 'use strict';
+
 const ObjectID = require('bson').ObjectID;
 
 class ReadJob {
@@ -6,7 +7,7 @@ class ReadJob {
     const id = (new ObjectID()).toString();
     const job = {
       nature: {
-        type: 'execution',
+        type: 'executions',
         quality: 'read',
       },
       payload: {

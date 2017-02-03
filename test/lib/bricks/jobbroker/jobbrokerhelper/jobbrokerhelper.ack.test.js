@@ -1,4 +1,5 @@
 'use strict';
+
 const appRootPath = require('cta-common').root('cta-app-agent');
 const nodepath = require('path');
 const chai = require('chai');
@@ -58,7 +59,7 @@ describe('JobBroker - JobBrokerHelper - ack', function() {
     it('should call jobBrokerHelper send()', function() {
       const ackJob = {
         nature: {
-          type: 'message',
+          type: 'messages',
           quality: 'acknowledge',
         },
         payload: {
@@ -96,7 +97,7 @@ describe('JobBroker - JobBrokerHelper - ack', function() {
     it('should call jobBrokerHelper send()', function() {
       const ackJob = {
         nature: {
-          type: 'message',
+          type: 'messages',
           quality: 'acknowledge',
         },
         payload: {

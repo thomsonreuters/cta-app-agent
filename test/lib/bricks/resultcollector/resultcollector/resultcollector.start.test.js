@@ -1,4 +1,5 @@
 'use strict';
+
 const appRootPath = require('cta-common').root('cta-app-agent');
 const nodepath = require('path');
 const chai = require('chai');
@@ -18,7 +19,7 @@ const DEFAULTS = {
   name: 'resultcollector',
   module: 'cta-resultcollector',
   properties: {
-    reportsQueue: 'cta.ids',
+    reportsQueue: 'cta.ids.',
   },
 };
 const DEFAULTLOGGER = new Logger(null, null, DEFAULTS.name);
@@ -42,24 +43,26 @@ describe('ResultCollector - start', function() {
     },
     payload: {
       query: {
-        hostname: SystemDetails.hostname,
+        // hostname: SystemDetails.hostname,
+        hostname: SystemDetails.getHostnameAsIS(),
       },
       content: {
         ip: SystemDetails.ip,
         properties: {
           platform: SystemDetails.platform,
+          hostname: SystemDetails.hostname,
         },
       },
     },
   };
   const produceJob = {
     nature: {
-      type: 'message',
+      type: 'messages',
       quality: 'produce',
     },
     payload: {
       queue: DEFAULTS.properties.instancesQueue,
-      message: updateInstanceJob,
+      content: updateInstanceJob,
     },
   };
   const produceContext = new Context(mockCementHelper, produceJob);
