@@ -72,7 +72,8 @@ describe('ResultCollector - ResultCollectorHelper - createState', function() {
     const now = Date.now();
     const resultPayload = _.pick(body, ['status', 'executionId']);
     resultPayload.ip = SystemDetails.ip;
-    resultPayload.hostname = SystemDetails.hostname;
+    // resultPayload.hostname = SystemDetails.hostname;
+    resultPayload.hostname = SystemDetails.getHostnameAsIS();
     resultPayload.timestamp = now;
     resultPayload.index = 0;
     const messageJob = {
@@ -156,7 +157,8 @@ describe('ResultCollector - ResultCollectorHelper - createState', function() {
       const resultPayload = _.pick(body, ['status', 'executionId']);
       resultPayload.executionId = runningJob.executionId;
       resultPayload.ip = SystemDetails.ip;
-      resultPayload.hostname = SystemDetails.hostname;
+      // resultPayload.hostname = SystemDetails.hostname;
+      resultPayload.hostname = SystemDetails.getHostnameAsIS();
       resultPayload.timestamp = now;
       const messageJob = {
         nature: {
@@ -239,7 +241,8 @@ describe('ResultCollector - ResultCollectorHelper - createState', function() {
       const now = Date.now();
       const resultPayload = _.pick(body, ['status', 'executionId']);
       resultPayload.ip = SystemDetails.ip;
-      resultPayload.hostname = SystemDetails.hostname;
+      // resultPayload.hostname = SystemDetails.hostname;
+      resultPayload.hostname = SystemDetails.getHostnameAsIS();
       resultPayload.timestamp = now;
       resultPayload.index = runningJob.currentIndex;
       const messageJob = {

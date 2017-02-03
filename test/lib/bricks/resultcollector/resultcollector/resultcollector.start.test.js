@@ -43,7 +43,8 @@ describe('ResultCollector - start', function() {
     },
     payload: {
       query: {
-        hostname: SystemDetails.hostname,
+        // hostname: SystemDetails.hostname,
+        hostname: SystemDetails.getHostnameAsIS(),
       },
       content: {
         ip: SystemDetails.ip,

@@ -83,7 +83,8 @@ describe('ResultCollector - ResultCollectorHelper - createResult', function() {
     resultPayload.testId = runningJob.testId;
     resultPayload.index = runningJob.currentIndex + 1;
     resultPayload.ip = SystemDetails.ip;
-    resultPayload.hostname = SystemDetails.hostname;
+    // resultPayload.hostname = SystemDetails.hostname;
+    resultPayload.hostname = SystemDetails.getHostnameAsIS();
     resultPayload.timestamp = now;
     const messageJob = {
       nature: {
