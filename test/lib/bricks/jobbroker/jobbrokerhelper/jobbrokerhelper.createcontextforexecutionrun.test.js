@@ -41,7 +41,7 @@ describe('JobBroker - JobBrokerHelper - createContextForExecutionRun', function(
 
   // const setRunningJobForResult = {
   //   nature: {
-  //     type: 'result',
+  //     type: 'results',
   //     quality: 'setRunningJob',
   //   },
   //   payload: {

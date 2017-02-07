@@ -36,7 +36,7 @@ describe('ResultCollector - process', function() {
       const methodName = 'createResult';
       const job = {
         nature: {
-          type: 'result',
+          type: 'results',
           quality: quality,
         },
         payload: {},
@@ -59,7 +59,7 @@ describe('ResultCollector - process', function() {
       const methodName = 'setRunningJob';
       const job = {
         nature: {
-          type: 'result',
+          type: 'results',
           quality: quality,
         },
         payload: {},

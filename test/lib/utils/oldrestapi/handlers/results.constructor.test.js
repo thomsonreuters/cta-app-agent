@@ -29,7 +29,7 @@ describe('Utils - OLDRESTAPI - Handlers - Results - constructor', function() {
     it('should return a handler instance', function() {
       expect(handler).to.be.an.instanceof(Handler);
       expect(handler).to.have.property('cementHelper', DEFAULTCEMENTHELPER);
-      expect(handler).to.have.property('dataType', 'result');
+      expect(handler).to.have.property('dataType', 'results');
     });
   });
 });
