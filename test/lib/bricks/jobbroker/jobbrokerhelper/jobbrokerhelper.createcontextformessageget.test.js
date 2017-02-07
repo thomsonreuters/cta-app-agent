@@ -89,7 +89,7 @@ describe('JobBroker - JobBrokerHelper - createContextForMessageGet', function() 
       it('should send setRunningJob for the group job', function() {
         sinon.assert.calledWithExactly(jobBrokerHelper.send, {
           nature: {
-            type: 'result',
+            type: 'results',
             quality: 'setRunningJob',
           },
           payload: {

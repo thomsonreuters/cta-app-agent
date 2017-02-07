@@ -93,7 +93,7 @@ describe('ResultCollector - ResultCollectorHelper - createResult', function() {
       },
       payload: {
         nature: {
-          type: 'result',
+          type: 'results',
           quality: 'create',
         },
         payload: resultPayload,
