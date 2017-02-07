@@ -16,7 +16,7 @@
     "url": "git@git.sami.int.thomsonreuters.com:compass/cta-tool-boilerplate.git"
   },
   "engines": {
-    "node": "6.6.0"
+    "node": "6.9.5"
   },
   "devDependencies": {
     "chai": "~3.4.0",
