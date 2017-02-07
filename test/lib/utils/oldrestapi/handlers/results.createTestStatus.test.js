@@ -73,7 +73,7 @@ describe('Utils - OLDRESTAPI - Handlers - Results - createTestStatus', function(
       };
       data = {
         nature: {
-          type: 'result',
+          type: 'results',
           quality: 'create',
         },
         payload: payload,
@@ -186,7 +186,7 @@ describe('Utils - OLDRESTAPI - Handlers - Results - createTestStatus', function(
       };
       data = {
         nature: {
-          type: 'result',
+          type: 'results',
           quality: 'create',
         },
         payload: payload,
