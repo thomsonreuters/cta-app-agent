@@ -1,0 +1,14 @@
+version: '2'
+services:
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "15672:15672"
+#      - "5672:5672"
+  agent:
+    build: .
+    ports:
+      - "3001:3001"
+    depends_on: 
+      - rabbitmq
+

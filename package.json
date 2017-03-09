@@ -9,7 +9,8 @@
     "test_win32": "_mocha",
     "codecoverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
     "lint": "eslint --quiet lib test",
-    "docs": "jsdoc2md \"lib/**/*.js\" > DOCUMENTATION.md && jsdoc --readme README.md lib -r -d docs && opener ./docs/index.html"
+    "docs": "jsdoc2md \"lib/**/*.js\" > DOCUMENTATION.md && jsdoc --readme README.md lib -r -d docs && opener ./docs/index.html",
+    "start": "cd lib && node index.js"
   },
   "repository": {
     "type": "git",
