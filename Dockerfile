@@ -1,5 +1,9 @@
 FROM node:boron-alpine
 
+RUN apk update && apk add \
+    curl\
+ && rm -rf /var/cache/apk/*
+
 # Create app directory
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
