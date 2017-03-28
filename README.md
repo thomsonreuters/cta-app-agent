@@ -17,9 +17,11 @@ Agent Service for Compass Test Automation
 # General Overview
 
 ## Overview
-Please tell me a little about Agent Service
+Agent is a service that consist of many bricks. Agent will run executions on the machine and receive test status then report back to the systems.
 
 ## Features
+* Receive executions from RabbitMQ
+*
 Please check the [feature guide](https://git.sami.int.thomsonreuters.com/compass/cta/blob/master/features.md) for a list of all features provided by CTA.
 
 ------
