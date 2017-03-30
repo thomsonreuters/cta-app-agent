@@ -1,0 +1,52 @@
+FORMAT: 1A
+
+# cta-agent
+
+Agent is a simple API allowing users to send results.
+
+## Results Collection [/results]
+
+### Send result status [POST]
+
+You can send test status from you testscript to agent by requesting this api.
++ Request (application/json)
+
+        {
+            "status": "ok",
+        }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "result": {
+                    "queue": "cta.eds",
+                    "messageCount": 0,
+                    "consumerCount": 1
+                },
+                "params": {
+                    "queue": "cta.eds",
+                    "json": {
+                        "nature": {
+                            "type": "result",
+                            "quality": "create"
+                        },
+                        "payload": {
+                            "status": "failed",
+                            "executionId": "582bbd88a0350537b899ff87",
+                            "testSuiteId": "582bbd88b73a104839b50971",
+                            "testId": "582bbd88b73a104839b50972",
+                            "index": 1,
+                            "ip": "10.194.187.27",
+                            "hostname": "mymachine",
+                            "timestamp": 1479261582375
+                        }
+                    },
+                    "autoDelete": false,
+                    "expires": 0,
+                    "buffer": "none"
+                }
+            }
+
+

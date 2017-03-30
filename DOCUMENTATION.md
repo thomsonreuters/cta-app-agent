@@ -533,7 +533,8 @@ Create a new JobHandlerHelper instance
 <a name="JobHandlerHelper+getExecutor"></a>
 
 ### jobHandlerHelper.getExecutor(job) ⇒ <code>[Executor](#Executor)</code>
-Retrieve the right executor for a jobReturns undefined if no executor found
+Retrieve the right executor for a job
+Returns undefined if no executor found
 
 **Kind**: instance method of <code>[JobHandlerHelper](#JobHandlerHelper)</code>  
 
@@ -565,6 +566,7 @@ ResultCollector class
 * [ResultCollector](#ResultCollector)
     * [new ResultCollector(cementHelper, config)](#new_ResultCollector_new)
     * [.validate(context)](#ResultCollector+validate) ⇒ <code>Promise</code>
+    * [.start()](#ResultCollector+start)
     * [.process(context)](#ResultCollector+process)
 
 <a name="new_ResultCollector_new"></a>
@@ -589,6 +591,13 @@ Validates Job properties
 | --- | --- | --- |
 | context | <code>Context</code> | a Context |
 
+<a name="ResultCollector+start"></a>
+
+### resultCollector.start()
+Sends agent report (system information, softwares, ...)
+when brick is started
+
+**Kind**: instance method of <code>[ResultCollector](#ResultCollector)</code>  
 <a name="ResultCollector+process"></a>
 
 ### resultCollector.process(context)
@@ -668,7 +677,8 @@ Creates a new State payload and sends it as a message-produce context
 <a name="ResultsHandler"></a>
 
 ## ResultsHandler
-Handler class for RESTAPI handlers : RESULTSConverts old CTA TestStatus and StepStatus to Results objects
+Handler class for RESTAPI handlers : RESULTS
+Converts old CTA TestStatus and StepStatus to Results objects
 
 **Kind**: global class  
 **Properties**
