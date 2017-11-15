@@ -1,64 +1,78 @@
-# Agent Service for Compass Test Automation
+# cta-app-agent [ ![build status](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/badges/master/build.svg)](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/commits/master) [![coverage report](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/badges/master/coverage.svg)](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/commits/master)
 
-[![build status](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/badges/master/build.svg)](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/commits/master)[![coverage report](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/badges/master/coverage.svg)](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/commits/master)
-------
-* General Overview
-  * [Overview](#overview)
-  * [Features](#features)
-* Getting Started
-  * A
-  * A
-* Development Guide
-  * [Contributing](#contributing)
-  * [More Information](#more-information)
-
-------
+Agent Application for Compass Test Automation, implementing CTA-OSS Framework
 
 ## General Overview
+
 ### Overview
-Agent is a service that consist of many bricks. Agent will run executions on the machine and receive test status then report back to the systems.
-### Features
-* Receive executions from RabbitMQ queue and run it
-* Able to receive test status from test and report to the systems
 
-You can check more [feature guide](https://git.sami.int.thomsonreuters.com/compass/cta/blob/master/features.md) for a list of all features provided by CTA-OSS.
+The **cta-app-agent** is an application in **_Compass Test Automation_**. It's implementing **CTA-OSS Framework**. The application runs any execution or task. It also receives and records any status.
 
-------
+### CTA-OSS Implementation
 
-## Getting Started
-### Prerequisites
- 1. Front End skills required include `HTML`, `CSS`, `JavaScript`, `JSON`. 
- 2. Back End development using `Node.js`, `Express,` and `MongoDB`. It also important concept of source control using `Git`.
+There are **several ways** to implement CTA-OSS Framework. We suggest that you _learn **how CTA-OSS Framework is structured**_ and _implement the way **that is appropriated to your work**_.
 
-### Installation & Startup
-The easiest way to get started is to clone the repository:
-```bash
-git clone git@git.sami.int.thomsonreuters.com:compass/cta-app-executiondataservice.git
+## Guidelines
+
+We aim to give you brief guidelines here.
+
+1. [Usage](#1-usage)
+1. [Structure](#2-structure)
+
+### 1. Usage
+
+Make sure that you have **installed the package**
+
+```javascript
+nmp i  // or npm install
 ```
-Then install NPM dependencies:
-```bash
-npm install
+
+To **start the service**
+
+```javascript
+node [application_directory]/lib/index.js
 ```
-To start the service
-```bash
-npm start
+
+[back to top](#guidelines)
+
+### 2. Structure
+
+Implementing CTA-OSS Framework, we setup the application into three parts:
+
+1. **Application**
+1. **Bricks**
+1. **Utilities**
+
+#### 1. Application:
+
+The applcation consists of **entry point** and **configuration**.
+
+The **entry point** of the application is located at:
+
 ```
-Service will startup and running on default port `3001`
+[application_directory]/lib/apps/main/app.js
+```
 
+The **configuration**, that describes how the application be setup and processed, is located at:
 
-# Development Guide
+```
+[application_directory]/lib/apps/main/config/
+```
 
-## Contributing
-You can follow [these steps](https://git.sami.int.thomsonreuters.com/compass/cta/blob/master/contributing.md) to contribute.
+#### 2. Bricks:
 
-## More Information
-Our service is composed of different components working together to schedule, run, collect tests results and more. You can find additional information for more understand in Execution Data Service.
-We also cover in detail :
-* The [Rest API](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/wikis/restapi) is composed of multiple REST service to perform actions on CTA.
-* A [DataContract](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/wikis/datacontract) is a formal agreement between a bricks.
-* The [Document](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/wikis/document) associated with a software project and the system being.
-* A [Sequence Diagrams](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/wikis/sequencediagram) is an interaction diagram that shows how objects operate with one another and in what order.
+The **Bricks** consists of **_all the brick modules_** which application require to run. The bricks are modules implementing **cta-brick** as _a unit of work_. It is located at:
 
-------
+```
+[application_directory]/lib/bricks/
+```
 
-This code is running live at [CTA-OSS](https://www.). We also have [CTA Central Document](https://git.sami.int.thomsonreuters.com/compass/cta)
+#### 3. Utilities:
+
+The **Utilities** consists of **_all other modules_** which application require to run. The utilities are _supporting modules_ providing functionalities. It is located at:
+
+```
+[application_directory]/lib/utils/
+```
+
+[back to top](#guidelines)
