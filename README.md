@@ -8,6 +8,12 @@ Agent Application for Compass Test Automation, implementing CTA-OSS Framework
 
 The **cta-app-agent** is an application in **_Compass Test Automation_**. It's implementing **CTA-OSS Framework**. The application runs any execution or task. It also receives and records any status.
 
+### Features
+
+* Receive **Executions** from messaging queue, **cta-messaging** and run it
+
+* Be able to receive **test statuses** from test and report to system, Compass Test Automation
+
 ### CTA-OSS Implementation
 
 There are **several ways** to implement CTA-OSS Framework. We suggest that you _learn **how CTA-OSS Framework is structured**_ and _implement the way **that is appropriated to your work**_.
@@ -76,3 +82,20 @@ The **Utilities** consists of **_all other modules_** which application require 
 ```
 
 [back to top](#guidelines)
+
+# Development Guide
+
+## Contributing
+You can follow [these steps](https://git.sami.int.thomsonreuters.com/compass/cta/blob/master/contributing.md) to contribute.
+
+## More Information
+Our service is composed of different components working together to schedule, run, collect tests results and more. You can find additional information for more understand in Execution Data Service.
+We also cover in detail :
+* The [Rest API](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/wikis/restapi) is composed of multiple REST service to perform actions on CTA.
+* A [DataContract](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/wikis/datacontract) is a formal agreement between a bricks.
+* The [Document](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/wikis/document) associated with a software project and the system being.
+* A [Sequence Diagrams](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/wikis/sequencediagram) is an interaction diagram that shows how objects operate with one another and in what order.
+
+------
+
+This code is running live at **CTA-OSS**. We also have [CTA Central Document](https://git.sami.int.thomsonreuters.com/compass/cta)
