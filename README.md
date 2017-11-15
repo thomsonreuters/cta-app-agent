@@ -14,7 +14,7 @@ The **cta-app-agent** is an application in **_Compass Test Automation_**. It's i
 
 * Receive **Executions** from message queue, **cta-messaging** and run it
 
-* Be able to receive **test statuses** from test and generate to message queue
+* Provide an API to receive **test statuses** from test and generate to message queue 
 
 ### CTA-OSS Implementation
 
