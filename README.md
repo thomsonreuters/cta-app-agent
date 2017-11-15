@@ -1,50 +1,91 @@
-# Agent Service for Compass Test Automation
+# cta-app-agent [ ![build status](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/badges/master/build.svg)](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/commits/master) [![coverage report](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/badges/master/coverage.svg)](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/commits/master)
 
-[![build status](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/badges/master/build.svg)](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/commits/master)[![coverage report](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/badges/master/coverage.svg)](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/commits/master)
-------
-* General Overview
-  * [Overview](#overview)
-  * [Features](#features)
-* Getting Started
-  * A
-  * A
-* Development Guide
-  * [Contributing](#contributing)
-  * [More Information](#more-information)
-
-------
+Agent Application for Compass Test Automation, implementing CTA-OSS Framework
 
 ## General Overview
-### Overview
-Agent is a service that consist of many bricks. Agent will run executions on the machine and receive test status then report back to the systems.
-### Features
-* Receive executions from RabbitMQ queue and run it
-* Able to receive test status from test and report to the systems
 
-You can check more [feature guide](https://git.sami.int.thomsonreuters.com/compass/cta/blob/master/features.md) for a list of all features provided by CTA-OSS.
+### Overview
+
+The **cta-app-agent** is an application in **_Compass Test Automation_**. It's implementing **CTA-OSS Framework**. The application runs any execution or task. It also receives and records any status.
+
+### Features
+
+* Generate the startup message to report the instace information to message queue
+
+* Receive **Executions** from message queue, **cta-messaging** and run it
+
+* Provide an API to receive **test statuses** from test and generate to message queue 
+
+### CTA-OSS Implementation
+
+There are **several ways** to implement CTA-OSS Framework. We suggest that you _learn **how CTA-OSS Framework is structured**_ and _implement the way **that is appropriated to your work**_.
+
+## Guidelines
+
+We aim to give you brief guidelines here.
+
+1. [Usage](#1-usage)
+1. [Structure](#2-structure)
+
+### 1. Usage
+
+Make sure that you have **installed the package**
+
+```javascript
+nmp install
+```
+
+To **start the service**
+
+```javascript
+node [application_directory]/lib/index.js
+```
+
+[back to top](#guidelines)
+
+### 2. Structure
+
+Implementing CTA-OSS Framework, we setup the application into three parts:
+
+1. **Application**
+1. **Bricks**
+1. **Utilities**
+
+#### 1. Application:
+
+The applcation consists of **entry point** and **configuration**.
+
+The **entry point** of the application is located at:
+
+```
+[application_directory]/lib/apps/main/app.js
+```
+
+The **configuration**, that describes how the application be setup and processed, is located at:
+
+```
+[application_directory]/lib/apps/main/config/
+```
+
+#### 2. Bricks:
+
+The **Bricks** consists of **_all the brick modules_** which application require to run. The bricks are modules implementing **cta-brick** as _a unit of work_. It is located at:
+
+```
+[application_directory]/lib/bricks/
+```
+
+#### 3. Utilities:
+
+The **Utilities** consists of **_all other modules_** which application require to run. The utilities are _supporting modules_ providing functionalities. It is located at:
+
+```
+[application_directory]/lib/utils/
+```
+
+[back to top](#guidelines)
 
 ------
-
-## Getting Started
-### Prerequisites
- 1. Front End skills required include `HTML`, `CSS`, `JavaScript`, `JSON`. 
- 2. Back End development using `Node.js`, `Express,` and `MongoDB`. It also important concept of source control using `Git`.
-
-### Installation & Startup
-The easiest way to get started is to clone the repository:
-```bash
-git clone git@git.sami.int.thomsonreuters.com:compass/cta-app-executiondataservice.git
-```
-Then install NPM dependencies:
-```bash
-npm install
-```
-To start the service
-```bash
-npm start
-```
-Service will startup and running on default port `3001`
-
 
 # Development Guide
 
@@ -61,4 +102,9 @@ We also cover in detail :
 
 ------
 
-This code is running live at [CTA-OSS](https://www.). We also have [CTA Central Document](https://git.sami.int.thomsonreuters.com/compass/cta)
+## To Do
+
+------
+
+This code is running live at **CTA-OSS**. We also have [CTA Central Document](https://git.sami.int.thomsonreuters.com/compass/cta)
+
