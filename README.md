@@ -83,6 +83,8 @@ The **Utilities** consists of **_all other modules_** which application require 
 
 [back to top](#guidelines)
 
+------
+
 # Development Guide
 
 ## Contributing
@@ -98,4 +100,9 @@ We also cover in detail :
 
 ------
 
+## To Do
+
+------
+
 This code is running live at **CTA-OSS**. We also have [CTA Central Document](https://git.sami.int.thomsonreuters.com/compass/cta)
+
