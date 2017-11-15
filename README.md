@@ -24,7 +24,7 @@ We aim to give you brief guidelines here.
 Make sure that you have **installed the package**
 
 ```javascript
-nmp i  // or npm install
+nmp install
 ```
 
 To **start the service**
