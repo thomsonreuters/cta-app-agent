@@ -1,4 +1,7 @@
-# cta-app-agent [ ![build status](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/badges/master/build.svg)](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/commits/master) [![coverage report](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/badges/master/coverage.svg)](https://git.sami.int.thomsonreuters.com/compass/cta-app-agent/commits/master)
+# cta-app-agent
+[![Build Status](https://travis-ci.org/thomsonreuters/cta-app-agent.svg?branch=master)](https://travis-ci.org/thomsonreuters/cta-app-agent)
+[![Coverage Status](https://coveralls.io/repos/github/thomsonreuters/cta-app-agent/badge.svg?branch=master)](https://coveralls.io/github/thomsonreuters/cta-app-agent?branch=master)
+[![codecov](https://codecov.io/gh/thomsonreuters/cta-app-agent/branch/master/graph/badge.svg)](https://codecov.io/gh/thomsonreuters/cta-app-agent)
 
 Agent Application for Compass Test Automation, implementing CTA-OSS Framework
 
